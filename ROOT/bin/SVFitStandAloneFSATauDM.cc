@@ -19,6 +19,8 @@
 #include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 #include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
 
+#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
+
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1.h"
