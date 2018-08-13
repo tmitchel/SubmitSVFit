@@ -19,8 +19,6 @@
 #include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 #include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
 
-#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
-
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1.h"
@@ -37,7 +35,7 @@
 ClassicSVfit svfitAlgorithm;
 
 void copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
-void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int recoilType, int doES, int isWJets, int metType, double tesSize) ;
+void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int doES, int isWJets, int metType, double tesSize) ;
 void CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source,optutl::CommandLineParser parser);
 
@@ -54,7 +52,6 @@ int main (int argc, char* argv[])
   parser.addOption("newFile",optutl::CommandLineParser::kString,"newFile","newFile.root");
   parser.addOption("inputFile",optutl::CommandLineParser::kString,"input File");
   parser.addOption("newOutputFile",optutl::CommandLineParser::kDouble,"New Output File",0.0);
-  parser.addOption("recoilType",optutl::CommandLineParser::kDouble,"recoilType",0.0);
   parser.addOption("doES",optutl::CommandLineParser::kDouble,"doES",0.0);
   parser.addOption("isWJets",optutl::CommandLineParser::kDouble,"isWJets",0.0);
   parser.addOption("metType",optutl::CommandLineParser::kDouble,"metType",-1.0); // 1 = mvamet, -1 = pf met
@@ -64,7 +61,6 @@ int main (int argc, char* argv[])
   
   std::cout << "EXTRA COMMANDS:"
 	    << "\n --- numEvents: " << parser.integerValue("numEvents")
-	    << "\n --- recoilType: " << parser.doubleValue("recoilType")
 	    << "\n --- doES: " << parser.doubleValue("doES")
 	    << "\n --- isWJets: " << parser.doubleValue("isWJets")
 	    << "\n --- metType: " << parser.doubleValue("metType")
@@ -90,7 +86,7 @@ int main (int argc, char* argv[])
     fProduce = new TFile(newFileName.c_str(),"UPDATE");
     std::cout<<"listing the directories================="<<std::endl;
     fProduce->ls();
-    readdir(fProduce,parser,TreeToUse,parser.doubleValue("recoilType"),parser.doubleValue("doES"),
+    readdir(fProduce,parser,TreeToUse,parser.doubleValue("doES"),
             parser.doubleValue("isWJets"),parser.doubleValue("metType"),parser.doubleValue("tesSize"));
     
     fProduce->Close();
@@ -98,7 +94,7 @@ int main (int argc, char* argv[])
   }
   else{
     TFile *f = new TFile(parser.stringValue("inputFile").c_str(),"UPDATE");
-    readdir(f,parser,TreeToUse,parser.doubleValue("recoilType"),parser.doubleValue("doES"),
+    readdir(f,parser,TreeToUse,parser.doubleValue("doES"),
             parser.doubleValue("isWJets"),parser.doubleValue("metType"),parser.doubleValue("tesSize"));
     f->Close();
   }
@@ -107,7 +103,7 @@ int main (int argc, char* argv[])
 } 
 
 
-void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int recoilType, int doES, int isWJets, int metType, double tesSize) 
+void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets, int metType, double tesSize) 
 {
   
   TLorentzVector tau1, tau2;
@@ -117,17 +113,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
   // down systematics
   TLorentzVector tau1_down, tau1_DM0_down, tau1_DM1_down, tau1_DM10_down, tau1_UncMet_down, tau1_ClusteredMet_down;
   TLorentzVector tau2_down, tau2_DM0_down, tau2_DM1_down, tau2_DM10_down, tau2_UncMet_down, tau2_ClusteredMet_down;
-  
-  std::string recoilFileName = "HTT-utilities/RecoilCorrections/data/TypeI-PFMet_Run2016BtoH.root";
-  if(recoilType == 1) { //amc@nlo
-    std::cout << "Alexei no long specified MG vs. AMC@NLO, so use recoilType = 2" << std::endl;
-    return; }
-  if(recoilType == 2 && metType == 1) { // mva met (Alexei no long specified MG vs. AMC@NLO)
-    std::cout << "Alexei does not provide full 2016 data recoil corrections for Mva Met\n\n" << std::endl;
-    std::cout << "Using ICHEP Mva Met corrections\n\n" << std::endl;
-    recoilFileName = "HTT-utilities/RecoilCorrections/data/MvaMET_2016BCD.root";}
-  if(recoilType == 2 && metType == -1) { // pf met (Alexei no long specified MG vs. AMC@NLO)
-    recoilFileName = "HTT-utilities/RecoilCorrections/data/TypeI-PFMet_Run2016BtoH.root";}
   
   classic_svFit::MeasuredTauLepton::kDecayType decayType1 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType;
   classic_svFit::MeasuredTauLepton::kDecayType decayType2 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType; 
@@ -156,7 +141,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       dir->cd(key->GetName());
       TDirectory *subdir = gDirectory;
       sprintf(TreeToUse,"%s",key->GetName());
-      readdir(subdir,parser,TreeToUse,parser.doubleValue("recoilType"),parser.doubleValue("doES"),
+      readdir(subdir,parser,TreeToUse,parser.doubleValue("doES"),
 	      parser.doubleValue("isWJets"),parser.doubleValue("metType"),parser.doubleValue("tesSize"));
       
       dirsav->cd();
@@ -790,12 +775,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	t->SetBranchAddress("metphi_JESUp", &clusteredMetPhiUp);
 	t->SetBranchAddress("metphi_JESDown", &clusteredMetPhiDown);
       }
-
-      // use this RooT file when running on aMC@NLO DY and W+Jets MC samples
-      RecoilCorrector* recoilCorrector = new RecoilCorrector(recoilFileName);
-      if (metType == 1) std::cout<<"MetType: MvaMet"<<std::endl;
-      if (metType == -1) std::cout<<"MetType: PF Met"<<std::endl;
-      std::cout<<"recoiltype "<<recoilType<<" recoilFileName "<<recoilFileName<<std::endl;
       
       printf("Found tree -> weighting\n");
     
@@ -807,15 +786,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       for(Int_t i=0;i<nevents;++i){
 	t->GetEntry(i);
 
-         //Recoil Correction time
-         // Correct WJets recoil for faked lepton / extra jet
-         int recoilNJets;
-         if(isWJets) {
-            recoilNJets = njets + 1;
-            std::cout << " - njets: " << njets << " recoilNJets: " << recoilNJets << std::endl;
-         }
-         else recoilNJets = njets;
-	 
          // Using PF Met or Mva Met?
          if (metType == 1) { // 1 = Mva Met
 	   TMet.SetPtEtaPhiM(mvamet,0,mvametphi,0);
@@ -847,90 +817,16 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	   covMET[1][1] =  pfCovMatrix11;
          } // pf met
 	 
-         // Do recoil corrections if requested
-         if(recoilType != 0){
-	   // Alexie shows that corrections via quantile mapping provide best results
-	   // for mva met and pf met, so
-	   // use that as the defaul.  People can switch if they want below
-	   //
-	   // RecoilCorrector::Correct == Quantile Mapping
-	   // RecoilCorrector::CorrectByMeanResolution == By Mean Res
-	   
-	   //recoilCorrector->Correct(
-	   recoilCorrector->CorrectByMeanResolution( // This method is faster (Alexei)
-						    measuredMETx, // uncorrected mva met px (float)
-						    measuredMETy, // uncorrected mva met py (float)
-						    genPx, // generator Z/W/Higgs px (float)
-						    genPy, // generator Z/W/Higgs py (float)
-						    visPx, // generator visible Z/W/Higgs px (float)
-						    visPy, // generator visible Z/W/Higgs py (float)
-						    recoilNJets,  // number of jets (hadronic jet multiplicity) (int)
-						    metcorr_ex, // corrected met px (float)
-						    metcorr_ey  // corrected met py (float)
-						     );
-	   // Shifted MET unc Up
-	   recoilCorrector->CorrectByMeanResolution( // This method is faster (Alexei)
-						    uncMetUpMETx, // uncorrected mva met px (float)
-						    uncMetUpMETy, // uncorrected mva met py (float)
-						    genPx, // generator Z/W/Higgs px (float)
-						    genPy, // generator Z/W/Higgs py (float)
-						    visPx, // generator visible Z/W/Higgs px (float)
-						    visPy, // generator visible Z/W/Higgs py (float)
-						    recoilNJets,  // number of jets (hadronic jet multiplicity) (int)
-						    metcorrUncUp_ex, // corrected met px (float)
-						    metcorrUncUp_ey  // corrected met py (float)
-						     );
-	   // Shifted MET unc Down
-	   recoilCorrector->CorrectByMeanResolution( // This method is faster (Alexei)
-						    uncMetDownMETx, // uncorrected mva met px (float)
-						    uncMetDownMETy, // uncorrected mva met py (float)
-						    genPx, // generator Z/W/Higgs px (float)
-						    genPy, // generator Z/W/Higgs py (float)
-						    visPx, // generator visible Z/W/Higgs px (float)
-						    visPy, // generator visible Z/W/Higgs py (float)
-						    recoilNJets,  // number of jets (hadronic jet multiplicity) (int)
-						    metcorrUncDown_ex, // corrected met px (float)
-						    metcorrUncDown_ey  // corrected met py (float)
-						     );
-	   // Shifted MET clustered Up
-	   recoilCorrector->CorrectByMeanResolution( // This method is faster (Alexei)
-						    clusteredMetUpMETx, // uncorrected mva met px (float)
-						    clusteredMetUpMETy, // uncorrected mva met py (float)
-						    genPx, // generator Z/W/Higgs px (float)
-						    genPy, // generator Z/W/Higgs py (float)
-						    visPx, // generator visible Z/W/Higgs px (float)
-						    visPy, // generator visible Z/W/Higgs py (float)
-						    recoilNJets,  // number of jets (hadronic jet multiplicity) (int)
-						    metcorrClusteredUp_ex, // corrected met px (float)
-						    metcorrClusteredUp_ey  // corrected met py (float)
-						     );
-	   // Shifted MET clustered Down
-	   recoilCorrector->CorrectByMeanResolution( // This method is faster (Alexei)
-						    clusteredMetDownMETx, // uncorrected mva met px (float)
-						    clusteredMetDownMETy, // uncorrected mva met py (float)
-						    genPx, // generator Z/W/Higgs px (float)
-						    genPy, // generator Z/W/Higgs py (float)
-						    visPx, // generator visible Z/W/Higgs px (float)
-						    visPy, // generator visible Z/W/Higgs py (float)
-						    recoilNJets,  // number of jets (hadronic jet multiplicity) (int)
-						    metcorrClusteredDown_ex, // corrected met px (float)
-						    metcorrClusteredDown_ey  // corrected met py (float)
-						     );
-           std::cout << " - MEASURED:  met_ex: " << measuredMETx << "  met_ey: " << measuredMETy << std::endl;
-           std::cout << " - CORRECTED: met_ex: " << metcorr_ex << "  met_ey: " << metcorr_ey << std::endl;
-	 }
-	 else{
-           metcorr_ex = measuredMETx;
-           metcorr_ey = measuredMETy;
-           metcorrUncUp_ex = uncMetUpMETx;
-           metcorrUncUp_ey = uncMetUpMETy;
-           metcorrUncDown_ex = uncMetDownMETx;
-           metcorrUncDown_ey = uncMetDownMETy;
-           metcorrClusteredUp_ex = clusteredMetUpMETx;
-           metcorrClusteredUp_ey = clusteredMetUpMETy;
-           metcorrClusteredDown_ex = clusteredMetDownMETx;
-           metcorrClusteredDown_ey = clusteredMetDownMETy;
-	 }
+     metcorr_ex = measuredMETx;
+     metcorr_ey = measuredMETy;
+     metcorrUncUp_ex = uncMetUpMETx;
+     metcorrUncUp_ey = uncMetUpMETy;
+     metcorrUncDown_ex = uncMetDownMETx;
+     metcorrUncDown_ey = uncMetDownMETy;
+     metcorrClusteredUp_ex = clusteredMetUpMETx;
+     metcorrClusteredUp_ey = clusteredMetUpMETy;
+     metcorrClusteredDown_ex = clusteredMetDownMETx;
+     metcorrClusteredDown_ey = clusteredMetDownMETy;
 	 
 	 metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
 	 metcorphi = TMath::ATan2( metcorr_ey, metcorr_ex );
@@ -1156,9 +1052,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	   //*****************************************************
 	   // MET SYSTEMATICS
 	   // Taus Pt have been corrected (TEC)
-	   // All 4 mets have recoil corrections already applied
-	   // Still need TEC propagated to shifted, recoil corrected
-	   // METs
+	   // Still need TEC propagated to shifted METs
 	   //*****************************************************
 	   
 	   std::cout << "MET Unclustered Energy Up   ---  ";
