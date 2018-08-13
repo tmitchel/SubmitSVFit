@@ -19,17 +19,10 @@
 #include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 #include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
 
-#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
-
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1.h"
 
-//If recoilType 0 then don't do recoil
-//              FIXME amc@nlo is not ready yet!!! 1 then aMC@NLO DY and W+Jets MC samples
-//                1 is not longer an option
-//              2 MG5 DY and W+Jets MC samples or Higgs MC samples
-//
 //If doES       0 does not apply any ES shifts
 //              1 applies ES shifts to TT channel, no effect on other channels
 //
@@ -40,7 +33,6 @@
 //        -1 use pf met
 
 ClassicSVfit svfitAlgorithm;
-bool tylerCode = false;
 
 void copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
 void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int recoilType, int doES, int isWJets, int metType, double tesSize) ;
@@ -197,7 +189,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	std::cout << "Identified channel em and using kappa = 3" << std::endl;
 	svfitAlgorithm.addLogM_fixed(true, 3);
       }
-      else if ( std::string(key->GetName()).find("eleTauEvent") != std::string::npos ) {
+      else if ( std::string(key->GetName()).find("et") != std::string::npos ) {
 	std::cout<<"eleTauTree"<<std::endl;
 	decayType1 = classic_svFit::MeasuredTauLepton::kTauToElecDecay;
 	decayType2 = classic_svFit::MeasuredTauLepton::kTauToHadDecay;
@@ -743,53 +735,28 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("evt",&evt);
       t->SetBranchAddress("run",&run);
       t->SetBranchAddress("lumi",&lumi);
-      if(channel=="tt" && tylerCode ) {
-        t->SetBranchAddress("t1Pt",&pt1,&pt1branch);
-        t->SetBranchAddress("t1Eta",&eta1);
-        t->SetBranchAddress("t1Phi",&phi1);
-        t->SetBranchAddress("t1Mass",&mass1);
-        t->SetBranchAddress("t1ZTTGenMatching",&gen_match_1);
-        t->SetBranchAddress("t2Pt",&pt2);
-        t->SetBranchAddress("t2Eta",&eta2);
-        t->SetBranchAddress("t2Phi",&phi2);
-        t->SetBranchAddress("t2Mass",&mass2);
-        t->SetBranchAddress("t2ZTTGenMatching",&gen_match_2);
-        t->SetBranchAddress("t1DecayMode",&decayMode);
-        t->SetBranchAddress("t2DecayMode",&decayMode2);
-        t->SetBranchAddress("t1_t2_MvaMetCovMatrix00",&mvaCovMatrix00);
-        t->SetBranchAddress("t1_t2_MvaMetCovMatrix01",&mvaCovMatrix01);
-        t->SetBranchAddress("t1_t2_MvaMetCovMatrix10",&mvaCovMatrix10);
-        t->SetBranchAddress("t1_t2_MvaMetCovMatrix11",&mvaCovMatrix11);
-        t->SetBranchAddress("t1_t2_MvaMet",&mvamet);
-        t->SetBranchAddress("t1_t2_MvaMetPhi",&mvametphi);
-        t->SetBranchAddress("jetVeto30", &njets);
-        t->SetBranchAddress("type1_pfMetEt",&pfmet);
-        t->SetBranchAddress("type1_pfMetPhi",&pfmetphi);
-      }
-      else {
-        t->SetBranchAddress("gen_match_1",&gen_match_1);
-        t->SetBranchAddress("gen_match_2",&gen_match_2);
-	if ( channel == "tt" ) t->SetBranchAddress("t1_decayMode", &decayMode);
-	if ( channel == "tt" ) t->SetBranchAddress("t2_decayMode", &decayMode2);
-        t->SetBranchAddress("pt_1",&pt1,&pt1branch);
-        t->SetBranchAddress("eta_1",&eta1);
-        t->SetBranchAddress("phi_1",&phi1);
-        t->SetBranchAddress("pt_2",&pt2);
-        t->SetBranchAddress("eta_2",&eta2);
-        t->SetBranchAddress("phi_2",&phi2);
-        t->SetBranchAddress("m_2",&m2);
-        //t->SetBranchAddress("l1_decayMode",&decayMode);
-        if ( channel != "tt" ) t->SetBranchAddress("l2_decayMode",&decayMode2);
-        t->SetBranchAddress("mvacov00",&mvaCovMatrix00);
-        t->SetBranchAddress("mvacov01",&mvaCovMatrix01);
-        t->SetBranchAddress("mvacov10",&mvaCovMatrix10);
-        t->SetBranchAddress("mvacov11",&mvaCovMatrix11);
-        t->SetBranchAddress("mvamet",&mvamet);
-        t->SetBranchAddress("mvametphi",&mvametphi);
-        t->SetBranchAddress("njets", &njets);
-        t->SetBranchAddress("met",&pfmet);
-        t->SetBranchAddress("metphi",&pfmetphi);
-      }
+      t->SetBranchAddress("gen_match_1",&gen_match_1);
+      t->SetBranchAddress("gen_match_2",&gen_match_2);
+	  if ( channel == "tt" ) t->SetBranchAddress("t1_decayMode", &decayMode);
+	  if ( channel == "tt" ) t->SetBranchAddress("t2_decayMode", &decayMode2);
+      t->SetBranchAddress("pt_1",&pt1,&pt1branch);
+      t->SetBranchAddress("eta_1",&eta1);
+      t->SetBranchAddress("phi_1",&phi1);
+      t->SetBranchAddress("pt_2",&pt2);
+      t->SetBranchAddress("eta_2",&eta2);
+      t->SetBranchAddress("phi_2",&phi2);
+      t->SetBranchAddress("m_2",&m2);
+      //t->SetBranchAddress("l1_decayMode",&decayMode);
+      if ( channel != "tt" ) t->SetBranchAddress("l2_decayMode",&decayMode2);
+      t->SetBranchAddress("mvacov00",&mvaCovMatrix00);
+      t->SetBranchAddress("mvacov01",&mvaCovMatrix01);
+      t->SetBranchAddress("mvacov10",&mvaCovMatrix10);
+      t->SetBranchAddress("mvacov11",&mvaCovMatrix11);
+      t->SetBranchAddress("mvamet",&mvamet);
+      t->SetBranchAddress("mvametphi",&mvametphi);
+      t->SetBranchAddress("njets", &njets);
+      t->SetBranchAddress("met",&pfmet);
+      t->SetBranchAddress("metphi",&pfmetphi);
       // Recoil variables below
       t->SetBranchAddress( "genpX", &genPx);
       t->SetBranchAddress( "genpY", &genPy);
