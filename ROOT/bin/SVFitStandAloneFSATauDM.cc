@@ -861,7 +861,44 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
           std::cout<<"finished runningSVFit"<<std::endl;
 
-          // TODO: MET Systematics 
+          // MET systematics
+          std::cout << "MET Unclustered Energy Up   ---  ";
+          metcorrUncUp_ex = metcorrUncUp_ex + dx2;
+          metcorrUncUp_ey = metcorrUncUp_ey + dy2;
+          runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, svFitMass_UncMet_UP, svFitPt_UncMet_UP, svFitEta_UncMet_UP, 
+              svFitPhi_UncMet_UP, svFitMET_UncMet_UP, svFitTransverseMass_UncMet_UP, tau1_UncMet_up, tau2_UncMet_up);
+          std::cout << "MET Unclustered Energy Down ---  ";
+          metcorrUncDown_ex = metcorrUncDown_ex + dx2;
+          metcorrUncDown_ey = metcorrUncDown_ey + dy2;
+          runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, svFitMass_UncMet_DOWN, svFitPt_UncMet_DOWN, svFitEta_UncMet_DOWN, 
+              svFitPhi_UncMet_DOWN, svFitMET_UncMet_DOWN, svFitTransverseMass_UncMet_DOWN, tau1_UncMet_down, tau2_UncMet_down);
+          std::cout << "MET Clustered Energy Up     ---  ";
+          metcorrClusteredUp_ex = metcorrClusteredUp_ex + dx2;
+          metcorrClusteredUp_ey = metcorrClusteredUp_ey + dy2;
+          runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, svFitMass_ClusteredMet_UP, svFitPt_ClusteredMet_UP, 
+              svFitEta_ClusteredMet_UP, svFitPhi_ClusteredMet_UP, svFitMET_ClusteredMet_UP, svFitTransverseMass_ClusteredMet_UP, tau1_ClusteredMet_up, tau2_ClusteredMet_up);
+          std::cout << "MET Clustered Energy Down   ---  ";
+          metcorrClusteredDown_ex = metcorrClusteredDown_ex + dx2;
+          metcorrClusteredDown_ey = metcorrClusteredDown_ey + dy2;
+          runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, svFitMass_ClusteredMet_DOWN, svFitPt_ClusteredMet_DOWN, 
+              svFitEta_ClusteredMet_DOWN, svFitPhi_ClusteredMet_DOWN, svFitMET_ClusteredMet_DOWN, svFitTransverseMass_ClusteredMet_DOWN, tau1_ClusteredMet_down, tau2_ClusteredMet_down);
+
+          std::cout<< "Shifted MET Summary:\n\tmetcorr_ex " << metcorr_ex << " --- metcorrUncUp_ex " << metcorrUncUp_ex << " metcorrUncDown_ex " << metcorrUncDown_ex
+              << " metcorrClusteredUp_ex " << metcorrClusteredUp_ex << " metcorrClusteredDown_ex " << metcorrClusteredDown_ex << std::endl;
+          std::cout<< "\tmetcorr_ey " << metcorr_ey << " --- metcorrUncUp_ey " << metcorrUncUp_ey << " metcorrUncDown_ey " << metcorrUncDown_ey
+              << " metcorrClusteredUp_ey " << metcorrClusteredUp_ey << " metcorrClusteredDown_ey " << metcorrClusteredDown_ey << std::endl;
+
+          // new met to store 
+          metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
+          metcorphi = TMath::ATan2( metcorr_ey, metcorr_ex );
+          metcorClusteredDown = TMath::Sqrt( metcorrClusteredDown_ex*metcorrClusteredDown_ex + metcorrClusteredDown_ey*metcorrClusteredDown_ey);
+          metcorphiClusteredDown = TMath::ATan2( metcorrClusteredDown_ey, metcorrClusteredDown_ex );
+          metcorClusteredUp = TMath::Sqrt( metcorrClusteredUp_ex*metcorrClusteredUp_ex + metcorrClusteredUp_ey*metcorrClusteredUp_ey);
+          metcorphiClusteredUp = TMath::ATan2( metcorrClusteredUp_ey, metcorrClusteredUp_ex );
+          metcorUncDown = TMath::Sqrt( metcorrUncDown_ex*metcorrUncDown_ex + metcorrUncDown_ey*metcorrUncDown_ey);
+          metcorphiUncDown = TMath::ATan2( metcorrUncDown_ey, metcorrUncDown_ex );
+          metcorUncUp = TMath::Sqrt( metcorrUncUp_ex*metcorrUncUp_ex + metcorrUncUp_ey*metcorrUncUp_ey);
+          metcorphiUncUp = TMath::ATan2( metcorrUncUp_ey, metcorrUncUp_ex );
           
           if(doES) {
             
