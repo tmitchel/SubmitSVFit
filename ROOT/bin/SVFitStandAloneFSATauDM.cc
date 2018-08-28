@@ -880,8 +880,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             // corrections only need to be done once
             float ES_UP( 1. ), ES_DOWN( 1. ); // shift TES
             if (gen_match_2 == 5) { // 0.6% uncertainty on hadronic tau
-              ES_UP = 1.006;
-              ES_DOWN = 0.994;
+              ES_UP = 1.012;
+              ES_DOWN = 0.988;
             } else if (gen_match_2 < 5) { // 1.0% uncertainty on gen matched ele/mu
               ES_UP = 1.01;
               ES_DOWN = 0.99;
