@@ -78,7 +78,7 @@ def main(argv=None):
     os.system('mkdir -p %s' % (dag_dir+'inputs'))
 
 # output dir
-    output_dir = 'srm://cmssrm.hep.wisc.edu:8443/srm/v2/server?SFN=/hdfs/store/user/%s/%s/%s/'\
+    output_dir = 'gsiftp://cms-lvs-gridftp.hep.wisc.edu:2811//hdfs/store/user/%s/%s/%s/'\
         % (pwd.getpwuid(os.getuid())[0], jobName, sample_name)
 
     # create file list

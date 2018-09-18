@@ -15,5 +15,5 @@ for idir in dirlist:
   iswj = 0
   if 'WJets' in idir:
     iswj = 1
-#  print('python svFitSubmitter.py -sd %s -es=1 -iswj=%i -mt=-1 --jobName %s/svfit_dir_%s' % (idir, iswj, prefix, idir.split('/')[-1]))
+  #print('python svFitSubmitter.py -sd %s -es=1 -iswj=%i -mt=-1 --jobName %s/svfit_dir_%s' % (idir, iswj, prefix, idir.split('/')[-1]))
   subprocess.call('python svFitSubmitter.py -sd %s -es=1 -iswj=%i -mt=-1 --jobName %s/svfit_dir_%s' % (idir, iswj, prefix, idir.split('/')[-1]), shell=True)
