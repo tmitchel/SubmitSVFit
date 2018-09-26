@@ -175,7 +175,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         std::cout << "Identified channel et and using kappa = 4" << std::endl;
         svfitAlgorithm.addLogM_fixed(true, 4);
       } 
-      else if ( std::string(key->GetName()).find("mt") != std::string::npos ) {
+      else if ( std::string(key->GetName()).find("mt") != std::string::npos || std::string(key->GetName()).find("mutau") != std::string::npos ) {
 
         std::cout << "muTauEvent" << std::endl;
         decayType1 = classic_svFit::MeasuredTauLepton::kTauToMuDecay;
