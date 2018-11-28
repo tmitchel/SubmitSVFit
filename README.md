@@ -3,7 +3,7 @@
 cmsrel CMSSW_9_4_4 
 cd CMSSW_9_4_4/src/
 cmsenv
-git clone -b CMSSW_9_4_4_classic_svFit_v0 https://github.com/maravin/SubmitSVFit.git
+git clone -b CMSSW_9_4_4_classic_svFit_v0 ssh://git@gitlab.cern.ch:7999/KState-HEP-HTT/SubmitSVFit.git
 cd SubmitSVFit
 source recipe.sh
 scram b -j 8
