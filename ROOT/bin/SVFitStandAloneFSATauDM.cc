@@ -34,9 +34,9 @@
 
 ClassicSVfit svfitAlgorithm;
 
-void copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
+int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
 void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int doES, int isWJets, int metType, double tesSize) ;
-void CopyFile(const char *fname, optutl::CommandLineParser parser);
+int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source,optutl::CommandLineParser parser);
 
 void runSVFit(std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons,
@@ -80,7 +80,8 @@ int main (int argc, char* argv[])
   std::string newFileName = parser.stringValue("newFile");
   
   fProduce = new TFile(newFileName.c_str(),"RECREATE");
-  copyFiles(parser, f, fProduce);//new TFile(parser.stringValue("inputFile").c_str()+"SVFit","UPDATE");
+  if ( copyFiles(parser, f, fProduce) == 0 ) return -1;
+
   fProduce = new TFile(newFileName.c_str(),"UPDATE");
   std::cout<<"listing the directories================="<<std::endl;
   fProduce->ls();
@@ -1897,21 +1898,22 @@ void CopyDir(TDirectory *source, optutl::CommandLineParser parser) {
   adir->SaveSelf(kTRUE);
   savdir->cd();
 }
-void CopyFile(const char *fname, optutl::CommandLineParser parser) {
+int CopyFile(const char *fname, optutl::CommandLineParser parser) {
   //Copy all objects and subdirs of file fname as a subdir of the current directory
   TDirectory *target = gDirectory;
   TFile *f = TFile::Open(fname);
   if (!f || f->IsZombie()) {
     printf("Cannot copy file: %s\n",fname);
     target->cd();
-    return;
+    return 0;
   }
   target->cd();
   CopyDir(f,parser);
   delete f;
   target->cd();
+  return 1;
 }
-void copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) 
+int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) 
 {
   //prepare files to be copied
   if(gSystem->AccessPathName(parser.stringValue("inputFile").c_str())) {
@@ -1919,9 +1921,10 @@ void copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew)
   }
 
   fNew->cd();
-  CopyFile(parser.stringValue("inputFile").c_str(),parser);
+  if ( CopyFile(parser.stringValue("inputFile").c_str(),parser) == 0 ) return 0;
   fNew->ls();
   fNew->Close();
+  return 1;
 
 }
 

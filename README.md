@@ -6,6 +6,8 @@ cmsenv
 git clone -b CMSSW_9_4_4_classic_svFit_v0 ssh://git@gitlab.cern.ch:7999/KState-HEP-HTT/SubmitSVFit.git
 cd SubmitSVFit
 source recipe.sh
+emacs -nw TauAnalysis/ClassicSVfit/src/ClassicSVfit.cc
+# comment out line 38 (delete histogramAdapter_;) to avoid seg. fault
 scram b -j 8
 ```
 
