@@ -648,7 +648,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       std::cout << "That's a lot of tau 4-vector branches! N = " << tau4VectorBranches.size() << std::endl;
     
       unsigned long long evt;
-      int run, lumi;
+      unsigned int run, lumi;
       float pt1;
       float eta1;
       float phi1;
