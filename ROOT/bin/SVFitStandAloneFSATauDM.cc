@@ -1047,7 +1047,48 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
        std::cout<< "evt: "<<evt<<" run: "<<run<<" lumi: "<<lumi<< " pt1 " << pt1 << " mass1 " << mass1 << " pt2: "<< pt2<< " mass2: "<< mass2 <<std::endl;        
        runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0, svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
        std::cout<<"finished running non-EES SVFit in EMu"<<std::endl;
-       if(doES) {
+  
+// Added by Abdollah
+          // MET systematics
+          std::cout << "MET Unclustered Energy Up   ---  ";
+          runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, svFitMass_UncMet_Up, svFitPt_UncMet_Up, svFitEta_UncMet_Up, 
+              svFitPhi_UncMet_Up, svFitMET_UncMet_Up, svFitTransverseMass_UncMet_Up, tau1_UncMet_Up, tau2_UncMet_Up);
+
+          std::cout << "MET Unclustered Energy Down ---  ";
+          runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, svFitMass_UncMet_Down, svFitPt_UncMet_Down, svFitEta_UncMet_Down, 
+              svFitPhi_UncMet_Down, svFitMET_UncMet_Down, svFitTransverseMass_UncMet_Down, tau1_UncMet_Down, tau2_UncMet_Down);
+
+          std::cout << "MET Clustered Energy Up     ---  ";
+          runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, svFitMass_ClusteredMet_Up, svFitPt_ClusteredMet_Up, 
+              svFitEta_ClusteredMet_Up, svFitPhi_ClusteredMet_Up, svFitMET_ClusteredMet_Up, svFitTransverseMass_ClusteredMet_Up, tau1_ClusteredMet_Up, tau2_ClusteredMet_Up);
+
+          std::cout << "MET Clustered Energy Down   ---  ";
+          runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, svFitMass_ClusteredMet_Down, svFitPt_ClusteredMet_Down, 
+              svFitEta_ClusteredMet_Down, svFitPhi_ClusteredMet_Down, svFitMET_ClusteredMet_Down, svFitTransverseMass_ClusteredMet_Down, tau1_ClusteredMet_Down, tau2_ClusteredMet_Down);
+
+          std::cout<< "Shifted MET Summary:\n\tmetcorr_ex " << metcorr_ex << " --- metcorrUncUp_ex " << metcorrUncUp_ex << " metcorrUncDown_ex " << metcorrUncDown_ex
+              << " metcorrClusteredUp_ex " << metcorrClusteredUp_ex << " metcorrClusteredDown_ex " << metcorrClusteredDown_ex << std::endl;
+          std::cout<< "\tmetcorr_ey " << metcorr_ey << " --- metcorrUncUp_ey " << metcorrUncUp_ey << " metcorrUncDown_ey " << metcorrUncDown_ey
+              << " metcorrClusteredUp_ey " << metcorrClusteredUp_ey << " metcorrClusteredDown_ey " << metcorrClusteredDown_ey << std::endl;
+
+
+          // new met to store 
+          metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
+          metcorphi = TMath::ATan2( metcorr_ey, metcorr_ex );
+          metcorClusteredDown = TMath::Sqrt( metcorrClusteredDown_ex*metcorrClusteredDown_ex + metcorrClusteredDown_ey*metcorrClusteredDown_ey);
+          metcorphiClusteredDown = TMath::ATan2( metcorrClusteredDown_ey, metcorrClusteredDown_ex );
+          metcorClusteredUp = TMath::Sqrt( metcorrClusteredUp_ex*metcorrClusteredUp_ex + metcorrClusteredUp_ey*metcorrClusteredUp_ey);
+          metcorphiClusteredUp = TMath::ATan2( metcorrClusteredUp_ey, metcorrClusteredUp_ex );
+          metcorUncDown = TMath::Sqrt( metcorrUncDown_ex*metcorrUncDown_ex + metcorrUncDown_ey*metcorrUncDown_ey);
+          metcorphiUncDown = TMath::ATan2( metcorrUncDown_ey, metcorrUncDown_ex );
+          metcorUncUp = TMath::Sqrt( metcorrUncUp_ex*metcorrUncUp_ex + metcorrUncUp_ey*metcorrUncUp_ey);
+          metcorphiUncUp = TMath::ATan2( metcorrUncUp_ey, metcorrUncUp_ex );
+
+
+
+
+
+     if(doES) {
          
          // Only shift Electrons
          // 1% shift in barrel and 2.5% shift in endcap
