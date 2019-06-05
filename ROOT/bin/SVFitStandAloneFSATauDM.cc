@@ -1151,44 +1151,21 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
      
      
      else if(channel=="tt"){
-       
-       float shiftTau1=1.0;
-       float shiftTau2=1.0;
-       if (gen_match_1==5 && decayMode==0) shiftTau1=0.982;
-       if (gen_match_1==5 && decayMode==1) shiftTau1=1.010;
-       if (gen_match_1==5 && decayMode==10) shiftTau1=1.004;
-       if (gen_match_2==5 && decayMode2==0) shiftTau2=0.982;
-       if (gen_match_2==5 && decayMode2==1) shiftTau2=1.010;
-       if (gen_match_2==5 && decayMode2==10) shiftTau2=1.004;
-       pt1 = pt1 * shiftTau1;
-       pt2 = pt2 * shiftTau2;
-       double dx1, dy1;
-       double dx2, dy2;
-       dx1 = pt1 * TMath::Cos( phi1 ) * (( 1. / shiftTau1 ) - 1.);
-       dy1 = pt1 * TMath::Sin( phi1 ) * (( 1. / shiftTau1 ) - 1.);
-       dx2 = pt2 * TMath::Cos( phi2 ) * (( 1. / shiftTau2 ) - 1.);
-       dy2 = pt2 * TMath::Sin( phi2 ) * (( 1. / shiftTau2 ) - 1.);
-       metcorr_ex = metcorr_ex + dx1;
-       metcorr_ey = metcorr_ey + dy1;
-       metcorr_ex = metcorr_ex + dx2;
-       metcorr_ey = metcorr_ey + dy2;
-       
        // define lepton four vectors
        std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptons;
        // Add Tau of higest Pt first
        if (pt1 > pt2) {
          measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1, eta1,  phi1, mass1, decayMode));
-         
          measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2,  mass2, decayMode2));
        }
        else {
          measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2,  mass2, decayMode2));
-         
          measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1, eta1,  phi1, mass1, decayMode));
        }
        
        std::cout<< "evt: "<<evt<<" run: "<<run<<" lumi: "<<lumi<< " pt1 " << pt1 << " mass1 " << mass1 << " pt2: "<< pt2<< " mass2: "<< mass2 <<std::endl;        
-       runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0, svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+       runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0, 
+		svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
        std::cout<<"finished running non-TES SVFit in TT"<<std::endl;
        
        
@@ -1199,21 +1176,17 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
        //*****************************************************
        
        std::cout << "MET Unclustered Energy Up   ---  ";
-       metcorrUncUp_ex = metcorrUncUp_ex + dx1 + dx2;
-       metcorrUncUp_ey = metcorrUncUp_ey + dy1 + dy2;
-       runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, svFitMass_UncMet_Up, svFitPt_UncMet_Up, svFitEta_UncMet_Up, svFitPhi_UncMet_Up, svFitMET_UncMet_Up, svFitTransverseMass_UncMet_Up, tau1_UncMet_Up, tau2_UncMet_Up);
+       runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, 
+		svFitMass_UncMet_Up, svFitPt_UncMet_Up, svFitEta_UncMet_Up, svFitPhi_UncMet_Up, svFitMET_UncMet_Up, svFitTransverseMass_UncMet_Up, tau1_UncMet_Up, tau2_UncMet_Up);
        std::cout << "MET Unclustered Energy Down ---  ";
-       metcorrUncDown_ex = metcorrUncDown_ex + dx1 + dx2;
-       metcorrUncDown_ey = metcorrUncDown_ey + dy1 + dy2;
-       runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, svFitMass_UncMet_Down, svFitPt_UncMet_Down, svFitEta_UncMet_Down, svFitPhi_UncMet_Down, svFitMET_UncMet_Down, svFitTransverseMass_UncMet_Down, tau1_UncMet_Down, tau2_UncMet_Down);
+       runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, 
+		svFitMass_UncMet_Down, svFitPt_UncMet_Down, svFitEta_UncMet_Down, svFitPhi_UncMet_Down, svFitMET_UncMet_Down, svFitTransverseMass_UncMet_Down, tau1_UncMet_Down, tau2_UncMet_Down);
        std::cout << "MET Clustered Energy Up     ---  ";
-       metcorrClusteredUp_ex = metcorrClusteredUp_ex + dx1 + dx2;
-       metcorrClusteredUp_ey = metcorrClusteredUp_ey + dy1 + dy2;
-       runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, svFitMass_ClusteredMet_Up, svFitPt_ClusteredMet_Up, svFitEta_ClusteredMet_Up, svFitPhi_ClusteredMet_Up, svFitMET_ClusteredMet_Up, svFitTransverseMass_ClusteredMet_Up, tau1_ClusteredMet_Up, tau2_ClusteredMet_Up);
+       runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, 
+		svFitMass_ClusteredMet_Up, svFitPt_ClusteredMet_Up, svFitEta_ClusteredMet_Up, svFitPhi_ClusteredMet_Up, svFitMET_ClusteredMet_Up, svFitTransverseMass_ClusteredMet_Up, tau1_ClusteredMet_Up, tau2_ClusteredMet_Up);
        std::cout << "MET Clustered Energy Down   ---  ";
-       metcorrClusteredDown_ex = metcorrClusteredDown_ex + dx1 + dx2;
-       metcorrClusteredDown_ey = metcorrClusteredDown_ey + dy1 + dy2;
-       runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, svFitMass_ClusteredMet_Down, svFitPt_ClusteredMet_Down, svFitEta_ClusteredMet_Down, svFitPhi_ClusteredMet_Down, svFitMET_ClusteredMet_Down, svFitTransverseMass_ClusteredMet_Down, tau1_ClusteredMet_Down, tau2_ClusteredMet_Down);
+       runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, 
+		svFitMass_ClusteredMet_Down, svFitPt_ClusteredMet_Down, svFitEta_ClusteredMet_Down, svFitPhi_ClusteredMet_Down, svFitMET_ClusteredMet_Down, svFitTransverseMass_ClusteredMet_Down, tau1_ClusteredMet_Down, tau2_ClusteredMet_Down);
        std::cout<< "Shifted MET Summary:\nmetcorr_ex " << metcorr_ex << "\n --- metcorrUncUp_ex " << metcorrUncUp_ex << " metcorrUncDown_ex " << metcorrUncDown_ex
             << " metcorrClusteredUp_ex " << metcorrClusteredUp_ex << " metcorrClusteredDown_ex " << metcorrClusteredDown_ex << std::endl;
        std::cout<< "metcorr_ey " << metcorr_ey << "\n --- metcorrUncUp_ey " << metcorrUncUp_ey << " metcorrUncDown_ey " << metcorrUncDown_ey
@@ -1237,7 +1210,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
          //***************************************************************************
          //********************* Two taus shifted up *********************************
          //***************************************************************************
-         
          if (gen_match_2==5 or gen_match_1==5){
            std::cout << "Two Up    ---  ";
            float ES_Up_scale1 = 1.0;
