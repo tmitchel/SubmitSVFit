@@ -38,7 +38,12 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
 void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int doES, int isWJets, int metType, double tesSize) ;
 int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source,optutl::CommandLineParser parser);
-
+double tesUncertainties(unsigned int year, float decaymode); 
+double pt_shifted(float pt, double tesUnc, bool isDM, string updown);
+double metcorr_shifted(double metcorr, 
+		       float pt1, float phi1, bool isDM1, double tesUnc1, 
+		       float pt2, float phi2, bool isDM2, double tesUnc2, 
+		       string xory,string updown);
 void runSVFit(std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons,
               double measuredMETx, double measuredMETy,
               TMatrixD &covMET, float num, float &svFitMass, float& svFitPt, float &svFitEta,
@@ -648,7 +653,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       std::cout << "That's a lot of tau 4-vector branches! N = " << tau4VectorBranches.size() << std::endl;
     
       unsigned long long evt;
-      unsigned int run, lumi;
+      unsigned int run, lumi, NtupleVer;
       float pt1;
       float eta1;
       float phi1;
@@ -704,7 +709,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       
       //ele/mu variables
       TBranch *pt1branch;
-      
+       
+      t->SetBranchAddress("NtupleVer",&NtupleVer);
       t->SetBranchAddress("evt",&evt);
       t->SetBranchAddress("run",&run);
       t->SetBranchAddress("lumi",&lumi);
@@ -1206,7 +1212,66 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
        metcorphiUncUp = TMath::ATan2( metcorrUncUp_ey, metcorrUncUp_ex );
        
        if(doES) {
-         
+	 bool isDM0_1, isDM1_1, isDM10_1, isDM0_2, isDM1_2, isDM10_2 = false;
+	 if (gen_match_1==5) {
+	   if (decayMode==0) isDM0_1 =true;
+	   else if (decayMode==1) isDM1_1 =true;
+	   else if (decayMode==10) isDM10_1 =true;
+	 }
+	 if (gen_match_2==5) {
+	   if (decayMode2==0) isDM0_2 =true;
+	   else if (decayMode2==1) isDM1_2 =true;
+	   else if (decayMode2==10) isDM10_2 =true;
+	 }
+
+	 //***********************************//
+	 //****  Tau DM0 shifted up/down  ****//
+	 //***********************************//
+	 // Check : if any variables are massed up. 
+	 std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
+	 std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
+	 double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
+	 pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1, up);
+	 pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, up);
+	 pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1, down);
+	 pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, down);
+	 
+	 measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
+	 measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
+	 measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
+	 measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
+	 
+	 double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
+	 metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
+					 pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
+					 pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
+					 x, up);
+	 metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
+					 pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
+					 pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
+					 y, up);
+	 metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
+					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
+					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
+					   x, down);
+	 metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
+					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
+					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
+					   y, down);
+	 
+	 runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
+		  svFitMass_DM0_Up, svFitPt_DM0_Up, svFitEta_DM0_Up, svFitPhi_DM0_Up, svFitMET_DM0_Up, svFitTransverseMass_DM0_Up, tau1_DM0_Up, tau2_DM0_Up);
+	 
+	 runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
+		  svFitMass_DM0_Down, svFitPt_DM0_Down, svFitEta_DM0_Down, svFitPhi_DM0_Down, svFitMET_DM0_Down, svFitTransverseMass_DM0_Down, tau1_DM0_Down, tau2_DM0_Down);
+
+	 /*
+	 else {
+	   // All 6 cases are adopt from nominal
+
+	 }
+	 */
+
          //***************************************************************************
          //********************* Two taus shifted up *********************************
          //***************************************************************************
@@ -1214,7 +1279,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
            std::cout << "Two Up    ---  ";
            float ES_Up_scale1 = 1.0;
            float ES_Up_scale2 = 1.0;
-           if(gen_match_1==5) ES_Up_scale1 = tesUp;
+           if(gen_match_1==5) ES_Up_scale1 = 1.0 + tesUncertainties(NtupleVer, decayMode);
            if(gen_match_2==5) ES_Up_scale2 = tesUp;
            std::cout << "TES values: gen1: " << gen_match_1 << "   dm_1: " << decayMode;
            std::cout << "   tes1: " << ES_Up_scale1;
@@ -1930,3 +1995,57 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew)
 
 }
 
+double tesUncertainties(unsigned int year, float decaymode) {
+  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorkingLegacyRun2#Tau_energy_scale_uncertainty
+  double tesSize = -1000;
+  if (year == 2016) {
+    if (decaymode == 0) 0.010; 
+    else if (decaymode == 1) 0.009; 
+    else if (decaymode == 10) 0.011;
+  }
+  if (year == 2017) {
+    if (decaymode == 0) 0.08; 
+    else if (decaymode == 1) 0.008; 
+    else if (decaymode == 10) 0.009;
+  }
+  if (year == 2018) {
+    if (decaymode == 0) 0.011; 
+    else if (decaymode == 1) 0.008; 
+    else if (decaymode == 10) 0.009;
+  }
+}
+
+double pt_shifted(float pt, double tesUnc, bool isDM, string updown) {
+  double shifted_pT = pt;
+  if (isDM) {
+    if (updown=="up") shifted_pT = pt*(1.0+tesUnc);
+    else if (updown=="down") shifted_pT = pt*(1.0-tesUnc);
+  }
+  return shifted_pT;
+}
+
+double metcorr_shifted(double metcorr, float pt1, float phi1, bool isDM1, double tesUnc1, float pt2, float phi2, bool isDM2, double tesUnc2, string xory,string updown) {
+  double dx1, dx2;
+  double shifted_metcorr = metcorr;
+  if (isDM1 || isDM2) {
+    double tesScale;
+    if (updown=="up") {
+      tesScale1 = 1.0+tesUnc1;
+      tesScale2 = 1.0+tesUnc2;
+    }
+    else if (updown=="down") {
+      tesScale1 = 1.0-tesUnc1;  
+      tesScale2 = 1.0-tesUnc2;  
+    }
+    if (xory=="x") {
+      dx1 = pt1 * TMath::Cos( phi1 ) * (( 1. / tesScale1 ) - 1.);
+      dx2 = pt2 * TMath::Cos( phi2 ) * (( 1. / tesScale2 ) - 1.);
+    }
+    else if (xory=="y") {
+      dx1 = pt1 * TMath::Sin( phi1 ) * (( 1. / tesScale1 ) - 1.);
+      dx2 = pt2 * TMath::Sin( phi2 ) * (( 1. / tesScale2 ) - 1.);
+    }
+  }
+
+  return shifted_metcorr;
+}
