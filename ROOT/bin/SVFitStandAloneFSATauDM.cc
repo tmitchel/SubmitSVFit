@@ -39,11 +39,11 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[
 int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source,optutl::CommandLineParser parser);
 double tesUncertainties(unsigned int year, float decaymode); 
-double pt_shifted(float pt, double tesUnc, bool isDM, string updown);
+double pt_shifted(float pt, double tesUnc, bool isDM, int updown);
 double metcorr_shifted(double metcorr, 
 		       float pt1, float phi1, bool isDM1, double tesUnc1, 
 		       float pt2, float phi2, bool isDM2, double tesUnc2, 
-		       string xory,string updown);
+		       int xory, int updown);
 void runSVFit(std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons,
               double measuredMETx, double measuredMETy,
               TMatrixD &covMET, float num, float &svFitMass, float& svFitPt, float &svFitEta,
@@ -754,8 +754,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       
       printf("Found tree -> weighting\n");
     
-      double tesUp = 1.0 + tesSize;
-      double tesDown = 1.0 - tesSize;
+      //double tesUp = 1.0 + tesSize;
+      //double tesDown = 1.0 - tesSize;
 
       int nevents = t->GetEntries();
       if ( parser.integerValue("numEvents") != -1 ) nevents = parser.integerValue("numEvents");
@@ -1187,6 +1187,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
        std::cout << "MET Unclustered Energy Down ---  ";
        runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, 
 		svFitMass_UncMet_Down, svFitPt_UncMet_Down, svFitEta_UncMet_Down, svFitPhi_UncMet_Down, svFitMET_UncMet_Down, svFitTransverseMass_UncMet_Down, tau1_UncMet_Down, tau2_UncMet_Down);
+       /*
        std::cout << "MET Clustered Energy Up     ---  ";
        runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, 
 		svFitMass_ClusteredMet_Up, svFitPt_ClusteredMet_Up, svFitEta_ClusteredMet_Up, svFitPhi_ClusteredMet_Up, svFitMET_ClusteredMet_Up, svFitTransverseMass_ClusteredMet_Up, tau1_ClusteredMet_Up, tau2_ClusteredMet_Up);
@@ -1197,7 +1198,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             << " metcorrClusteredUp_ex " << metcorrClusteredUp_ex << " metcorrClusteredDown_ex " << metcorrClusteredDown_ex << std::endl;
        std::cout<< "metcorr_ey " << metcorr_ey << "\n --- metcorrUncUp_ey " << metcorrUncUp_ey << " metcorrUncDown_ey " << metcorrUncDown_ey
             << " metcorrClusteredUp_ey " << metcorrClusteredUp_ey << " metcorrClusteredDown_ey " << metcorrClusteredDown_ey << std::endl;
-       
+       */
        
        // Corrected MET values for saving
        metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
@@ -1212,7 +1213,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
        metcorphiUncUp = TMath::ATan2( metcorrUncUp_ey, metcorrUncUp_ex );
        
        if(doES) {
-	 bool isDM0_1, isDM1_1, isDM10_1, isDM0_2, isDM1_2, isDM10_2 = false;
+	 bool isDM0_1 = false, isDM1_1 = false, isDM10_1 = false, isDM0_2 = false, isDM1_2 = false, isDM10_2 = false;
 	 if (gen_match_1==5) {
 	   if (decayMode==0) isDM0_1 =true;
 	   else if (decayMode==1) isDM1_1 =true;
@@ -1227,140 +1228,46 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	 //***********************************//
 	 //****  Tau DM0 shifted up/down  ****//
 	 //***********************************//
-	 // Check : if any variables are massed up. 
-	 std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-	 std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-	 double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
-	 pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1, up);
-	 pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, up);
-	 pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1, down);
-	 pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, down);
-	 
-	 measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-	 measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
-	 measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-	 measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
-	 
-	 double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
-	 metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
-					 pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-					 pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					 x, up);
-	 metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
-					 pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-					 pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					 y, up);
-	 metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
+	 if (isDM0_1 || isDM0_2) {
+	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
+	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
+	   double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
+	   pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1, +1);
+	   pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, +1);
+	   pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1,-1);
+	   pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, -1);
+	   
+	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
+	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
+	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
+	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
+	   
+	   double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
+	   metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
 					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
 					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					   x, down);
-	 metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
+					   +1, +1);
+	   metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
 					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
 					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					   y, down);
-	 
-	 runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
-		  svFitMass_DM0_Up, svFitPt_DM0_Up, svFitEta_DM0_Up, svFitPhi_DM0_Up, svFitMET_DM0_Up, svFitTransverseMass_DM0_Up, tau1_DM0_Up, tau2_DM0_Up);
-	 
-	 runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
-		  svFitMass_DM0_Down, svFitPt_DM0_Down, svFitEta_DM0_Down, svFitPhi_DM0_Down, svFitMET_DM0_Down, svFitTransverseMass_DM0_Down, tau1_DM0_Down, tau2_DM0_Down);
-
-	 /*
-	 else {
-	   // All 6 cases are adopt from nominal
-
+					   -1, +1);
+	   metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
+					     pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
+					     pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
+					     +1, -1);
+	   metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
+					     pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
+					     pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
+					     -1, -1);
+	   
+	   runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
+		    svFitMass_DM0_Up, svFitPt_DM0_Up, svFitEta_DM0_Up, svFitPhi_DM0_Up, svFitMET_DM0_Up, svFitTransverseMass_DM0_Up, tau1_DM0_Up, tau2_DM0_Up);
+	   
+	   runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
+		    svFitMass_DM0_Down, svFitPt_DM0_Down, svFitEta_DM0_Down, svFitPhi_DM0_Down, svFitMET_DM0_Down, svFitTransverseMass_DM0_Down, tau1_DM0_Down, tau2_DM0_Down);
 	 }
-	 */
-
-         //***************************************************************************
-         //********************* Two taus shifted up *********************************
-         //***************************************************************************
-         if (gen_match_2==5 or gen_match_1==5){
-           std::cout << "Two Up    ---  ";
-           float ES_Up_scale1 = 1.0;
-           float ES_Up_scale2 = 1.0;
-           if(gen_match_1==5) ES_Up_scale1 = 1.0 + tesUncertainties(NtupleVer, decayMode);
-           if(gen_match_2==5) ES_Up_scale2 = tesUp;
-           std::cout << "TES values: gen1: " << gen_match_1 << "   dm_1: " << decayMode;
-           std::cout << "   tes1: " << ES_Up_scale1;
-           std::cout << "   gen2: " << gen_match_2 << "   dm_2: " << decayMode2;
-           std::cout << "   tes2: " << ES_Up_scale2 << std::endl;
-           double pt1_Up, pt2_Up;
-           pt1_Up = pt1 * ES_Up_scale1;
-           pt2_Up = pt2 * ES_Up_scale2;
-           double metcorr_ex_Up, metcorr_ey_Up;
-           double dx1_Up, dy1_Up, dx2_Up, dy2_Up;
-           dx1_Up = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dy1_Up = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dx2_Up = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           dy2_Up = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           metcorr_ex_Up = metcorr_ex + dx1_Up + dx2_Up;
-           metcorr_ey_Up = metcorr_ey + dy1_Up + dy2_Up;
-           
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-           
-           // Add Tau of higest Pt first
-           if (pt1 > pt2) {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-         
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-         
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_Up, svFitPt_Up, svFitEta_Up, svFitPhi_Up, svFitMET_Up, svFitTransverseMass_Up, tau1_Up, tau2_Up);
-         }
-         else {
-           svFitMass_Up=svFitMass;
-           svFitPt_Up=svFitPt;
-           svFitEta_Up=svFitEta;
-           svFitPhi_Up=svFitPhi;
-           svFitMET_Up=svFitMET;
-           svFitTransverseMass_Up=svFitTransverseMass;
-           tau1_Up = tau1;
-           tau2_Up = tau2;
-         }
-         
-         //***************************************************************************
-         //********************** Tau DM0 shifted up *********************************
-         //***************************************************************************
-         
-         if ((gen_match_2==5 && decayMode2==0) or (gen_match_1==5 && decayMode==0)){
-           std::cout << "DM0 Up    ---  ";
-           float ES_Up_scale1 = 1.0;
-           float ES_Up_scale2 = 1.0;
-           if(gen_match_1==5 && decayMode==0) ES_Up_scale1 = tesUp;
-           if(gen_match_2==5 && decayMode2==0) ES_Up_scale2 = tesUp;
-           double pt1_Up, pt2_Up;
-           pt1_Up = pt1 * ES_Up_scale1;
-           pt2_Up = pt2 * ES_Up_scale2;
-           double metcorr_ex_Up, metcorr_ey_Up;
-           double dx1_Up, dy1_Up, dx2_Up, dy2_Up;
-           dx1_Up = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dy1_Up = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dx2_Up = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           dy2_Up = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           metcorr_ex_Up = metcorr_ex + dx1_Up + dx2_Up;
-           metcorr_ey_Up = metcorr_ey + dy1_Up + dy2_Up;
-           
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-           // Add Tau of higest Pt first
-           if (pt1 > pt2) {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM0_Up, svFitPt_DM0_Up, svFitEta_DM0_Up, svFitPhi_DM0_Up, svFitMET_DM0_Up, svFitTransverseMass_DM0_Up, tau1_DM0_Up, tau2_DM0_Up);
-         }
-         else {
-           svFitMass_DM0_Up=svFitMass;
+	 else {
+	   svFitMass_DM0_Up=svFitMass;
            svFitPt_DM0_Up=svFitPt;
            svFitEta_DM0_Up=svFitEta;
            svFitPhi_DM0_Up=svFitPhi;
@@ -1368,181 +1275,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
            svFitTransverseMass_DM0_Up=svFitTransverseMass;
            tau1_DM0_Up = tau1;
            tau2_DM0_Down = tau2;
-         }
-         
-         //***************************************************************************
-         //********************** Tau DM1 shifted up *********************************
-         //***************************************************************************
-         
-         if ((decayMode==1 && gen_match_1==5) or (decayMode2==1 && gen_match_2==5)){
-           std::cout << "DM1 Up    ---  ";
-           float ES_Up_scale1 = 1.0;
-           float ES_Up_scale2 = 1.0;
-           if (decayMode==1 && gen_match_1==5) ES_Up_scale1 = tesUp;
-           if (decayMode2==1 && gen_match_2==5) ES_Up_scale2 = tesUp;
-           double pt1_Up, pt2_Up;
-           pt1_Up = pt1 * ES_Up_scale1;
-           pt2_Up = pt2 * ES_Up_scale2;
-           double metcorr_ex_Up, metcorr_ey_Up;
-           double dx1_Up, dy1_Up, dx2_Up, dy2_Up;
-           dx1_Up = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dy1_Up = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dx2_Up = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           dy2_Up = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           metcorr_ex_Up = metcorr_ex + dx1_Up + dx2_Up;
-           metcorr_ey_Up = metcorr_ey + dy1_Up + dy2_Up;
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-           // Add Tau of higest Pt first
-           if (pt1 > pt2) {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM1_Up, svFitPt_DM1_Up, svFitEta_DM1_Up, svFitPhi_DM1_Up, svFitMET_DM1_Up, svFitTransverseMass_DM1_Up, tau1_DM1_Up, tau2_DM1_Up);
-         }
-         else {
-           svFitMass_DM1_Up=svFitMass;
-           svFitPt_DM1_Up=svFitPt;
-           svFitEta_DM1_Up=svFitEta;
-           svFitPhi_DM1_Up=svFitPhi;
-           svFitMET_DM1_Up=svFitMET;
-           svFitTransverseMass_DM1_Up=svFitTransverseMass;
-           tau1_DM1_Up = tau1;
-           tau2_DM1_Up = tau2;
-         }
-         
-         //***************************************************************************
-         //********************* Tau DM10 shifted up *********************************
-         //***************************************************************************
-         
-         if ((decayMode2==10 && gen_match_2==5) or (decayMode==10 && gen_match_1==5)){
-           std::cout << "DM10 Up    ---  ";
-           float ES_Up_scale1 = 1.0;
-           float ES_Up_scale2 = 1.0;
-           if(decayMode==10 && gen_match_1==5) ES_Up_scale1 = tesUp;
-           if(decayMode2==10 && gen_match_2==5) ES_Up_scale2 = tesUp;
-           double pt1_Up, pt2_Up;
-           pt1_Up = pt1 * ES_Up_scale1;
-           pt2_Up = pt2 * ES_Up_scale2;
-           double metcorr_ex_Up, metcorr_ey_Up;
-           double dx1_Up, dy1_Up, dx2_Up, dy2_Up;
-           dx1_Up = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dy1_Up = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Up_scale1 ) - 1.);
-           dx2_Up = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           dy2_Up = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Up_scale2 ) - 1.);
-           metcorr_ex_Up = metcorr_ex + dx1_Up + dx2_Up;
-           metcorr_ey_Up = metcorr_ey + dy1_Up + dy2_Up;
-           
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-           
-           // Add Tau of higest Pt first
-           if (pt1 > pt2) {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Up, eta2, phi2,  mass2, decayMode2));
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM10_Up, svFitPt_DM10_Up, svFitEta_DM10_Up, svFitPhi_DM10_Up, svFitMET_DM10_Up, svFitTransverseMass_DM10_Up, tau1_DM10_Up, tau2_DM10_Up);
-         }
-         else {
-           svFitMass_DM10_Up=svFitMass;
-           svFitPt_DM10_Up=svFitPt;
-           svFitEta_DM10_Up=svFitEta;
-           svFitPhi_DM10_Up=svFitPhi;
-           svFitMET_DM10_Up=svFitMET;
-           svFitTransverseMass_DM10_Up=svFitTransverseMass;
-           tau1_DM10_Up = tau1;
-           tau2_DM10_Up = tau2;
-         }
-         
-         //*****************************************************
-         //************* Two taus shifted down *****************
-         //*****************************************************
-         
-         if (gen_match_1==5 or gen_match_2==5){
-           std::cout << "Two Down  ---  ";
-           float ES_Down_scale1 = 1.0;
-           float ES_Down_scale2 = 1.0;
-           if (gen_match_1==5) ES_Down_scale1 = tesDown;
-           if (gen_match_2==5) ES_Down_scale2 = tesDown;
-           double pt1_Down, pt2_Down;
-           pt1_Down = pt1 * ES_Down_scale1;
-           pt2_Down = pt2 * ES_Down_scale2;
-           double metcorr_ex_Down, metcorr_ey_Down;
-           double dx1_Down, dy1_Down, dx2_Down, dy2_Down;
-           dx1_Down = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dy1_Down = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dx2_Down = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           dy2_Down = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           metcorr_ex_Down = metcorr_ex + dx1_Down + dx2_Down;
-           metcorr_ey_Down = metcorr_ey + dy1_Down + dy2_Down;
-           
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-           
-           if (pt1 > pt2) {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Down, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Down, eta2, phi2,  mass2, decayMode2));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_Down, svFitPt_Down, svFitEta_Down, svFitPhi_Down, svFitMET_Down, svFitTransverseMass_Down, tau1_Down, tau2_Down);
-         }
-         else {
-           svFitMass_Down=svFitMass;
-           svFitPt_Down=svFitPt;
-           svFitEta_Down=svFitEta;
-           svFitPhi_Down=svFitPhi;
-           svFitMET_Down=svFitMET;
-           svFitTransverseMass_Down=svFitTransverseMass;
-           tau1_Down = tau1;
-           tau2_Down = tau2;
-         }
-         
-         //*****************************************************
-         //************* Tau DM0 shifted down  *****************
-         //*****************************************************
-         
-         if ((decayMode==0 && gen_match_1==5) or (decayMode2==0 && gen_match_2==5)){
-           std::cout << "DM0 Down  ---  ";
-           float ES_Down_scale1 = 1.0;
-           float ES_Down_scale2 = 1.0;
-           if (decayMode==0 && gen_match_1==5) ES_Down_scale1 = tesDown;
-           if (decayMode2==0 && gen_match_2==5) ES_Down_scale2 = tesDown;
-           double pt1_Down, pt2_Down;
-           pt1_Down = pt1 * ES_Down_scale1;
-           pt2_Down = pt2 * ES_Down_scale2;
-           double metcorr_ex_Down, metcorr_ey_Down;
-           double dx1_Down, dy1_Down, dx2_Down, dy2_Down;
-           dx1_Down = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dy1_Down = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dx2_Down = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           dy2_Down = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           metcorr_ex_Down = metcorr_ex + dx1_Down + dx2_Down;
-           metcorr_ey_Down = metcorr_ey + dy1_Down + dy2_Down;
-           
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-           if (pt1 > pt2) {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Down, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Down, eta2, phi2,  mass2, decayMode2));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM0_Down, svFitPt_DM0_Down, svFitEta_DM0_Down, svFitPhi_DM0_Down, svFitMET_DM0_Down, svFitTransverseMass_DM0_Down, tau1_DM0_Down, tau2_DM0_Down);
-         }
-         else {
+
            svFitMass_DM0_Down=svFitMass;
            svFitPt_DM0_Down=svFitPt;
            svFitEta_DM0_Down=svFitEta;
@@ -1551,89 +1284,125 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
            svFitTransverseMass_DM0_Down=svFitTransverseMass;
            tau1_DM0_Down = tau1;
            tau2_DM0_Down = tau2;
-         }
-         
-         //*****************************************************
-         //************** Tau DM1 shifted down *****************
-         //*****************************************************
-         
-         if ((decayMode==1 && gen_match_1==5) or (decayMode2==1 && gen_match_2==5)){
-           std::cout << "DM1 Down  ---  ";
-           float ES_Down_scale1 = 1.0;
-           float ES_Down_scale2 = 1.0;
-           if (decayMode==1 && gen_match_1==5) ES_Down_scale1 = tesDown;
-           if (decayMode2==1 && gen_match_2==5) ES_Down_scale2 = tesDown;
-           double pt1_Down, pt2_Down;
-           pt1_Down = pt1 * ES_Down_scale1;
-           pt2_Down = pt2 * ES_Down_scale2;
-           double metcorr_ex_Down, metcorr_ey_Down;
-           double dx1_Down, dy1_Down, dx2_Down, dy2_Down;
-           dx1_Down = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dy1_Down = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dx2_Down = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           dy2_Down = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           metcorr_ex_Down = metcorr_ex + dx1_Down + dx2_Down;
-           metcorr_ey_Down = metcorr_ey + dy1_Down + dy2_Down;
-           
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-           
-           if (pt1 > pt2) {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Down, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Down, eta2, phi2,  mass2, decayMode2));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM1_Down, svFitPt_DM1_Down, svFitEta_DM1_Down, svFitPhi_DM1_Down, svFitMET_DM1_Down, svFitTransverseMass_DM1_Down, tau1_DM1_Down, tau2_DM1_Down);
-         }
-         else {
+	 }
+
+
+
+	 //***********************************//
+	 //****  Tau DM1 shifted up/down  ****//
+	 //***********************************//
+	 if (isDM1_1 || isDM1_2) {
+	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
+	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
+	   double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
+	   pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM1_1, +1);
+	   pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM1_2, +1);
+	   pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM1_1, -1);
+	   pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM1_2, -1);
+	   
+	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
+	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
+	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
+	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
+	   
+	   double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
+	   metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
+					   pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
+					   pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
+					   +1, +1);
+	   metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
+					   pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
+					   pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
+					   -1, +1);
+	   metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
+					     pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
+					     pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
+					     +1, -1);
+	   metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
+					     pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
+					     pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
+					     -1, -1);
+	   
+	   runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
+		    svFitMass_DM1_Up, svFitPt_DM1_Up, svFitEta_DM1_Up, svFitPhi_DM1_Up, svFitMET_DM1_Up, svFitTransverseMass_DM1_Up, tau1_DM1_Up, tau2_DM1_Up);
+	   
+	   runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
+		    svFitMass_DM1_Down, svFitPt_DM1_Down, svFitEta_DM1_Down, svFitPhi_DM1_Down, svFitMET_DM1_Down, svFitTransverseMass_DM1_Down, tau1_DM1_Down, tau2_DM1_Down);
+	 }
+	 else {
+	   svFitMass_DM1_Up=svFitMass;
+           svFitPt_DM1_Up=svFitPt;
+           svFitEta_DM1_Up=svFitEta;
+           svFitPhi_DM1_Up=svFitPhi;
+           svFitMET_DM1_Up=svFitMET;
+           svFitTransverseMass_DM1_Up=svFitTransverseMass;
+           tau1_DM1_Up = tau1;
+           tau2_DM1_Down = tau2;
+
            svFitMass_DM1_Down=svFitMass;
            svFitPt_DM1_Down=svFitPt;
            svFitEta_DM1_Down=svFitEta;
            svFitPhi_DM1_Down=svFitPhi;
            svFitMET_DM1_Down=svFitMET;
            svFitTransverseMass_DM1_Down=svFitTransverseMass;
-           tau1_DM1_Down =  tau1;
-           tau2_DM1_Down =  tau2;
-         }
-         
-         //*****************************************************
-         //************* Tau DM10 shifted down *****************
-         //*****************************************************
-         
-         if ((decayMode==10 && gen_match_1==5) or (decayMode2==10 && gen_match_2==5)){
-           std::cout << "DM10 Down  ---  ";
-           float ES_Down_scale1 = 1.0;
-           float ES_Down_scale2 = 1.0;
-           if (decayMode==10 && gen_match_1==5) ES_Down_scale1 = tesDown;
-           if (decayMode2==10 && gen_match_2==5) ES_Down_scale2 = tesDown;
-           double pt1_Down, pt2_Down;
-           pt1_Down = pt1 * ES_Down_scale1;
-           pt2_Down = pt2 * ES_Down_scale2;
-           double metcorr_ex_Down, metcorr_ey_Down;
-           double dx1_Down, dy1_Down, dx2_Down, dy2_Down;
-           dx1_Down = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dy1_Down = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Down_scale1 ) - 1.);
-           dx2_Down = pt2 * TMath::Cos( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           dy2_Down = pt2 * TMath::Sin( phi2 ) * (( 1. / ES_Down_scale2 ) - 1.);
-           metcorr_ex_Down = metcorr_ex + dx1_Down + dx2_Down;
-           metcorr_ey_Down = metcorr_ey + dy1_Down + dy2_Down;
-           
-           std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-           if (pt1 > pt2) {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2_Down, eta2, phi2,  mass2, decayMode2));
-           }
-           else {
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2, mass2, decayMode2));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1, phi1, mass1, decayMode));
-           }
-           
-           runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM10_Down, svFitPt_DM10_Down, svFitEta_DM10_Down, svFitPhi_DM10_Down, svFitMET_DM10_Down, svFitTransverseMass_DM10_Down, tau1_DM10_Down, tau2_DM10_Down);
-         }
-         else {
+           tau1_DM1_Down = tau1;
+           tau2_DM1_Down = tau2;
+	 }
+
+
+
+
+	 //***********************************//
+	 //****  Tau DM10 shifted up/down  ****//
+	 //***********************************//
+	 if (isDM10_1 || isDM10_2) {
+	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
+	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
+	   double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
+	   pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM10_1, +1);
+	   pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM10_2, +1);
+	   pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM10_1, -1);
+	   pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM10_2, -1);
+	   
+	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
+	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
+	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
+	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
+	   
+	   double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
+	   metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
+					   pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
+					   pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
+					   +1, +1);
+	   metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
+					   pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
+					   pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
+					   -1, +1);
+	   metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
+					     pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
+					     pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
+					     +1, -1);
+	   metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
+					     pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
+					     pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
+					     -1, -1);
+	   
+	   runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
+		    svFitMass_DM10_Up, svFitPt_DM10_Up, svFitEta_DM10_Up, svFitPhi_DM10_Up, svFitMET_DM10_Up, svFitTransverseMass_DM10_Up, tau1_DM10_Up, tau2_DM10_Up);
+	   
+	   runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
+		    svFitMass_DM10_Down, svFitPt_DM10_Down, svFitEta_DM10_Down, svFitPhi_DM10_Down, svFitMET_DM10_Down, svFitTransverseMass_DM10_Down, tau1_DM10_Down, tau2_DM10_Down);
+	 }
+	 else {
+	   svFitMass_DM10_Up=svFitMass;
+           svFitPt_DM10_Up=svFitPt;
+           svFitEta_DM10_Up=svFitEta;
+           svFitPhi_DM10_Up=svFitPhi;
+           svFitMET_DM10_Up=svFitMET;
+           svFitTransverseMass_DM10_Up=svFitTransverseMass;
+           tau1_DM10_Up = tau1;
+           tau2_DM10_Down = tau2;
+
            svFitMass_DM10_Down=svFitMass;
            svFitPt_DM10_Down=svFitPt;
            svFitEta_DM10_Down=svFitEta;
@@ -1642,7 +1411,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
            svFitTransverseMass_DM10_Down=svFitTransverseMass;
            tau1_DM10_Down = tau1;
            tau2_DM10_Down = tau2;
-         }
+	 }
+
        }// Do ES (TT)
        
      } // Double Hadronic (TT)
@@ -1999,53 +1769,55 @@ double tesUncertainties(unsigned int year, float decaymode) {
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorkingLegacyRun2#Tau_energy_scale_uncertainty
   double tesSize = -1000;
   if (year == 2016) {
-    if (decaymode == 0) 0.010; 
-    else if (decaymode == 1) 0.009; 
-    else if (decaymode == 10) 0.011;
+    if (decaymode == 0) tesSize = 0.010; 
+    else if (decaymode == 1) tesSize =0.009; 
+    else if (decaymode == 10) tesSize =0.011;
   }
   if (year == 2017) {
-    if (decaymode == 0) 0.08; 
-    else if (decaymode == 1) 0.008; 
-    else if (decaymode == 10) 0.009;
+    if (decaymode == 0) tesSize = 0.008; 
+    else if (decaymode == 1) tesSize = 0.008; 
+    else if (decaymode == 10) tesSize = 0.009;
   }
   if (year == 2018) {
-    if (decaymode == 0) 0.011; 
-    else if (decaymode == 1) 0.008; 
-    else if (decaymode == 10) 0.009;
+    if (decaymode == 0) tesSize = 0.011; 
+    else if (decaymode == 1) tesSize = 0.008; 
+    else if (decaymode == 10) tesSize = 0.009;
   }
+  
+  return tesSize;
 }
 
-double pt_shifted(float pt, double tesUnc, bool isDM, string updown) {
+double pt_shifted(float pt, double tesUnc, bool isDM, int updown) {
   double shifted_pT = pt;
   if (isDM) {
-    if (updown=="up") shifted_pT = pt*(1.0+tesUnc);
-    else if (updown=="down") shifted_pT = pt*(1.0-tesUnc);
+    if (updown>0) shifted_pT = pt*(1.0+tesUnc);
+    else if (updown<0) shifted_pT = pt*(1.0-tesUnc);
   }
   return shifted_pT;
 }
 
-double metcorr_shifted(double metcorr, float pt1, float phi1, bool isDM1, double tesUnc1, float pt2, float phi2, bool isDM2, double tesUnc2, string xory,string updown) {
-  double dx1, dx2;
+double metcorr_shifted(double metcorr, float pt1, float phi1, bool isDM1, double tesUnc1, float pt2, float phi2, bool isDM2, double tesUnc2, int xory, int updown) {
+  double dx1 = 0.0, dx2 = 0.0;
   double shifted_metcorr = metcorr;
   if (isDM1 || isDM2) {
-    double tesScale;
-    if (updown=="up") {
+    double tesScale1 = 0.0, tesScale2 = 0.0;
+    if (updown>0) {
       tesScale1 = 1.0+tesUnc1;
       tesScale2 = 1.0+tesUnc2;
     }
-    else if (updown=="down") {
+    else if (updown<0) {
       tesScale1 = 1.0-tesUnc1;  
       tesScale2 = 1.0-tesUnc2;  
     }
-    if (xory=="x") {
+    if (xory>0) {
       dx1 = pt1 * TMath::Cos( phi1 ) * (( 1. / tesScale1 ) - 1.);
       dx2 = pt2 * TMath::Cos( phi2 ) * (( 1. / tesScale2 ) - 1.);
     }
-    else if (xory=="y") {
+    else if (xory<0) {
       dx1 = pt1 * TMath::Sin( phi1 ) * (( 1. / tesScale1 ) - 1.);
       dx2 = pt2 * TMath::Sin( phi2 ) * (( 1. / tesScale2 ) - 1.);
     }
+    shifted_metcorr = metcorr + dx1 + dx2;
   }
-
   return shifted_metcorr;
 }
