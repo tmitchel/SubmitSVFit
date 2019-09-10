@@ -588,7 +588,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
             Int_t era;
             unsigned long long evt;
-            unsigned int run, lumi, NtupleVer;
+            unsigned int run, lumi;
             float pt1;
             float eta1;
             float phi1;
@@ -600,22 +600,14 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             int gen_match_2;
             float decayMode = -999.;
             float decayMode2;
-            float mvaCovMatrix00;
-            float mvaCovMatrix10;
-            float mvaCovMatrix01;
-            float mvaCovMatrix11;
             float pfCovMatrix00;
             float pfCovMatrix10;
             float pfCovMatrix01;
             float pfCovMatrix11;
-            // float mvamet_ex, // uncorrected mva met px (float)
-            //  mvamet_ey, // uncorrected mva met py (float)
 
             int njets = -999.;  // number of jets (hadronic jet multiplicity) (int)
 
             // define MET
-            float mvamet;
-            float mvametphi;
             float pfmet;
             float pfmetphi;
             TLorentzVector TMet(0, 0, 0, 0);
@@ -644,7 +636,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             TBranch *pt1branch;
 
             t->SetBranchAddress("era", &era);
-            t->SetBranchAddress("NtupleVer", &NtupleVer);
             t->SetBranchAddress("evt", &evt);
             t->SetBranchAddress("run", &run);
             t->SetBranchAddress("lumi", &lumi);
@@ -661,12 +652,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             t->SetBranchAddress("m_2", &m2);
             // t->SetBranchAddress("l1_decayMode",&decayMode);
             if (channel != "tt") t->SetBranchAddress("l2_decayMode", &decayMode2);
-            t->SetBranchAddress("mvacov00", &mvaCovMatrix00);  // branch not stored in et/mt trees
-            t->SetBranchAddress("mvacov01", &mvaCovMatrix01);  // branch not stored in et/mt trees
-            t->SetBranchAddress("mvacov10", &mvaCovMatrix10);  // branch not stored in et/mt trees
-            t->SetBranchAddress("mvacov11", &mvaCovMatrix11);  // branch not stored in et/mt trees
-            t->SetBranchAddress("mvamet", &mvamet);            // branch not stored in et/mt trees
-            t->SetBranchAddress("mvametphi", &mvametphi);      // branch not stored in et/mt trees
             t->SetBranchAddress("njets", &njets);
             t->SetBranchAddress("met", &pfmet);
             t->SetBranchAddress("metphi", &pfmetphi);
@@ -842,7 +827,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                         classic_svFit::MeasuredTauLepton(decayType1, pt1, eta1, phi1, mass1),
                         classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)};
 
-                    std::cout << "era: " << era << "evt: " << evt << " run: " << run << " lumi: " << lumi << " pt1 " << pt1 << " mass1 " << mass1
+                    std::cout << "era: " << era << " evt: " << evt << " run: " << run << " lumi: " << lumi << " pt1 " << pt1 << " mass1 " << mass1
                               << " pt2: " << pt2 << " mass2: " << mass2 << std::endl;
 
                     runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0, svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET,
