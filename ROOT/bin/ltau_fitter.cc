@@ -75,14 +75,14 @@ int main(int argc, char *argv[]) {
 
     TFile *fProduce;  //= new TFile(parser.stringValue("newFile").c_str(),"UPDATE");
 
-    TFile *f = new TFile(parser.stringValue("inputFile").c_str());
+    TFile *f = new TFile(parser.stringValue("inputFile").c_str(), "READ");
     std::cout << "Creating new outputfile" << std::endl;
     std::string newFileName = parser.stringValue("newFile");
 
-    fProduce = new TFile(newFileName.c_str());
+    fProduce = new TFile(newFileName.c_str(), "RECREATE");
     if (copyFiles(parser, f, fProduce) == 0) return -1;
 
-    fProduce = new TFile(newFileName.c_str());
+    fProduce = new TFile(newFileName.c_str(), "UPDATE");
     std::cout << "listing the directories=================" << std::endl;
     fProduce->ls();
     readdir(fProduce, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("metType"),
