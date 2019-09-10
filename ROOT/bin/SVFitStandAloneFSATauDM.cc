@@ -1510,42 +1510,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             // corrections only need to be done once
             float ES_Up(1.), ES_Down(1.);  // shift TES
             if (gen_match_2 == 5) {  // 0.6% uncertainty on hadronic tau
-              if (era == 2016) {
-                if (decayMode2 == 0) {
-                  ES_Up = 1.01;
-                  ES_Down = 0.99;
-                } else if (decayMode2 == 1) {
-                  ES_Up = 1.009;
-                  ES_Down = 0.991;
-                } else if (decayMode2 == 10) {
-                  ES_Up = 1.011;
-                  ES_Down = 0.989;
-                }
-              } else if (era == 2017) {
-                if (decayMode2 == 0) {
-                  ES_Up = 1.008;
-                  ES_Down = 0.992;
-                } else if (decayMode2 == 1) {
-                  ES_Up = 1.008;
-                  ES_Down = 0.992;
-                } else if (decayMode2 == 10) {
-                  ES_Up = 1.009;
-                  ES_Down = 0.991;
-                }
-              } else if (era == 2018) {
-                if (decayMode2 == 0) {
-                  ES_Up = 1.011;
-                  ES_Down = 0.989;
-                } else if (decayMode2 == 1) {
-                  ES_Up = 1.008;
-                  ES_Down = 0.992;
-                } else if (decayMode2 == 10) {
-                  ES_Up = 1.009;
-                  ES_Down = 0.991;
-                }
-              } else {
-                std::cerr << "bad year " << era << std::endl;
-              }
+              ES_Up = 1 + tesUncertainties(era, decayMode2);
+              ES_Down = 1 - tesUncertainties(era, decayMode2);
             } else if (gen_match_2 < 5) {  // flat 3% on el/mu -> tau energy scale systematics
               ES_Up = 1.03;
               ES_Down = 0.97;
