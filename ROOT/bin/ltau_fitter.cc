@@ -192,7 +192,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
             TTree *t = (TTree *)obj;
 
-            std::vector<std::pair<std::string, float&>> branch_info = {
+            std::vector<std::pair<std::string, float*>> branch_info = {
                 std::make_pair("m_sv", &svFitMass),
                 std::make_pair("pt_sv", &svFitPt),
                 std::make_pair("eta_sv", &svFitEta),
@@ -582,7 +582,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             };
             std::vector<TBranch*> fit_results;
             for (auto entry : branch_info) {
-                fit_results.push_back(t->Branch(entry.first.c_str(), &entry.second, (entry.first + "/F").c_str()));
+                fit_results.push_back(t->Branch(entry.first.c_str(), entry.second, (entry.first + "/F").c_str()));
             }
             std::cout << "That's a lot of tau 4-vector branches! N = " << fit_results.size() << std::endl;
 
