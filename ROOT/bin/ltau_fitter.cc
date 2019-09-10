@@ -133,7 +133,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
             dir->cd(key->GetName());
             TDirectory *subdir = gDirectory;
-            sprintf(TreeToUse));
+            sprintf(TreeToUse,"%s",key->GetName());
             readdir(subdir, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("metType"),
                     parser.doubleValue("tesSize"));
 
