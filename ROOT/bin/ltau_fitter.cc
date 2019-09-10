@@ -578,7 +578,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 std::make_pair("tau2_eta_JetRelativeSample_Down", &tau2_eta_JetRelativeSample_Down);
                 std::make_pair("tau2_phi_JetRelativeSample_Down", &tau2_phi_JetRelativeSample_Down);
                 std::make_pair("tau2_m_JetRelativeSample_Down", &tau2_m_JetRelativeSample_Down);
-            }
+            };
             std::vector<TBranch*> fit_results;
             for (auto entry : branch_info) {
                 fit_results.push_back(t->Branch(entry.first.c_str(), &entry.second, (entry.first + "/F").c_str()));
