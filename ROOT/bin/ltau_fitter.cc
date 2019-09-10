@@ -46,6 +46,7 @@ double metcorr_shifted(double metcorr, float pt1, float phi1, bool isDM1, double
 void runSVFit(std::vector<classic_svFit::MeasuredTauLepton> &measuredTauLeptons, double measuredMETx, double measuredMETy, TMatrixD &covMET,
               float num, float &svFitMass, float &svFitPt, float &svFitEta, float &svFitPhi, float &svFitMET, float &svFitTransverseMass,
               TLorentzVector &tau1, TLorentzVector &tau2);
+void four_vector(TLorentzVector p4, Float_t& pt, Float_t& eta, Float_t& phi, Float_t& mass);
 
 int main(int argc, char *argv[]) {
     optutl::CommandLineParser parser("Sets Event Weights in the ntuple");
@@ -630,28 +631,14 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             float clusteredMetPtDown;
             float clusteredMetPhiUp;
             float clusteredMetPhiDown;
-            double uncMetUpMETx = 0.;
-            double uncMetUpMETy = 0.;
-            double uncMetDownMETx = 0.;
-            double uncMetDownMETy = 0.;
-            double clusteredMetUpMETx = 0.;
-            double clusteredMetUpMETy = 0.;
-            double clusteredMetDownMETx = 0.;
-            double clusteredMetDownMETy = 0.;
 
             // JES Uncertainties
             float met_JetEC2Up, met_JetEC2Down, metphi_JetEC2Up, metphi_JetEC2Down;
-            float JetEC2UpMETx = 0., JetEC2UpMETy = 0., JetEC2DownMETx = 0., JetEC2DownMETy = 0.;
             float met_JetEta0to3Up, met_JetEta0to3Down, metphi_JetEta0to3Up, metphi_JetEta0to3Down;
-            float JetEta0to3UpMETx = 0., JetEta0to3UpMETy = 0., JetEta0to3DownMETx = 0., JetEta0to3DownMETy = 0.;
             float met_JetEta0to5Up, met_JetEta0to5Down, metphi_JetEta0to5Up, metphi_JetEta0to5Down;
-            float JetEta0to5UpMETx = 0., JetEta0to5UpMETy = 0., JetEta0to5DownMETx = 0., JetEta0to5DownMETy = 0.;
             float met_JetEta3to5Up, met_JetEta3to5Down, metphi_JetEta3to5Up, metphi_JetEta3to5Down;
-            float JetEta3to5UpMETx = 0., JetEta3to5UpMETy = 0., JetEta3to5DownMETx = 0., JetEta3to5DownMETy = 0.;
             float met_JetRelativeBalUp, met_JetRelativeBalDown, metphi_JetRelativeBalUp, metphi_JetRelativeBalDown;
-            float JetRelativeBalUpMETx = 0., JetRelativeBalUpMETy = 0., JetRelativeBalDownMETx = 0., JetRelativeBalDownMETy = 0.;
             float met_JetRelativeSampleUp, met_JetRelativeSampleDown, metphi_JetRelativeSampleUp, metphi_JetRelativeSampleDown;
-            float JetRelativeSampleUpMETx = 0., JetRelativeSampleUpMETy = 0., JetRelativeSampleDownMETx = 0., JetRelativeSampleDownMETy = 0.;
 
             // ele/mu variables
             TBranch *pt1branch;
