@@ -347,6 +347,45 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitMET_DM10_Down = -10;
       float svFitTransverseMass_DM10_Down = -10;
 
+      float svFitMass_EEScale_Up = -10;
+      float svFitPt_EEScale_Up = -10;
+      float svFitEta_EEScale_Up = -10;
+      float svFitPhi_EEScale_Up = -10;
+      float svFitMET_EEScale_Up = -10;
+      float svFitTransverseMass_EEScale_Up = -10;
+      float svFitMass_EEScale_Down = -10;
+      float svFitPt_EEScale_Down = -10;
+      float svFitEta_EEScale_Down = -10;
+      float svFitPhi_EEScale_Down = -10;
+      float svFitMET_EEScale_Down = -10;
+      float svFitTransverseMass_EEScale_Down = -10;
+
+      float svFitMass_EESigma_Up = -10;
+      float svFitPt_EESigma_Up = -10;
+      float svFitEta_EESigma_Up = -10;
+      float svFitPhi_EESigma_Up = -10;
+      float svFitMET_EESigma_Up = -10;
+      float svFitTransverseMass_EESigma_Up = -10;
+      float svFitMass_EESigma_Down = -10;
+      float svFitPt_EESigma_Down = -10;
+      float svFitEta_EESigma_Down = -10;
+      float svFitPhi_EESigma_Down = -10;
+      float svFitMET_EESigma_Down = -10;
+      float svFitTransverseMass_EESigma_Down = -10;
+
+      float svFitMass_MES_Up = -10;
+      float svFitPt_MES_Up = -10;
+      float svFitEta_MES_Up = -10;
+      float svFitPhi_MES_Up = -10;
+      float svFitMET_MES_Up = -10;
+      float svFitTransverseMass_MES_Up = -10;
+      float svFitMass_MES_Down = -10;
+      float svFitPt_MES_Down = -10;
+      float svFitEta_MES_Down = -10;
+      float svFitPhi_MES_Down = -10;
+      float svFitMET_MES_Down = -10;
+      float svFitTransverseMass_MES_Down = -10;
+
       float svFitMass_UncMet_Up = -10;
       float svFitPt_UncMet_Up = -10;
       float svFitEta_UncMet_Up = -10;
@@ -1192,6 +1231,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float met_JetRelativeSampleUp, met_JetRelativeSampleDown, metphi_JetRelativeSampleUp, metphi_JetRelativeSampleDown;
       float JetRelativeSampleUpMETx = 0., JetRelativeSampleUpMETy = 0., JetRelativeSampleDownMETx = 0., JetRelativeSampleDownMETy = 0.;
 
+      float eCorrectedEt = 0., eEnergyScaleUp = 0., eEnergyScaleDown = 0., eEnergySigmaUp = 0., eEnergySigmaDown = 0.;
+
       //ele/mu variables
       TBranch *pt1branch;
        
@@ -1204,6 +1245,13 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("gen_match_2",&gen_match_2);
       if ( channel == "tt" ) t->SetBranchAddress("t1_decayMode", &decayMode);
       if ( channel == "tt" ) t->SetBranchAddress("t2_decayMode", &decayMode2);
+      if ( channel == "et") {
+        t->SetBranchAddress("eCorrectedEt", &eCorrectedEt);
+        t->SetBranchAddress("eEnergyScaleUp", &eEnergyScaleUp);
+        t->SetBranchAddress("eEnergyScaleDown", &eEnergyScaleDown);
+        t->SetBranchAddress("eEnergySigmaUp", &eEnergySigmaUp);
+        t->SetBranchAddress("eEnergySigmaDown", &eEnergySigmaDown);
+      }
       t->SetBranchAddress("pt_1",&pt1,&pt1branch);
       t->SetBranchAddress("eta_1",&eta1);
       t->SetBranchAddress("phi_1",&phi1);
@@ -1512,9 +1560,86 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             if (gen_match_2 == 5) {  // 0.6% uncertainty on hadronic tau
               ES_Up = 1 + tesUncertainties(era, decayMode2);
               ES_Down = 1 - tesUncertainties(era, decayMode2);
-            } else if (gen_match_2 < 5) {  // flat 3% on el/mu -> tau energy scale systematics
-              ES_Up = 1.03;
-              ES_Down = 0.97;
+            } else if (gen_match_2 < 5) {  // flat 2% on el/mu -> tau energy scale systematics
+              ES_Up = 1.02;
+              ES_Down = 0.98;
+            }
+
+            if (channel == "et") {
+              TLorentzVector orig_el;
+              orig_el.SetPtEtaPhiM(pt1, eta1, phi1, mass1);
+              TLorentzVector scale_up = orig_el * (eEnergyScaleUp / eCorrectedEt);
+              TLorentzVector scale_dn = orig_el * (eEnergyScaleDown / eCorrectedEt);
+              TLorentzVector sigma_up = orig_el * (eEnergySigmaUp / eCorrectedEt);
+              TLorentzVector sigma_dn = orig_el * (eEnergySigmaDown / eCorrectedEt);
+              std::vector<classic_svFit::MeasuredTauLepton> measuredTauScaleUp{
+                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
+              };
+              runSVFit(measuredTauScaleUp, metcorr_ex, metcorr_ey, covMET, 0,
+               svFitMass_EEScale_Up, svFitPt_EEScale_Up, svFitEta_EEScale_Up, svFitPhi_EEScale_Up, svFitMET_EEScale_Up,
+               svFitTransverseMass_EEScale_Up, tau1, tau2);
+
+              std::vector<classic_svFit::MeasuredTauLepton> measuredTauScaleDn{
+                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
+              };
+              runSVFit(measuredTauScaleDn, metcorr_ex, metcorr_ey, covMET, 0,
+               svFitMass_EEScale_Down, svFitPt_EEScale_Down, svFitEta_EEScale_Down, svFitPhi_EEScale_Down, svFitMET_EEScale_Down,
+               svFitTransverseMass_EEScale_Down, tau1, tau2);
+
+              std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaUp{
+                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
+              };
+              runSVFit(measuredTauSigmaUp, metcorr_ex, metcorr_ey, covMET, 0,
+               svFitMass_EESigma_Up, svFitPt_EESigma_Up, svFitEta_EESigma_Up, svFitPhi_EESigma_Up, svFitMET_EESigma_Up,
+               svFitTransverseMass_EESigma_Up, tau1, tau2);
+
+              std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaDn{
+                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
+              };
+              runSVFit(measuredTauSigmaDn, metcorr_ex, metcorr_ey, covMET, 0,
+               svFitMass_EESigma_Down, svFitPt_EESigma_Down, svFitEta_EESigma_Down, svFitPhi_EESigma_Down, svFitMET_EESigma_Down,
+               svFitTransverseMass_EESigma_Down, tau1, tau2);
+            } else if (channel == "mt") {
+              TLorentzVector orig_mu;
+              orig_mu.SetPtEtaPhiM(pt1, eta1, phi1, mass1);
+              TLorentzVector scaled_mu_up = orig_mu;
+              TLorentzVector scaled_mu_dn = orig_mu;
+              if (orig_mu.Eta() > -2.4 && orig.Mu.Eta() < -2.1) {
+                scaled_mu_up *= 1 + 0.027;
+                scaled_mu_dn *= 1 - 0.027;
+              } else if (orig_mu.Eta() > -2.1 && orig.Mu.Eta() < -1.2)  {
+                scaled_mu_up *= 1 + 0.009;
+                scaled_mu_dn *= 1 - 0.009;
+              } else if (orig_mu.Eta() > -1.2 && orig.Mu.Eta() < 1.2)  {
+                scaled_mu_up *= 1 + 0.004;
+                scaled_mu_dn *= 1 - 0.004;
+              } else if (orig_mu.Eta() > 1.2 && orig.Mu.Eta() < 2.1)  {
+                scaled_mu_up *= 1 + 0.009;
+                scaled_mu_dn *= 1 - 0.009;
+              } else if (orig_mu.Eta() > 2.1 && orig.Mu.Eta() < 2.4)  {
+                scaled_mu_up *= 1 + 0.017;
+                scaled_mu_dn *= 1 - 0.017;
+              }
+
+              std::vector<classic_svFit::MeasuredTauLepton> measuredTauUp{
+                classic_svFit::MeasuredTauLepton(decayType1, scaled_mu_up.Pt(), scaled_mu_up.Eta(), scaled_mu_up.Phi(), scaled_mu_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
+              };
+              runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
+               svFitMass_MES_Up, svFitPt_MES_Up, svFitEta_MES_Up, svFitPhi_MES_Up, svFitMET_MES_Up,
+               svFitTransverseMass_MES_Up, tau1, tau2);
+
+              std::vector<classic_svFit::MeasuredTauLepton> measuredTauDn{
+                classic_svFit::MeasuredTauLepton(decayType1, scaled_mu_dn.Pt(), scaled_mu_dn.Eta(), scaled_mu_dn.Phi(), scaled_mu_dn.M()),
+                classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
+              };
+              runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
+               svFitMass_MES_Down, svFitPt_MES_Down, svFitEta_MES_Down, svFitPhi_MES_Down, svFitMET_MES_Down,
+               svFitTransverseMass_MES_Down, tau1, tau2);
             }
 
             double pt_Up(pt2 * ES_Up), pt_Down(pt2 * ES_Down);  // shift tau pT by energy scale
