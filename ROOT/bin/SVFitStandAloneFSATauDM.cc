@@ -1608,19 +1608,19 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
               orig_mu.SetPtEtaPhiM(pt1, eta1, phi1, mass1);
               TLorentzVector scaled_mu_up = orig_mu;
               TLorentzVector scaled_mu_dn = orig_mu;
-              if (orig_mu.Eta() > -2.4 && orig.Mu.Eta() < -2.1) {
+              if (orig_mu.Eta() > -2.4 && orig_mu.Eta() < -2.1) {
                 scaled_mu_up *= 1 + 0.027;
                 scaled_mu_dn *= 1 - 0.027;
-              } else if (orig_mu.Eta() > -2.1 && orig.Mu.Eta() < -1.2)  {
+              } else if (orig_mu.Eta() > -2.1 && orig_mu.Eta() < -1.2)  {
                 scaled_mu_up *= 1 + 0.009;
                 scaled_mu_dn *= 1 - 0.009;
-              } else if (orig_mu.Eta() > -1.2 && orig.Mu.Eta() < 1.2)  {
+              } else if (orig_mu.Eta() > -1.2 && orig_mu.Eta() < 1.2)  {
                 scaled_mu_up *= 1 + 0.004;
                 scaled_mu_dn *= 1 - 0.004;
-              } else if (orig_mu.Eta() > 1.2 && orig.Mu.Eta() < 2.1)  {
+              } else if (orig_mu.Eta() > 1.2 && orig_mu.Eta() < 2.1)  {
                 scaled_mu_up *= 1 + 0.009;
                 scaled_mu_dn *= 1 - 0.009;
-              } else if (orig_mu.Eta() > 2.1 && orig.Mu.Eta() < 2.4)  {
+              } else if (orig_mu.Eta() > 2.1 && orig_mu.Eta() < 2.4)  {
                 scaled_mu_up *= 1 + 0.017;
                 scaled_mu_dn *= 1 - 0.017;
               }
