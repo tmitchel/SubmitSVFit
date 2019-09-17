@@ -755,6 +755,50 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *newBranch33 = t->Branch("met_sv_DM0_Down", &svFitMET_DM0_Down, "met_sv_DM0_Down/F");
       TBranch *newBranch34 = t->Branch("mt_sv_DM0_Down", &svFitTransverseMass_DM0_Down, "mt_sv_DM0_Down/F");
 
+      //
+      TBranch *branchEEScaleUp1 = t->Branch("m_sv_EEScale_Up", &svFitMass_EEScale_Up, "m_sv_EEScale_Up/F");
+      TBranch *branchEEScaleUp2 = t->Branch("pt_sv_EEScale_Up", &svFitPt_EEScale_Up, "pt_sv_EEScale_Up/F");
+      TBranch *branchEEScaleUp3 = t->Branch("eta_sv_EEScale_Up", &svFitEta_EEScale_Up, "eta_sv_EEScale_Up/F");
+      TBranch *branchEEScaleUp4 = t->Branch("phi_sv_EEScale_Up", &svFitPhi_EEScale_Up, "phi_sv_EEScale_Up/F");
+      TBranch *branchEEScaleUp5 = t->Branch("met_sv_EEScale_Up", &svFitMET_EEScale_Up, "met_sv_EEScale_Up/F");
+      TBranch *branchEEScaleUp6 = t->Branch("mt_sv_EEScale_Up", &svFitTransverseMass_EEScale_Up, "mt_sv_EEScale_Up/F");
+
+      TBranch *branchEEScaleDn1 = t->Branch("m_sv_EEScale_Down", &svFitMass_EEScale_Down, "m_sv_EEScale_Down/F");
+      TBranch *branchEEScaleDn2 = t->Branch("pt_sv_EEScale_Down", &svFitPt_EEScale_Down, "pt_sv_EEScale_Down/F");
+      TBranch *branchEEScaleDn3 = t->Branch("eta_sv_EEScale_Down", &svFitEta_EEScale_Down, "eta_sv_EEScale_Down/F");
+      TBranch *branchEEScaleDn4 = t->Branch("phi_sv_EEScale_Down", &svFitPhi_EEScale_Down, "phi_sv_EEScale_Down/F");
+      TBranch *branchEEScaleDn5 = t->Branch("met_sv_EEScale_Down", &svFitMET_EEScale_Down, "met_sv_EEScale_Down/F");
+      TBranch *branchEEScaleDn6 = t->Branch("mt_sv_EEScale_Down", &svFitTransverseMass_EEScale_Down, "mt_sv_EEScale_Down/F");
+
+      TBranch *branchEESigmaUp1 = t->Branch("m_sv_EESigma_Up", &svFitMass_EESigma_Up, "m_sv_EESigma_Up/F");
+      TBranch *branchEESigmaUp2 = t->Branch("pt_sv_EESigma_Up", &svFitPt_EESigma_Up, "pt_sv_EESigma_Up/F");
+      TBranch *branchEESigmaUp3 = t->Branch("eta_sv_EESigma_Up", &svFitEta_EESigma_Up, "eta_sv_EESigma_Up/F");
+      TBranch *branchEESigmaUp4 = t->Branch("phi_sv_EESigma_Up", &svFitPhi_EESigma_Up, "phi_sv_EESigma_Up/F");
+      TBranch *branchEESigmaUp5 = t->Branch("met_sv_EESigma_Up", &svFitMET_EESigma_Up, "met_sv_EESigma_Up/F");
+      TBranch *branchEESigmaUp6 = t->Branch("mt_sv_EESigma_Up", &svFitTransverseMass_EESigma_Up, "mt_sv_EESigma_Up/F");
+
+      TBranch *branchEESigmaDn1 = t->Branch("m_sv_EESigma_Down", &svFitMass_EESigma_Down, "m_sv_EESigma_Down/F");
+      TBranch *branchEESigmaDn2 = t->Branch("pt_sv_EESigma_Down", &svFitPt_EESigma_Down, "pt_sv_EESigma_Down/F");
+      TBranch *branchEESigmaDn3 = t->Branch("eta_sv_EESigma_Down", &svFitEta_EESigma_Down, "eta_sv_EESigma_Down/F");
+      TBranch *branchEESigmaDn4 = t->Branch("phi_sv_EESigma_Down", &svFitPhi_EESigma_Down, "phi_sv_EESigma_Down/F");
+      TBranch *branchEESigmaDn5 = t->Branch("met_sv_EESigma_Down", &svFitMET_EESigma_Down, "met_sv_EESigma_Down/F");
+      TBranch *branchEESigmaDn6 = t->Branch("mt_sv_EESigma_Down", &svFitTransverseMass_EESigma_Down, "mt_sv_EESigma_Down/F");
+
+      TBranch *branchMESUp1 = t->Branch("m_sv_MES_Up", &svFitMass_MES_Up, "m_sv_MES_Up/F");
+      TBranch *branchMESUp2 = t->Branch("pt_sv_MES_Up", &svFitPt_MES_Up, "pt_sv_MES_Up/F");
+      TBranch *branchMESUp3 = t->Branch("eta_sv_MES_Up", &svFitEta_MES_Up, "eta_sv_MES_Up/F");
+      TBranch *branchMESUp4 = t->Branch("phi_sv_MES_Up", &svFitPhi_MES_Up, "phi_sv_MES_Up/F");
+      TBranch *branchMESUp5 = t->Branch("met_sv_MES_Up", &svFitMET_MES_Up, "met_sv_MES_Up/F");
+      TBranch *branchMESUp6 = t->Branch("mt_sv_MES_Up", &svFitTransverseMass_MES_Up, "mt_sv_MES_Up/F");
+
+      TBranch *branchMESDn1 = t->Branch("m_sv_MES_Down", &svFitMass_MES_Down, "m_sv_MES_Down/F");
+      TBranch *branchMESDn2 = t->Branch("pt_sv_MES_Down", &svFitPt_MES_Down, "pt_sv_MES_Down/F");
+      TBranch *branchMESDn3 = t->Branch("eta_sv_MES_Down", &svFitEta_MES_Down, "eta_sv_MES_Down/F");
+      TBranch *branchMESDn4 = t->Branch("phi_sv_MES_Down", &svFitPhi_MES_Down, "phi_sv_MES_Down/F");
+      TBranch *branchMESDn5 = t->Branch("met_sv_MES_Down", &svFitMET_MES_Down, "met_sv_MES_Down/F");
+      TBranch *branchMESDn6 = t->Branch("mt_sv_MES_Down", &svFitTransverseMass_MES_Down, "mt_sv_MES_Down/F");
+      //
+
       TBranch *newBranch35 = t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F");
       TBranch *newBranch36 = t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F");
       TBranch *newBranch37 = t->Branch("eta_sv_DM1_Up", &svFitEta_DM1_Up, "eta_sv_DM1_Up/F");
@@ -2649,6 +2693,43 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
      newBranch184->Fill();
      newBranch185->Fill();
      newBranch186->Fill();
+
+    branchEEScaleUp1->Fill();
+    branchEEScaleUp2->Fill();
+    branchEEScaleUp3->Fill();
+    branchEEScaleUp4->Fill();
+    branchEEScaleUp5->Fill();
+    branchEEScaleUp6->Fill();
+    branchEEScaleDn1->Fill();
+    branchEEScaleDn2->Fill();
+    branchEEScaleDn3->Fill();
+    branchEEScaleDn4->Fill();
+    branchEEScaleDn5->Fill();
+    branchEEScaleDn6->Fill();
+    branchEESigmaUp1->Fill();
+    branchEESigmaUp2->Fill();
+    branchEESigmaUp3->Fill();
+    branchEESigmaUp4->Fill();
+    branchEESigmaUp5->Fill();
+    branchEESigmaUp6->Fill();
+    branchEESigmaDn1->Fill();
+    branchEESigmaDn2->Fill();
+    branchEESigmaDn3->Fill();
+    branchEESigmaDn4->Fill();
+    branchEESigmaDn5->Fill();
+    branchEESigmaDn6->Fill();
+    branchMESUp1->Fill();
+    branchMESUp2->Fill();
+    branchMESUp3->Fill();
+    branchMESUp4->Fill();
+    branchMESUp5->Fill();
+    branchMESUp6->Fill();
+    branchMESDn1->Fill();
+    branchMESDn2->Fill();
+    branchMESDn3->Fill();
+    branchMESDn4->Fill();
+    branchMESDn5->Fill();
+    branchMESDn6->Fill();
 
 
      for(unsigned int i = 0; i != tau4VectorBranches.size(); ++i)
