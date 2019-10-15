@@ -219,6 +219,15 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorrClusteredDown_ex = -10; // corrClusteredDownected met px (float)
       float metcorrClusteredDown_ey = -10;  // corrClusteredDownected met py (float)
 
+      float metcorrRecoilResoUp_ex = -10;
+      float metcorrRecoilResoUp_ey = -10;
+      float metcorrRecoilResoDown_ex = -10;
+      float metcorrRecoilResoDown_ey = -10;
+      float metcorrRecoilRespUp_ex = -10;
+      float metcorrRecoilRespUp_ey = -10;
+      float metcorrRecoilRespDown_ex = -10;
+      float metcorrRecoilRespDown_ey = -10;
+
       float metcorrJetEC2Up_ex = -10;
       float metcorrJetEC2Up_ey = -10;
       float metcorrJetEC2Down_ex = -10;
@@ -280,6 +289,15 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorphiJetRelativeSampleDown = -10;
       float metcorJetRelativeSampleUp = -10;
       float metcorphiJetRelativeSampleUp = -10;
+      float metcorrRecoilResoUp = -10;
+      float metcorrRecoilResoUp = -10;
+      float metcorrRecoilResoDown = -10;
+      float metcorrRecoilResoDown = -10;
+      float metcorrRecoilRespUp = -10;
+      float metcorrRecoilRespUp = -10;
+      float metcorrRecoilRespDown = -10;
+      float metcorrRecoilRespDown = -10;
+
 
       TBranch *newBranch1 = t->Branch("m_sv", &svFitMass, "m_sv/F");
       TBranch *newBranch2 = t->Branch("pt_sv", &svFitPt, "pt_sv/F");
@@ -496,7 +514,31 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitMET_JetRelativeSample_Down = -10;
       float svFitTransverseMass_JetRelativeSample_Down = -10;
 
+      float svFitMass_RecoilReso_Up = -10;
+      float svFitPt_RecoilReso_Up = -10;
+      float svFitEta_RecoilReso_Up = -10;
+      float svFitPhi_RecoilReso_Up = -10;
+      float svFitMET_RecoilReso_Up = -10;
+      float svFitTransverseMass_RecoilReso_Up = -10;
+      float svFitMass_RecoilReso_Down = -10;
+      float svFitPt_RecoilReso_Down = -10;
+      float svFitEta_RecoilReso_Down = -10;
+      float svFitPhi_RecoilReso_Down = -10;
+      float svFitMET_RecoilReso_Down = -10;
+      float svFitTransverseMass_RecoilReso_Down = -10;
 
+      float svFitMass_RecoilResp_Up = -10;
+      float svFitPt_RecoilResp_Up = -10;
+      float svFitEta_RecoilResp_Up = -10;
+      float svFitPhi_RecoilResp_Up = -10;
+      float svFitMET_RecoilResp_Up = -10;
+      float svFitTransverseMass_RecoilResp_Up = -10;
+      float svFitMass_RecoilResp_Down = -10;
+      float svFitPt_RecoilResp_Down = -10;
+      float svFitEta_RecoilResp_Down = -10;
+      float svFitPhi_RecoilResp_Down = -10;
+      float svFitMET_RecoilResp_Down = -10;
+      float svFitTransverseMass_RecoilResp_Down = -10;
 	
 
       // tau leptons                                                                                                  
@@ -726,7 +768,44 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float tau2_phi_JetRelativeSample_Down = -10;
       float tau2_m_JetRelativeSample_Down = -10;
 
-                               
+      // up RecoilResoUp ========================= 
+      float tau1_pt_RecoilReso_Up = -10;
+      float tau1_eta_RecoilReso_Up = -10;
+      float tau1_phi_RecoilReso_Up = -10;
+      float tau1_m_RecoilReso_Up = -10;
+      float tau2_pt_RecoilReso_Up = -10;
+      float tau2_eta_RecoilReso_Up = -10;
+      float tau2_phi_RecoilReso_Up = -10;
+      float tau2_m_RecoilReso_Up = -10;
+      // down
+      float tau1_pt_RecoilReso_Down = -10;
+      float tau1_eta_RecoilReso_Down = -10;
+      float tau1_phi_RecoilReso_Down = -10;
+      float tau1_m_RecoilReso_Down = -10;
+      float tau2_pt_RecoilReso_Down = -10;
+      float tau2_eta_RecoilReso_Down = -10;
+      float tau2_phi_RecoilReso_Down = -10;
+      float tau2_m_RecoilReso_Down = -10;
+
+      // up RecoilRespUp ========================= 
+      float tau1_pt_RecoilResp_Up = -10;
+      float tau1_eta_RecoilResp_Up = -10;
+      float tau1_phi_RecoilResp_Up = -10;
+      float tau1_m_RecoilResp_Up = -10;
+      float tau2_pt_RecoilResp_Up = -10;
+      float tau2_eta_RecoilResp_Up = -10;
+      float tau2_phi_RecoilResp_Up = -10;
+      float tau2_m_RecoilResp_Up = -10;
+      // down
+      float tau1_pt_RecoilResp_Down = -10;
+      float tau1_eta_RecoilResp_Down = -10;
+      float tau1_phi_RecoilResp_Down = -10;
+      float tau1_m_RecoilResp_Down = -10;
+      float tau2_pt_RecoilResp_Down = -10;
+      float tau2_eta_RecoilResp_Down = -10;
+      float tau2_phi_RecoilResp_Down = -10;
+      float tau2_m_RecoilResp_Down = -10;
+
       TBranch *newBranch11 = t->Branch("m_sv_Up", &svFitMass_Up, "m_sv_Up/F");
       TBranch *newBranch12 = t->Branch("pt_sv_Up", &svFitPt_Up, "pt_sv_Up/F");
       TBranch *newBranch13 = t->Branch("eta_sv_Up", &svFitEta_Up, "eta_sv_Up/F");
@@ -939,6 +1018,31 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *newBranch153 = t->Branch("met_sv_JetRelativeSample_Down", &svFitMET_JetRelativeSample_Down, "met_sv_JetRelativeSample_Down/F");
       TBranch *newBranch154 = t->Branch("mt_sv_JetRelativeSample_Down", &svFitTransverseMass_JetRelativeSample_Down, "mt_sv_JetRelativeSample_Down/F");
 
+      TBranch *newResoBranch143 = t->Branch("m_sv_RecoilReso_Up", &svFitMass_RecoilReso_Up, "m_sv_RecoilReso_Up/F");
+      TBranch *newResoBranch144 = t->Branch("pt_sv_RecoilReso_Up", &svFitPt_RecoilReso_Up, "pt_sv_RecoilReso_Up/F");
+      TBranch *newResoBranch145 = t->Branch("eta_sv_RecoilReso_Up", &svFitEta_RecoilReso_Up, "eta_sv_RecoilReso_Up/F");
+      TBranch *newResoBranch146 = t->Branch("phi_sv_RecoilReso_Up", &svFitPhi_RecoilReso_Up, "phi_sv_RecoilReso_Up/F");
+      TBranch *newResoBranch147 = t->Branch("met_sv_RecoilReso_Up", &svFitMET_RecoilReso_Up, "met_sv_RecoilReso_Up/F");
+      TBranch *newResoBranch148 = t->Branch("mt_sv_RecoilReso_Up", &svFitTransverseMass_RecoilReso_Up, "mt_sv_RecoilReso_Up/F");
+      TBranch *newResoBranch149 = t->Branch("m_sv_RecoilReso_Down", &svFitMass_RecoilReso_Down, "m_sv_RecoilReso_Down/F");
+      TBranch *newResoBranch150 = t->Branch("pt_sv_RecoilReso_Down", &svFitPt_RecoilReso_Down, "pt_sv_RecoilReso_Down/F");
+      TBranch *newResoBranch151 = t->Branch("eta_sv_RecoilReso_Down", &svFitEta_RecoilReso_Down, "eta_sv_RecoilReso_Down/F");
+      TBranch *newResoBranch152 = t->Branch("phi_sv_RecoilReso_Down", &svFitPhi_RecoilReso_Down, "phi_sv_RecoilReso_Down/F");
+      TBranch *newResoBranch153 = t->Branch("met_sv_RecoilReso_Down", &svFitMET_RecoilReso_Down, "met_sv_RecoilReso_Down/F");
+      TBranch *newResoBranch154 = t->Branch("mt_sv_RecoilReso_Down", &svFitTransverseMass_RecoilReso_Down, "mt_sv_RecoilReso_Down/F");
+
+      TBranch *newRespBranch143 = t->Branch("m_sv_RecoilResp_Up", &svFitMass_RecoilResp_Up, "m_sv_RecoilResp_Up/F");
+      TBranch *newRespBranch144 = t->Branch("pt_sv_RecoilResp_Up", &svFitPt_RecoilResp_Up, "pt_sv_RecoilResp_Up/F");
+      TBranch *newRespBranch145 = t->Branch("eta_sv_RecoilResp_Up", &svFitEta_RecoilResp_Up, "eta_sv_RecoilResp_Up/F");
+      TBranch *newRespBranch146 = t->Branch("phi_sv_RecoilResp_Up", &svFitPhi_RecoilResp_Up, "phi_sv_RecoilResp_Up/F");
+      TBranch *newRespBranch147 = t->Branch("met_sv_RecoilResp_Up", &svFitMET_RecoilResp_Up, "met_sv_RecoilResp_Up/F");
+      TBranch *newRespBranch148 = t->Branch("mt_sv_RecoilResp_Up", &svFitTransverseMass_RecoilResp_Up, "mt_sv_RecoilResp_Up/F");
+      TBranch *newRespBranch149 = t->Branch("m_sv_RecoilResp_Down", &svFitMass_RecoilResp_Down, "m_sv_RecoilResp_Down/F");
+      TBranch *newRespBranch150 = t->Branch("pt_sv_RecoilResp_Down", &svFitPt_RecoilResp_Down, "pt_sv_RecoilResp_Down/F");
+      TBranch *newRespBranch151 = t->Branch("eta_sv_RecoilResp_Down", &svFitEta_RecoilResp_Down, "eta_sv_RecoilResp_Down/F");
+      TBranch *newRespBranch152 = t->Branch("phi_sv_RecoilResp_Down", &svFitPhi_RecoilResp_Down, "phi_sv_RecoilResp_Down/F");
+      TBranch *newRespBranch153 = t->Branch("met_sv_RecoilResp_Down", &svFitMET_RecoilResp_Down, "met_sv_RecoilResp_Down/F");
+      TBranch *newRespBranch154 = t->Branch("mt_sv_RecoilResp_Down", &svFitTransverseMass_RecoilResp_Down, "mt_sv_RecoilResp_Down/F");
 
       TBranch *newBranch155 = t->Branch("metcorClusteredDown",    &metcorClusteredDown,   "metcorClusteredDown/F");
       TBranch *newBranch156 = t->Branch("metcorphiClusteredDown", &metcorphiClusteredDown,"metcorphiClusteredDown/F");
@@ -1273,7 +1377,11 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float met_JetRelativeBalUp, met_JetRelativeBalDown, metphi_JetRelativeBalUp, metphi_JetRelativeBalDown;
       float JetRelativeBalUpMETx = 0., JetRelativeBalUpMETy = 0., JetRelativeBalDownMETx = 0., JetRelativeBalDownMETy = 0.;
       float met_JetRelativeSampleUp, met_JetRelativeSampleDown, metphi_JetRelativeSampleUp, metphi_JetRelativeSampleDown;
-      float JetRelativeSampleUpMETx = 0., JetRelativeSampleUpMETy = 0., JetRelativeSampleDownMETx = 0., JetRelativeSampleDownMETy = 0.;
+      float JetRelativeSampleUpMETx = 0., JetRelativeSampleUpMETy = 0., JetRelativeSampleDownMETx = 0., JetRelativeSampleDownMETy = 0.; 
+
+      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down, metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
+      float met_reso_Upx, met_reso_Downx, met_resp_Upx, met_resp_Downx, metphi_reso_Upx, metphi_reso_Downx, metphi_resp_Upx, metphi_resp_Downx;
+      float met_reso_Upy, met_reso_Downy, met_resp_Upy, met_resp_Downy, metphi_reso_Upy, metphi_reso_Downy, metphi_resp_Upy, metphi_resp_Downy;
 
       float eCorrectedEt = 0., eEnergyScaleUp = 0., eEnergyScaleDown = 0., eEnergySigmaUp = 0., eEnergySigmaDown = 0.;
 
@@ -1366,6 +1474,17 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("metphi_JetRelativeSampleUp", &metphi_JetRelativeSampleUp);
       t->SetBranchAddress("metphi_JetRelativeSampleDown", &metphi_JetRelativeSampleDown);
 
+      t->SetBranchAddress("met_reso_Up", &met_reso_Up);
+      t->SetBranchAddress("met_reso_Down", &met_reso_Down);
+      t->SetBranchAddress("metphi_reso_Up", &metphi_reso_Up);
+      t->SetBranchAddress("metphi_reso_Down", &metphi_reso_Down);
+
+      t->SetBranchAddress("met_resp_Up", &met_resp_Up);
+      t->SetBranchAddress("met_resp_Down", &met_resp_Down);
+      t->SetBranchAddress("metphi_resp_Up", &metphi_resp_Up);
+      t->SetBranchAddress("metphi_resp_Down", &metphi_resp_Down);
+
+
       printf("Found tree -> weighting\n");
     
       //double tesUp = 1.0 + tesSize;
@@ -1425,6 +1544,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           JetRelativeSampleUpMETy         = met_JetRelativeSampleUp*TMath::Sin(metphi_JetRelativeSampleUp);
           JetRelativeSampleDownMETx       = met_JetRelativeSampleDown*TMath::Cos(metphi_JetRelativeSampleDown);
           JetRelativeSampleDownMETy       = met_JetRelativeSampleDown*TMath::Sin(metphi_JetRelativeSampleDown);
+          met_reso_Upx = met_reso_Up*TMath::Cos(metphi_reso_Up);
+          met_reso_Downx = met_reso_Down*TMath::Cos(metphi_reso_Down);
+          met_reso_Upy = met_reso_Up*TMath::Cos(metphi_reso_Up);
+          met_reso_Downy = met_reso_Down*TMath::Cos(metphi_reso_Down);
 
           covMET[0][0] =  pfCovMatrix00;
           covMET[1][0] =  pfCovMatrix10;
@@ -1469,6 +1592,14 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         metcorrJetRelativeSampleDown_ex = JetRelativeSampleDownMETx;
         metcorrJetRelativeSampleDown_ey = JetRelativeSampleDownMETy;
 	
+        metcorrRecoilResoUp_ex = met_reso_Upx;
+        metcorrRecoilResoUp_ey = met_reso_Upy;
+        metcorrRecoilResoDown_ex = met_reso_Downx;
+        metcorrRecoilResoDown_ey = met_reso_Downy;
+        metcorrRecoilRespUp_ex = met_resp_Upx;
+        metcorrRecoilRespUp_ey = met_resp_Upy;
+        metcorrRecoilRespDown_ex = met_resp_Downx;
+        metcorrRecoilRespDown_ey = met_resp_Downy;
         
         metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
         metcorphi = TMath::ATan2( metcorr_ey, metcorr_ex );
@@ -1522,6 +1653,19 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
         metcorJetRelativeSampleUp = TMath::Sqrt( metcorrJetRelativeSampleUp_ex*metcorrJetRelativeSampleUp_ex + metcorrJetRelativeSampleUp_ey*metcorrJetRelativeSampleUp_ey);
         metcorphiJetRelativeSampleUp = TMath::ATan2( metcorrJetRelativeSampleUp_ey, metcorrJetRelativeSampleUp_ex );
+
+        metcorRecoilResoUp = TMath::Sqrt( metcorRecoilResoUp_ex*metcorRecoilResoUp_ex + metcorRecoilResoUp_ey*metcorRecoilResoUp_ey);
+        metcorphiRecoilResoUp = TMath::ATan2( metcorRecoilResoUp_ey, metcorRecoilResoUp_ex );
+
+        metcorRecoilResoDown = TMath::Sqrt( metcorRecoilResoDown_ex*metcorRecoilResoDown_ex + metcorRecoilResoDown_ey*metcorRecoilResoDown_ey);
+        metcorphiRecoilResoDown = TMath::ATan2( metcorRecoilResoDown_ey, metcorRecoilResoDown_ex );
+
+        metcorRecoilRespUp = TMath::Sqrt( metcorRecoilRespUp_ex*metcorRecoilRespUp_ex + metcorRecoilRespUp_ey*metcorRecoilRespUp_ey);
+        metcorphiRecoilRespUp = TMath::ATan2( metcorRecoilRespUp_ey, metcorRecoilRespUp_ex );
+
+        metcorRecoilRespDown = TMath::Sqrt( metcorRecoilRespDown_ex*metcorRecoilRespDown_ex + metcorRecoilRespDown_ey*metcorRecoilRespDown_ey);
+        metcorphiRecoilRespDown = TMath::ATan2( metcorRecoilRespDown_ey, metcorRecoilRespDown_ex );
+
 
         if (channel == "mt" || channel == "et") {
           mass2 = m2;
@@ -1597,6 +1741,22 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           runSVFit(measuredTauLeptons, metcorrJetRelativeSampleDown_ex, metcorrJetRelativeSampleDown_ey, covMET, 0, svFitMass_JetRelativeSample_Down,
               svFitPt_JetRelativeSample_Down, svFitEta_JetRelativeSample_Down, svFitPhi_JetRelativeSample_Down, svFitMET_JetRelativeSample_Down,
               svFitTransverseMass_JetRelativeSample_Down, tau1_JetRelativeSample_Down, tau2_JetRelativeSample_Down);
+
+          runSVFit(measuredTauLeptons, metcorrRecoilResoUp_ex, metcorrRecoilResoUp_ey, covMET, 0, svFitMass_RecoilReso_Up,
+              svFitPt_RecoilReso_Up, svFitEta_RecoilReso_Up, svFitPhi_RecoilReso_Up, svFitMET_RecoilReso_Up,
+              svFitTransverseMass_RecoilReso_Up, tau1_RecoilReso_Up, tau2_RecoilReso_Up);
+
+          runSVFit(measuredTauLeptons, metcorrRecoilResoDown_ex, metcorrRecoilResoDown_ey, covMET, 0, svFitMass_RecoilReso_Down,
+              svFitPt_RecoilReso_Down, svFitEta_RecoilReso_Down, svFitPhi_RecoilReso_Down, svFitMET_RecoilReso_Down,
+              svFitTransverseMass_RecoilReso_Down, tau1_RecoilReso_Down, tau2_RecoilReso_Down);
+
+          runSVFit(measuredTauLeptons, metcorrRecoilRespUp_ex, metcorrRecoilRespUp_ey, covMET, 0, svFitMass_RecoilResp_Up,
+              svFitPt_RecoilResp_Up, svFitEta_RecoilResp_Up, svFitPhi_RecoilResp_Up, svFitMET_RecoilResp_Up,
+              svFitTransverseMass_RecoilResp_Up, tau1_RecoilResp_Up, tau2_RecoilResp_Up);
+
+          runSVFit(measuredTauLeptons, metcorrRecoilRespDown_ex, metcorrRecoilRespDown_ey, covMET, 0, svFitMass_RecoilResp_Down,
+              svFitPt_RecoilResp_Down, svFitEta_RecoilResp_Down, svFitPhi_RecoilResp_Down, svFitMET_RecoilResp_Down,
+              svFitTransverseMass_RecoilResp_Down, tau1_RecoilResp_Down, tau2_RecoilResp_Down);
 
           if (doES) {
             // corrections only need to be done once
@@ -2731,6 +2891,31 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     branchMESDn5->Fill();
     branchMESDn6->Fill();
 
+    newResoBranch143->Fill();
+    newResoBranch144->Fill();
+    newResoBranch145->Fill();
+    newResoBranch146->Fill();
+    newResoBranch147->Fill();
+    newResoBranch148->Fill();
+    newResoBranch149->Fill();
+    newResoBranch150->Fill();
+    newResoBranch151->Fill();
+    newResoBranch152->Fill();
+    newResoBranch153->Fill();
+    newResoBranch154->Fill();
+
+    newRespBranch143->Fill();
+    newRespBranch144->Fill();
+    newRespBranch145->Fill();
+    newRespBranch146->Fill();
+    newRespBranch147->Fill();
+    newRespBranch148->Fill();
+    newRespBranch149->Fill();
+    newRespBranch150->Fill();
+    newRespBranch151->Fill();
+    newRespBranch152->Fill();
+    newRespBranch153->Fill();
+    newRespBranch154->Fill();
 
      for(unsigned int i = 0; i != tau4VectorBranches.size(); ++i)
        (tau4VectorBranches[i])->Fill();
