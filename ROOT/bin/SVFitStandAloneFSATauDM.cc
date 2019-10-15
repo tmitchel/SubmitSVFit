@@ -365,6 +365,32 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitMET_DM10_Down = -10;
       float svFitTransverseMass_DM10_Down = -10;
 
+      float svFitMass_LES_DM0_Up = -10;
+      float svFitPt_LES_DM0_Up = -10;
+      float svFitEta_LES_DM0_Up = -10;
+      float svFitPhi_LES_DM0_Up = -10;
+      float svFitMET_LES_DM0_Up = -10;
+      float svFitTransverseMass_LES_DM0_Up = -10;
+      float svFitMass_LES_DM0_Down = -10;
+      float svFitPt_LES_DM0_Down = -10;
+      float svFitEta_LES_DM0_Down = -10;
+      float svFitPhi_LES_DM0_Down = -10;
+      float svFitMET_LES_DM0_Down = -10;
+      float svFitTransverseMass_LES_DM0_Down = -10;
+      
+      float svFitMass_LES_DM1_Up = -10;
+      float svFitPt_LES_DM1_Up = -10;
+      float svFitEta_LES_DM1_Up = -10;
+      float svFitPhi_LES_DM1_Up = -10;
+      float svFitMET_LES_DM1_Up = -10;
+      float svFitTransverseMass_LES_DM1_Up = -10;
+      float svFitMass_LES_DM1_Down = -10;
+      float svFitPt_LES_DM1_Down = -10;
+      float svFitEta_LES_DM1_Down = -10;
+      float svFitPhi_LES_DM1_Down = -10;
+      float svFitMET_LES_DM1_Down = -10;
+      float svFitTransverseMass_LES_DM1_Down = -10;
+
       float svFitMass_EEScale_Up = -10;
       float svFitPt_EEScale_Up = -10;
       float svFitEta_EEScale_Up = -10;
@@ -623,6 +649,42 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float tau2_eta_DM10_Down = -10;
       float tau2_phi_DM10_Down = -10;
       float tau2_m_DM10_Down   = -10;
+      // up LES DM0 =========================
+      float tau1_pt_LES_DM0_Up  = -10;
+      float tau1_eta_LES_DM0_Up = -10;
+      float tau1_phi_LES_DM0_Up = -10;
+      float tau1_m_LES_DM0_Up   = -10;
+      float tau2_pt_LES_DM0_Up  = -10;
+      float tau2_eta_LES_DM0_Up = -10;
+      float tau2_phi_LES_DM0_Up = -10;
+      float tau2_m_LES_DM0_Up   = -10;
+      // down 
+      float tau1_pt_LES_DM0_Down  = -10;
+      float tau1_eta_LES_DM0_Down = -10;
+      float tau1_phi_LES_DM0_Down = -10;
+      float tau1_m_LES_DM0_Down   = -10;
+      float tau2_pt_LES_DM0_Down  = -10;
+      float tau2_eta_LES_DM0_Down = -10;
+      float tau2_phi_LES_DM0_Down = -10;
+      float tau2_m_LES_DM0_Down   = -10;
+      // up LES DM1 =========================
+      float tau1_pt_LES_DM1_Up  = -10;
+      float tau1_eta_LES_DM1_Up = -10;
+      float tau1_phi_LES_DM1_Up = -10;
+      float tau1_m_LES_DM1_Up   = -10;
+      float tau2_pt_LES_DM1_Up  = -10;
+      float tau2_eta_LES_DM1_Up = -10;
+      float tau2_phi_LES_DM1_Up = -10;
+      float tau2_m_LES_DM1_Up   = -10;
+      // down 
+      float tau1_pt_LES_DM1_Down  = -10;
+      float tau1_eta_LES_DM1_Down = -10;
+      float tau1_phi_LES_DM1_Down = -10;
+      float tau1_m_LES_DM1_Down   = -10;
+      float tau2_pt_LES_DM1_Down  = -10;
+      float tau2_eta_LES_DM1_Down = -10;
+      float tau2_phi_LES_DM1_Down = -10;
+      float tau2_m_LES_DM1_Down   = -10;      
       // up UncMet ========================= 
       float tau1_pt_UncMet_Up  = -10;
       float tau1_eta_UncMet_Up = -10;
@@ -905,6 +967,34 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *newBranch56 = t->Branch("phi_sv_DM10_Down", &svFitPhi_DM10_Down, "phi_sv_DM10_Down/F");
       TBranch *newBranch57 = t->Branch("met_sv_DM10_Down", &svFitMET_DM10_Down, "met_sv_DM10_Down/F");
       TBranch *newBranch58 = t->Branch("mt_sv_DM10_Down", &svFitTransverseMass_DM10_Down, "mt_sv_DM10_Down/F");
+
+      TBranch *newLESBranch23 = t->Branch("m_sv_LES_DM0_Up", &svFitMass_LES_DM0_Up, "m_sv_LES_DM0_Up/F");
+      TBranch *newLESBranch24 = t->Branch("pt_sv_LES_DM0_Up", &svFitPt_LES_DM0_Up, "pt_sv_LES_DM0_Up/F");
+      TBranch *newLESBranch25 = t->Branch("eta_sv_LES_DM0_Up", &svFitEta_LES_DM0_Up, "eta_sv_LES_DM0_Up/F");
+      TBranch *newLESBranch26 = t->Branch("phi_sv_LES_DM0_Up", &svFitPhi_LES_DM0_Up, "phi_sv_LES_DM0_Up/F");
+      TBranch *newLESBranch27 = t->Branch("met_sv_LES_DM0_Up", &svFitMET_LES_DM0_Up, "met_sv_LES_DM0_Up/F");
+      TBranch *newLESBranch28 = t->Branch("mt_sv_LES_DM0_Up", &svFitTransverseMass_LES_DM0_Up, "mt_sv_LES_DM0_Up/F");
+
+      TBranch *newLESBranch29 = t->Branch("m_sv_LES_DM0_Down", &svFitMass_LES_DM0_Down, "m_sv_LES_DM0_Down/F");
+      TBranch *newLESBranch30 = t->Branch("pt_sv_LES_DM0_Down", &svFitPt_LES_DM0_Down, "pt_sv_LES_DM0_Down/F");
+      TBranch *newLESBranch31 = t->Branch("eta_sv_LES_DM0_Down", &svFitEta_LES_DM0_Down, "eta_sv_LES_DM0_Down/F");
+      TBranch *newLESBranch32 = t->Branch("phi_sv_LES_DM0_Down", &svFitPhi_LES_DM0_Down, "phi_sv_LES_DM0_Down/F");
+      TBranch *newLESBranch33 = t->Branch("met_sv_LES_DM0_Down", &svFitMET_LES_DM0_Down, "met_sv_LES_DM0_Down/F");
+      TBranch *newLESBranch34 = t->Branch("mt_sv_LES_DM0_Down", &svFitTransverseMass_LES_DM0_Down, "mt_sv_LES_DM0_Down/F");
+
+      TBranch *newLESBranch35 = t->Branch("m_sv_LES_DM1_Up", &svFitMass_LES_DM1_Up, "m_sv_LES_DM1_Up/F");
+      TBranch *newLESBranch36 = t->Branch("pt_sv_LES_DM1_Up", &svFitPt_LES_DM1_Up, "pt_sv_LES_DM1_Up/F");
+      TBranch *newLESBranch37 = t->Branch("eta_sv_LES_DM1_Up", &svFitEta_LES_DM1_Up, "eta_sv_LES_DM1_Up/F");
+      TBranch *newLESBranch38 = t->Branch("phi_sv_LES_DM1_Up", &svFitPhi_LES_DM1_Up, "phi_sv_LES_DM1_Up/F");
+      TBranch *newLESBranch39 = t->Branch("met_sv_LES_DM1_Up", &svFitMET_LES_DM1_Up, "met_sv_LES_DM1_Up/F");
+      TBranch *newLESBranch40 = t->Branch("mt_sv_LES_DM1_Up", &svFitTransverseMass_LES_DM1_Up, "mt_sv_LES_DM1_Up/F");
+
+      TBranch *newLESBranch41 = t->Branch("m_sv_LES_DM1_Down", &svFitMass_LES_DM1_Down, "m_sv_LES_DM1_Down/F");
+      TBranch *newLESBranch42 = t->Branch("pt_sv_LES_DM1_Down", &svFitPt_LES_DM1_Down, "pt_sv_LES_DM1_Down/F");
+      TBranch *newLESBranch43 = t->Branch("eta_sv_LES_DM1_Down", &svFitEta_LES_DM1_Down, "eta_sv_LES_DM1_Down/F");
+      TBranch *newLESBranch44 = t->Branch("phi_sv_LES_DM1_Down", &svFitPhi_LES_DM1_Down, "phi_sv_LES_DM1_Down/F");
+      TBranch *newLESBranch45 = t->Branch("met_sv_LES_DM1_Down", &svFitMET_LES_DM1_Down, "met_sv_LES_DM1_Down/F");
+      TBranch *newLESBranch46 = t->Branch("mt_sv_LES_DM1_Down", &svFitTransverseMass_LES_DM1_Down, "mt_sv_LES_DM1_Down/F");
 
       TBranch *newBranch59 = t->Branch("m_sv_UncMet_Up", &svFitMass_UncMet_Up, "m_sv_UncMet_Up/F");
       TBranch *newBranch60 = t->Branch("pt_sv_UncMet_Up", &svFitPt_UncMet_Up, "pt_sv_UncMet_Up/F");
@@ -1918,6 +2008,37 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
               tau2_DM1_Up = tau2;
             }
 
+            // lep->tau DM0 shifted up
+            if (gen_match_2 < 5 && decayMode2 == 0) {
+              runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_LES_DM0_Up, svFitPt_LES_DM0_Up,
+                    svFitEta_LES_DM0_Up, svFitPhi_LES_DM0_Up, svFitMET_LES_DM0_Up, svFitTransverseMass_LES_DM0_Up, tau1_LES_DM0_Up, tau2_LES_DM0_Up);
+
+            } else {
+              svFitMass_LES_DM0_Up = svFitMass;
+              svFitPt_LES_DM0_Up = svFitPt;
+              svFitEta_LES_DM0_Up = svFitEta;
+              svFitPhi_LES_DM0_Up = svFitPhi;
+              svFitMET_LES_DM0_Up = svFitMET;
+              svFitTransverseMass_LES_DM0_Up = svFitTransverseMass;
+              tau1_LES_DM0_Up = tau1;
+              tau2_LES_DM0_Up = tau2;
+            }
+
+            // lep->tau DM1 shifted up
+            if (gen_match_2 < 5 && decayMode2 == 1) {
+              runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_LES_DM1_Up, svFitPt_LES_DM1_Up,
+                    svFitEta_LES_DM1_Up, svFitPhi_LES_DM1_Up, svFitMET_LES_DM1_Up, svFitTransverseMass_LES_DM1_Up, tau1_LES_DM1_Up, tau2_LES_DM1_Up);
+            } else {
+              svFitMass_LES_DM1_Up = svFitMass;
+              svFitPt_LES_DM1_Up = svFitPt;
+              svFitEta_LES_DM1_Up = svFitEta;
+              svFitPhi_LES_DM1_Up = svFitPhi;
+              svFitMET_LES_DM1_Up = svFitMET;
+              svFitTransverseMass_LES_DM1_Up = svFitTransverseMass;
+              tau1_LES_DM1_Up = tau1;
+              tau2_LES_DM1_Up = tau2;
+            }
+
             // tau DM10 shifted up
             if (gen_match_2 == 5 && decayMode2 == 10) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM10_Up, svFitPt_DM10_Up,
@@ -1998,6 +2119,36 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
               svFitTransverseMass_DM10_Down = svFitTransverseMass;
               tau1_DM10_Down = tau1;
               tau2_DM10_Down = tau2;
+            }
+
+            // lep->tau DM0 shifted down
+            if (gen_match_2 < 5 && decayMode2 == 0) {
+              runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_LES_DM0_Down, svFitPt_LES_DM0_Down,
+                    svFitEta_LES_DM0_Down, svFitPhi_LES_DM0_Down, svFitMET_LES_DM0_Down, svFitTransverseMass_LES_DM0_Down, tau1_LES_DM0_Down, tau2_LES_DM0_Down);
+            } else {
+              svFitMass_LES_DM0_Down = svFitMass;
+              svFitPt_LES_DM0_Down = svFitPt;
+              svFitEta_LES_DM0_Down = svFitEta;
+              svFitPhi_LES_DM0_Down = svFitPhi;
+              svFitMET_LES_DM0_Down = svFitMET;
+              svFitTransverseMass_LES_DM0_Down = svFitTransverseMass;
+              tau1_LES_DM0_Down = tau1;
+              tau2_LES_DM0_Down = tau2;
+            }
+
+            // lep->tau DM1 shifted down
+            if (gen_match_2 < 5 && decayMode2 == 1) {
+              runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_LES_DM1_Down, svFitPt_LES_DM1_Down,
+                    svFitEta_LES_DM1_Down, svFitPhi_LES_DM1_Down, svFitMET_LES_DM1_Down, svFitTransverseMass_LES_DM1_Down, tau1_LES_DM1_Down, tau2_LES_DM1_Down);
+            } else {
+              svFitMass_LES_DM1_Down = svFitMass;
+              svFitPt_LES_DM1_Down = svFitPt;
+              svFitEta_LES_DM1_Down = svFitEta;
+              svFitPhi_LES_DM1_Down = svFitPhi;
+              svFitMET_LES_DM1_Down = svFitMET;
+              svFitTransverseMass_LES_DM1_Down = svFitTransverseMass;
+              tau1_LES_DM1_Down = tau1;
+              tau2_LES_DM1_Down = tau2;
             }
           }  // end doES
         }  // eTau / muTau
@@ -2916,6 +3067,31 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     newRespBranch152->Fill();
     newRespBranch153->Fill();
     newRespBranch154->Fill();
+
+    newLESBranch23->Fill();
+    newLESBranch24->Fill();
+    newLESBranch25->Fill();
+    newLESBranch26->Fill();
+    newLESBranch27->Fill();
+    newLESBranch28->Fill();
+    newLESBranch29->Fill();
+    newLESBranch30->Fill();
+    newLESBranch31->Fill();
+    newLESBranch32->Fill();
+    newLESBranch33->Fill();
+    newLESBranch34->Fill();
+    newLESBranch35->Fill();
+    newLESBranch36->Fill();
+    newLESBranch37->Fill();
+    newLESBranch38->Fill();
+    newLESBranch39->Fill();
+    newLESBranch40->Fill();
+    newLESBranch41->Fill();
+    newLESBranch42->Fill();
+    newLESBranch43->Fill();
+    newLESBranch44->Fill();
+    newLESBranch45->Fill();
+    newLESBranch46->Fill();
 
      for(unsigned int i = 0; i != tau4VectorBranches.size(); ++i)
        (tau4VectorBranches[i])->Fill();
