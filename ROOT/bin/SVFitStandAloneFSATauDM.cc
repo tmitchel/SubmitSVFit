@@ -417,18 +417,70 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitMET_EESigma_Down = -10;
       float svFitTransverseMass_EESigma_Down = -10;
 
-      float svFitMass_MES_Up = -10;
-      float svFitPt_MES_Up = -10;
-      float svFitEta_MES_Up = -10;
-      float svFitPhi_MES_Up = -10;
-      float svFitMET_MES_Up = -10;
-      float svFitTransverseMass_MES_Up = -10;
-      float svFitMass_MES_Down = -10;
-      float svFitPt_MES_Down = -10;
-      float svFitEta_MES_Down = -10;
-      float svFitPhi_MES_Down = -10;
-      float svFitMET_MES_Down = -10;
-      float svFitTransverseMass_MES_Down = -10;
+      float svFitMass_MESbin1_Up = -10;
+      float svFitPt_MESbin1_Up = -10;
+      float svFitEta_MESbin1_Up = -10;
+      float svFitPhi_MESbin1_Up = -10;
+      float svFitMET_MESbin1_Up = -10;
+      float svFitTransverseMass_MESbin1_Up = -10;
+      float svFitMass_MESbin1_Down = -10;
+      float svFitPt_MESbin1_Down = -10;
+      float svFitEta_MESbin1_Down = -10;
+      float svFitPhi_MESbin1_Down = -10;
+      float svFitMET_MESbin1_Down = -10;
+      float svFitTransverseMass_MESbin1_Down = -10;
+
+      float svFitMass_MESbin2_Up = -10;
+      float svFitPt_MESbin2_Up = -10;
+      float svFitEta_MESbin2_Up = -10;
+      float svFitPhi_MESbin2_Up = -10;
+      float svFitMET_MESbin2_Up = -10;
+      float svFitTransverseMass_MESbin2_Up = -10;
+      float svFitMass_MESbin2_Down = -10;
+      float svFitPt_MESbin2_Down = -10;
+      float svFitEta_MESbin2_Down = -10;
+      float svFitPhi_MESbin2_Down = -10;
+      float svFitMET_MESbin2_Down = -10;
+      float svFitTransverseMass_MESbin2_Down = -10;
+
+      float svFitMass_MESbin3_Up = -10;
+      float svFitPt_MESbin3_Up = -10;
+      float svFitEta_MESbin3_Up = -10;
+      float svFitPhi_MESbin3_Up = -10;
+      float svFitMET_MESbin3_Up = -10;
+      float svFitTransverseMass_MESbin3_Up = -10;
+      float svFitMass_MESbin3_Down = -10;
+      float svFitPt_MESbin3_Down = -10;
+      float svFitEta_MESbin3_Down = -10;
+      float svFitPhi_MESbin3_Down = -10;
+      float svFitMET_MESbin3_Down = -10;
+      float svFitTransverseMass_MESbin3_Down = -10;
+
+      float svFitMass_MESbin4_Up = -10;
+      float svFitPt_MESbin4_Up = -10;
+      float svFitEta_MESbin4_Up = -10;
+      float svFitPhi_MESbin4_Up = -10;
+      float svFitMET_MESbin4_Up = -10;
+      float svFitTransverseMass_MESbin4_Up = -10;
+      float svFitMass_MESbin4_Down = -10;
+      float svFitPt_MESbin4_Down = -10;
+      float svFitEta_MESbin4_Down = -10;
+      float svFitPhi_MESbin4_Down = -10;
+      float svFitMET_MESbin4_Down = -10;
+      float svFitTransverseMass_MESbin4_Down = -10;
+
+      float svFitMass_MESbin5_Up = -10;
+      float svFitPt_MESbin5_Up = -10;
+      float svFitEta_MESbin5_Up = -10;
+      float svFitPhi_MESbin5_Up = -10;
+      float svFitMET_MESbin5_Up = -10;
+      float svFitTransverseMass_MESbin5_Up = -10;
+      float svFitMass_MESbin5_Down = -10;
+      float svFitPt_MESbin5_Down = -10;
+      float svFitEta_MESbin5_Down = -10;
+      float svFitPhi_MESbin5_Down = -10;
+      float svFitMET_MESbin5_Down = -10;
+      float svFitTransverseMass_MESbin5_Down = -10;
 
       float svFitMass_UncMet_Up = -10;
       float svFitPt_UncMet_Up = -10;
@@ -925,20 +977,75 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *branchEESigmaDn5 = t->Branch("met_sv_EESigma_Down", &svFitMET_EESigma_Down, "met_sv_EESigma_Down/F");
       TBranch *branchEESigmaDn6 = t->Branch("mt_sv_EESigma_Down", &svFitTransverseMass_EESigma_Down, "mt_sv_EESigma_Down/F");
 
-      TBranch *branchMESUp1 = t->Branch("m_sv_MES_Up", &svFitMass_MES_Up, "m_sv_MES_Up/F");
-      TBranch *branchMESUp2 = t->Branch("pt_sv_MES_Up", &svFitPt_MES_Up, "pt_sv_MES_Up/F");
-      TBranch *branchMESUp3 = t->Branch("eta_sv_MES_Up", &svFitEta_MES_Up, "eta_sv_MES_Up/F");
-      TBranch *branchMESUp4 = t->Branch("phi_sv_MES_Up", &svFitPhi_MES_Up, "phi_sv_MES_Up/F");
-      TBranch *branchMESUp5 = t->Branch("met_sv_MES_Up", &svFitMET_MES_Up, "met_sv_MES_Up/F");
-      TBranch *branchMESUp6 = t->Branch("mt_sv_MES_Up", &svFitTransverseMass_MES_Up, "mt_sv_MES_Up/F");
+      TBranch *branchMESbin1Up1 = t->Branch("m_sv_MESbin1_Up", &svFitMass_MESbin1_Up, "m_sv_MESbin1_Up/F");
+      TBranch *branchMESbin1Up2 = t->Branch("pt_sv_MESbin1_Up", &svFitPt_MESbin1_Up, "pt_sv_MESbin1_Up/F");
+      TBranch *branchMESbin1Up3 = t->Branch("eta_sv_MESbin1_Up", &svFitEta_MESbin1_Up, "eta_sv_MESbin1_Up/F");
+      TBranch *branchMESbin1Up4 = t->Branch("phi_sv_MESbin1_Up", &svFitPhi_MESbin1_Up, "phi_sv_MESbin1_Up/F");
+      TBranch *branchMESbin1Up5 = t->Branch("met_sv_MESbin1_Up", &svFitMET_MESbin1_Up, "met_sv_MESbin1_Up/F");
+      TBranch *branchMESbin1Up6 = t->Branch("mt_sv_MESbin1_Up", &svFitTransverseMass_MESbin1_Up, "mt_sv_MESbin1_Up/F");
 
-      TBranch *branchMESDn1 = t->Branch("m_sv_MES_Down", &svFitMass_MES_Down, "m_sv_MES_Down/F");
-      TBranch *branchMESDn2 = t->Branch("pt_sv_MES_Down", &svFitPt_MES_Down, "pt_sv_MES_Down/F");
-      TBranch *branchMESDn3 = t->Branch("eta_sv_MES_Down", &svFitEta_MES_Down, "eta_sv_MES_Down/F");
-      TBranch *branchMESDn4 = t->Branch("phi_sv_MES_Down", &svFitPhi_MES_Down, "phi_sv_MES_Down/F");
-      TBranch *branchMESDn5 = t->Branch("met_sv_MES_Down", &svFitMET_MES_Down, "met_sv_MES_Down/F");
-      TBranch *branchMESDn6 = t->Branch("mt_sv_MES_Down", &svFitTransverseMass_MES_Down, "mt_sv_MES_Down/F");
-      //
+      TBranch *branchMESbin1Dn1 = t->Branch("m_sv_MESbin1_Down", &svFitMass_MESbin1_Down, "m_sv_MESbin1_Down/F");
+      TBranch *branchMESbin1Dn2 = t->Branch("pt_sv_MESbin1_Down", &svFitPt_MESbin1_Down, "pt_sv_MESbin1_Down/F");
+      TBranch *branchMESbin1Dn3 = t->Branch("eta_sv_MESbin1_Down", &svFitEta_MESbin1_Down, "eta_sv_MESbin1_Down/F");
+      TBranch *branchMESbin1Dn4 = t->Branch("phi_sv_MESbin1_Down", &svFitPhi_MESbin1_Down, "phi_sv_MESbin1_Down/F");
+      TBranch *branchMESbin1Dn5 = t->Branch("met_sv_MESbin1_Down", &svFitMET_MESbin1_Down, "met_sv_MESbin1_Down/F");
+      TBranch *branchMESbin1Dn6 = t->Branch("mt_sv_MESbin1_Down", &svFitTransverseMass_MESbin1_Down, "mt_sv_MESbin1_Down/F");
+
+      TBranch *branchMESbin2Up1 = t->Branch("m_sv_MESbin2_Up", &svFitMass_MESbin2_Up, "m_sv_MESbin2_Up/F");
+      TBranch *branchMESbin2Up2 = t->Branch("pt_sv_MESbin2_Up", &svFitPt_MESbin2_Up, "pt_sv_MESbin2_Up/F");
+      TBranch *branchMESbin2Up3 = t->Branch("eta_sv_MESbin2_Up", &svFitEta_MESbin2_Up, "eta_sv_MESbin2_Up/F");
+      TBranch *branchMESbin2Up4 = t->Branch("phi_sv_MESbin2_Up", &svFitPhi_MESbin2_Up, "phi_sv_MESbin2_Up/F");
+      TBranch *branchMESbin2Up5 = t->Branch("met_sv_MESbin2_Up", &svFitMET_MESbin2_Up, "met_sv_MESbin2_Up/F");
+      TBranch *branchMESbin2Up6 = t->Branch("mt_sv_MESbin2_Up", &svFitTransverseMass_MESbin2_Up, "mt_sv_MESbin2_Up/F");
+
+      TBranch *branchMESbin2Dn1 = t->Branch("m_sv_MESbin2_Down", &svFitMass_MESbin2_Down, "m_sv_MESbin2_Down/F");
+      TBranch *branchMESbin2Dn2 = t->Branch("pt_sv_MESbin2_Down", &svFitPt_MESbin2_Down, "pt_sv_MESbin2_Down/F");
+      TBranch *branchMESbin2Dn3 = t->Branch("eta_sv_MESbin2_Down", &svFitEta_MESbin2_Down, "eta_sv_MESbin2_Down/F");
+      TBranch *branchMESbin2Dn4 = t->Branch("phi_sv_MESbin2_Down", &svFitPhi_MESbin2_Down, "phi_sv_MESbin2_Down/F");
+      TBranch *branchMESbin2Dn5 = t->Branch("met_sv_MESbin2_Down", &svFitMET_MESbin2_Down, "met_sv_MESbin2_Down/F");
+      TBranch *branchMESbin2Dn6 = t->Branch("mt_sv_MESbin2_Down", &svFitTransverseMass_MESbin2_Down, "mt_sv_MESbin2_Down/F");
+
+      TBranch *branchMESbin3Up1 = t->Branch("m_sv_MESbin3_Up", &svFitMass_MESbin3_Up, "m_sv_MESbin3_Up/F");
+      TBranch *branchMESbin3Up2 = t->Branch("pt_sv_MESbin3_Up", &svFitPt_MESbin3_Up, "pt_sv_MESbin3_Up/F");
+      TBranch *branchMESbin3Up3 = t->Branch("eta_sv_MESbin3_Up", &svFitEta_MESbin3_Up, "eta_sv_MESbin3_Up/F");
+      TBranch *branchMESbin3Up4 = t->Branch("phi_sv_MESbin3_Up", &svFitPhi_MESbin3_Up, "phi_sv_MESbin3_Up/F");
+      TBranch *branchMESbin3Up5 = t->Branch("met_sv_MESbin3_Up", &svFitMET_MESbin3_Up, "met_sv_MESbin3_Up/F");
+      TBranch *branchMESbin3Up6 = t->Branch("mt_sv_MESbin3_Up", &svFitTransverseMass_MESbin3_Up, "mt_sv_MESbin3_Up/F");
+
+      TBranch *branchMESbin3Dn1 = t->Branch("m_sv_MESbin3_Down", &svFitMass_MESbin3_Down, "m_sv_MESbin3_Down/F");
+      TBranch *branchMESbin3Dn2 = t->Branch("pt_sv_MESbin3_Down", &svFitPt_MESbin3_Down, "pt_sv_MESbin3_Down/F");
+      TBranch *branchMESbin3Dn3 = t->Branch("eta_sv_MESbin3_Down", &svFitEta_MESbin3_Down, "eta_sv_MESbin3_Down/F");
+      TBranch *branchMESbin3Dn4 = t->Branch("phi_sv_MESbin3_Down", &svFitPhi_MESbin3_Down, "phi_sv_MESbin3_Down/F");
+      TBranch *branchMESbin3Dn5 = t->Branch("met_sv_MESbin3_Down", &svFitMET_MESbin3_Down, "met_sv_MESbin3_Down/F");
+      TBranch *branchMESbin3Dn6 = t->Branch("mt_sv_MESbin3_Down", &svFitTransverseMass_MESbin3_Down, "mt_sv_MESbin3_Down/F");
+
+      TBranch *branchMESbin4Up1 = t->Branch("m_sv_MESbin4_Up", &svFitMass_MESbin4_Up, "m_sv_MESbin4_Up/F");
+      TBranch *branchMESbin4Up2 = t->Branch("pt_sv_MESbin4_Up", &svFitPt_MESbin4_Up, "pt_sv_MESbin4_Up/F");
+      TBranch *branchMESbin4Up3 = t->Branch("eta_sv_MESbin4_Up", &svFitEta_MESbin4_Up, "eta_sv_MESbin4_Up/F");
+      TBranch *branchMESbin4Up4 = t->Branch("phi_sv_MESbin4_Up", &svFitPhi_MESbin4_Up, "phi_sv_MESbin4_Up/F");
+      TBranch *branchMESbin4Up5 = t->Branch("met_sv_MESbin4_Up", &svFitMET_MESbin4_Up, "met_sv_MESbin4_Up/F");
+      TBranch *branchMESbin4Up6 = t->Branch("mt_sv_MESbin4_Up", &svFitTransverseMass_MESbin4_Up, "mt_sv_MESbin4_Up/F");
+
+      TBranch *branchMESbin4Dn1 = t->Branch("m_sv_MESbin4_Down", &svFitMass_MESbin4_Down, "m_sv_MESbin4_Down/F");
+      TBranch *branchMESbin4Dn2 = t->Branch("pt_sv_MESbin4_Down", &svFitPt_MESbin4_Down, "pt_sv_MESbin4_Down/F");
+      TBranch *branchMESbin4Dn3 = t->Branch("eta_sv_MESbin4_Down", &svFitEta_MESbin4_Down, "eta_sv_MESbin4_Down/F");
+      TBranch *branchMESbin4Dn4 = t->Branch("phi_sv_MESbin4_Down", &svFitPhi_MESbin4_Down, "phi_sv_MESbin4_Down/F");
+      TBranch *branchMESbin4Dn5 = t->Branch("met_sv_MESbin4_Down", &svFitMET_MESbin4_Down, "met_sv_MESbin4_Down/F");
+      TBranch *branchMESbin4Dn6 = t->Branch("mt_sv_MESbin4_Down", &svFitTransverseMass_MESbin4_Down, "mt_sv_MESbin4_Down/F");
+
+      TBranch *branchMESbin5Up1 = t->Branch("m_sv_MESbin5_Up", &svFitMass_MESbin5_Up, "m_sv_MESbin5_Up/F");
+      TBranch *branchMESbin5Up2 = t->Branch("pt_sv_MESbin5_Up", &svFitPt_MESbin5_Up, "pt_sv_MESbin5_Up/F");
+      TBranch *branchMESbin5Up3 = t->Branch("eta_sv_MESbin5_Up", &svFitEta_MESbin5_Up, "eta_sv_MESbin5_Up/F");
+      TBranch *branchMESbin5Up4 = t->Branch("phi_sv_MESbin5_Up", &svFitPhi_MESbin5_Up, "phi_sv_MESbin5_Up/F");
+      TBranch *branchMESbin5Up5 = t->Branch("met_sv_MESbin5_Up", &svFitMET_MESbin5_Up, "met_sv_MESbin5_Up/F");
+      TBranch *branchMESbin5Up6 = t->Branch("mt_sv_MESbin5_Up", &svFitTransverseMass_MESbin5_Up, "mt_sv_MESbin5_Up/F");
+
+      TBranch *branchMESbin5Dn1 = t->Branch("m_sv_MESbin5_Down", &svFitMass_MESbin5_Down, "m_sv_MESbin5_Down/F");
+      TBranch *branchMESbin5Dn2 = t->Branch("pt_sv_MESbin5_Down", &svFitPt_MESbin5_Down, "pt_sv_MESbin5_Down/F");
+      TBranch *branchMESbin5Dn3 = t->Branch("eta_sv_MESbin5_Down", &svFitEta_MESbin5_Down, "eta_sv_MESbin5_Down/F");
+      TBranch *branchMESbin5Dn4 = t->Branch("phi_sv_MESbin5_Down", &svFitPhi_MESbin5_Down, "phi_sv_MESbin5_Down/F");
+      TBranch *branchMESbin5Dn5 = t->Branch("met_sv_MESbin5_Down", &svFitMET_MESbin5_Down, "met_sv_MESbin5_Down/F");
+      TBranch *branchMESbin5Dn6 = t->Branch("mt_sv_MESbin5_Down", &svFitTransverseMass_MESbin5_Down, "mt_sv_MESbin5_Down/F");
 
       TBranch *newBranch35 = t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F");
       TBranch *newBranch36 = t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F");
@@ -1923,17 +2030,116 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 classic_svFit::MeasuredTauLepton(decayType1, scaled_mu_up.Pt(), scaled_mu_up.Eta(), scaled_mu_up.Phi(), scaled_mu_up.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
-              runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-               svFitMass_MES_Up, svFitPt_MES_Up, svFitEta_MES_Up, svFitPhi_MES_Up, svFitMET_MES_Up,
-               svFitTransverseMass_MES_Up, tau1, tau2);
-
               std::vector<classic_svFit::MeasuredTauLepton> measuredTauDn{
                 classic_svFit::MeasuredTauLepton(decayType1, scaled_mu_dn.Pt(), scaled_mu_dn.Eta(), scaled_mu_dn.Phi(), scaled_mu_dn.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
-              runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-               svFitMass_MES_Down, svFitPt_MES_Down, svFitEta_MES_Down, svFitPhi_MES_Down, svFitMET_MES_Down,
-               svFitTransverseMass_MES_Down, tau1, tau2);
+
+              if (orig_mu.Eta() > -2.4 && orig_mu.Eta() < -2.1) {
+                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin1_Up, svFitPt_MESbin1_Up, svFitEta_MESbin1_Up, svFitPhi_MESbin1_Up, svFitMET_MESbin1_Up,
+                  svFitTransverseMass_MESbin1_Up, tau1, tau2);
+                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin1_Down, svFitPt_MESbin1_Down, svFitEta_MESbin1_Down, svFitPhi_MESbin1_Down, svFitMET_MESbin1_Down,
+                  svFitTransverseMass_MESbin1_Down, tau1, tau2);
+              } else {
+                svFitMass_MESbin1_Up = svFitMass;
+                svFitPt_MESbin1_Up = svFitPt;
+                svFitEta_MESbin1_Up = svFitEta;
+                svFitPhi_MESbin1_Up = svFitPhi;
+                svFitMET_MESbin1_Up = svFitMET;
+                svFitTransverseMass_MESbin1_Up = svFitTransverseMass;
+                svFitMass_MESbin1_Down = svFitMass;
+                svFitPt_MESbin1_Down = svFitPt;
+                svFitEta_MESbin1_Down = svFitEta;
+                svFitPhi_MESbin1_Down = svFitPhi;
+                svFitMET_MESbin1_Down = svFitMET;
+                svFitTransverseMass_MESbin1_Down = svFitTransverseMass;
+              }
+              if (orig_mu.Eta() > -2.1 && orig_mu.Eta() < -1.2) {
+                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin2_Up, svFitPt_MESbin2_Up, svFitEta_MESbin2_Up, svFitPhi_MESbin2_Up, svFitMET_MESbin2_Up,
+                  svFitTransverseMass_MESbin2_Up, tau1, tau2);
+                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin2_Down, svFitPt_MESbin2_Down, svFitEta_MESbin2_Down, svFitPhi_MESbin2_Down, svFitMET_MESbin2_Down,
+                  svFitTransverseMass_MESbin2_Down, tau1, tau2);
+              } else {
+                svFitMass_MESbin2_Up = svFitMass;
+                svFitPt_MESbin2_Up = svFitPt;
+                svFitEta_MESbin2_Up = svFitEta;
+                svFitPhi_MESbin2_Up = svFitPhi;
+                svFitMET_MESbin2_Up = svFitMET;
+                svFitTransverseMass_MESbin2_Up = svFitTransverseMass;
+                svFitMass_MESbin2_Down = svFitMass;
+                svFitPt_MESbin2_Down = svFitPt;
+                svFitEta_MESbin2_Down = svFitEta;
+                svFitPhi_MESbin2_Down = svFitPhi;
+                svFitMET_MESbin2_Down = svFitMET;
+                svFitTransverseMass_MESbin2_Down = svFitTransverseMass;
+              }
+              if (orig_mu.Eta() > -1.2 && orig_mu.Eta() < 1.2) {
+                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin3_Up, svFitPt_MESbin3_Up, svFitEta_MESbin3_Up, svFitPhi_MESbin3_Up, svFitMET_MESbin3_Up,
+                  svFitTransverseMass_MESbin3_Up, tau1, tau2);
+                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin3_Down, svFitPt_MESbin3_Down, svFitEta_MESbin3_Down, svFitPhi_MESbin3_Down, svFitMET_MESbin3_Down,
+                  svFitTransverseMass_MESbin3_Down, tau1, tau2);
+              } else {
+                svFitMass_MESbin3_Up = svFitMass;
+                svFitPt_MESbin3_Up = svFitPt;
+                svFitEta_MESbin3_Up = svFitEta;
+                svFitPhi_MESbin3_Up = svFitPhi;
+                svFitMET_MESbin3_Up = svFitMET;
+                svFitTransverseMass_MESbin3_Up = svFitTransverseMass;
+                svFitMass_MESbin3_Down = svFitMass;
+                svFitPt_MESbin3_Down = svFitPt;
+                svFitEta_MESbin3_Down = svFitEta;
+                svFitPhi_MESbin3_Down = svFitPhi;
+                svFitMET_MESbin3_Down = svFitMET;
+                svFitTransverseMass_MESbin3_Down = svFitTransverseMass;
+              }
+              if (orig_mu.Eta() > 1.2 && orig_mu.Eta() < 2.1) {
+                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin4_Up, svFitPt_MESbin4_Up, svFitEta_MESbin4_Up, svFitPhi_MESbin4_Up, svFitMET_MESbin4_Up,
+                  svFitTransverseMass_MESbin4_Up, tau1, tau2);
+                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin4_Down, svFitPt_MESbin4_Down, svFitEta_MESbin4_Down, svFitPhi_MESbin4_Down, svFitMET_MESbin4_Down,
+                  svFitTransverseMass_MESbin4_Down, tau1, tau2);
+              } else {
+                svFitMass_MESbin4_Up = svFitMass;
+                svFitPt_MESbin4_Up = svFitPt;
+                svFitEta_MESbin4_Up = svFitEta;
+                svFitPhi_MESbin4_Up = svFitPhi;
+                svFitMET_MESbin4_Up = svFitMET;
+                svFitTransverseMass_MESbin4_Up = svFitTransverseMass;
+                svFitMass_MESbin4_Down = svFitMass;
+                svFitPt_MESbin4_Down = svFitPt;
+                svFitEta_MESbin4_Down = svFitEta;
+                svFitPhi_MESbin4_Down = svFitPhi;
+                svFitMET_MESbin4_Down = svFitMET;
+                svFitTransverseMass_MESbin4_Down = svFitTransverseMass;
+              }
+              if (orig_mu.Eta() > 2.1 && orig_mu.Eta() < 2.4) {
+                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin5_Up, svFitPt_MESbin5_Up, svFitEta_MESbin5_Up, svFitPhi_MESbin5_Up, svFitMET_MESbin5_Up,
+                  svFitTransverseMass_MESbin5_Up, tau1, tau2);
+                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
+                  svFitMass_MESbin5_Down, svFitPt_MESbin5_Down, svFitEta_MESbin5_Down, svFitPhi_MESbin5_Down, svFitMET_MESbin5_Down,
+                  svFitTransverseMass_MESbin5_Down, tau1, tau2);
+              } else {
+                svFitMass_MESbin5_Up = svFitMass;
+                svFitPt_MESbin5_Up = svFitPt;
+                svFitEta_MESbin5_Up = svFitEta;
+                svFitPhi_MESbin5_Up = svFitPhi;
+                svFitMET_MESbin5_Up = svFitMET;
+                svFitTransverseMass_MESbin5_Up = svFitTransverseMass;
+                svFitMass_MESbin5_Down = svFitMass;
+                svFitPt_MESbin5_Down = svFitPt;
+                svFitEta_MESbin5_Down = svFitEta;
+                svFitPhi_MESbin5_Down = svFitPhi;
+                svFitMET_MESbin5_Down = svFitMET;
+                svFitTransverseMass_MESbin5_Down = svFitTransverseMass;
+              }
             }
 
             double pt_Up(pt2 * ES_Up), pt_Down(pt2 * ES_Down);  // shift tau pT by energy scale
@@ -3029,18 +3235,70 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     branchEESigmaDn4->Fill();
     branchEESigmaDn5->Fill();
     branchEESigmaDn6->Fill();
-    branchMESUp1->Fill();
-    branchMESUp2->Fill();
-    branchMESUp3->Fill();
-    branchMESUp4->Fill();
-    branchMESUp5->Fill();
-    branchMESUp6->Fill();
-    branchMESDn1->Fill();
-    branchMESDn2->Fill();
-    branchMESDn3->Fill();
-    branchMESDn4->Fill();
-    branchMESDn5->Fill();
-    branchMESDn6->Fill();
+    branchMESbin1Up1->Fill();
+    branchMESbin1Up2->Fill();
+    branchMESbin1Up3->Fill();
+    branchMESbin1Up4->Fill();
+    branchMESbin1Up5->Fill();
+    branchMESbin1Up6->Fill();
+    branchMESbin1Dn1->Fill();
+    branchMESbin1Dn2->Fill();
+    branchMESbin1Dn3->Fill();
+    branchMESbin1Dn4->Fill();
+    branchMESbin1Dn5->Fill();
+    branchMESbin1Dn6->Fill();
+
+    branchMESbin2Up1->Fill();
+    branchMESbin2Up2->Fill();
+    branchMESbin2Up3->Fill();
+    branchMESbin2Up4->Fill();
+    branchMESbin2Up5->Fill();
+    branchMESbin2Up6->Fill();
+    branchMESbin2Dn1->Fill();
+    branchMESbin2Dn2->Fill();
+    branchMESbin2Dn3->Fill();
+    branchMESbin2Dn4->Fill();
+    branchMESbin2Dn5->Fill();
+    branchMESbin2Dn6->Fill();
+
+    branchMESbin3Up1->Fill();
+    branchMESbin3Up2->Fill();
+    branchMESbin3Up3->Fill();
+    branchMESbin3Up4->Fill();
+    branchMESbin3Up5->Fill();
+    branchMESbin3Up6->Fill();
+    branchMESbin3Dn1->Fill();
+    branchMESbin3Dn2->Fill();
+    branchMESbin3Dn3->Fill();
+    branchMESbin3Dn4->Fill();
+    branchMESbin3Dn5->Fill();
+    branchMESbin3Dn6->Fill();
+
+    branchMESbin4Up1->Fill();
+    branchMESbin4Up2->Fill();
+    branchMESbin4Up3->Fill();
+    branchMESbin4Up4->Fill();
+    branchMESbin4Up5->Fill();
+    branchMESbin4Up6->Fill();
+    branchMESbin4Dn1->Fill();
+    branchMESbin4Dn2->Fill();
+    branchMESbin4Dn3->Fill();
+    branchMESbin4Dn4->Fill();
+    branchMESbin4Dn5->Fill();
+    branchMESbin4Dn6->Fill();
+
+    branchMESbin5Up1->Fill();
+    branchMESbin5Up2->Fill();
+    branchMESbin5Up3->Fill();
+    branchMESbin5Up4->Fill();
+    branchMESbin5Up5->Fill();
+    branchMESbin5Up6->Fill();
+    branchMESbin5Dn1->Fill();
+    branchMESbin5Dn2->Fill();
+    branchMESbin5Dn3->Fill();
+    branchMESbin5Dn4->Fill();
+    branchMESbin5Dn5->Fill();
+    branchMESbin5Dn6->Fill();
 
     newResoBranch143->Fill();
     newResoBranch144->Fill();
