@@ -112,6 +112,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
   TLorentzVector tau1_JetEC2_Down, tau1_JetEta0to3_Down, tau1_JetEta0to5_Down, tau1_JetEta3to5_Down, tau1_JetRelativeBal_Down, tau1_JetRelativeSample_Down;
   TLorentzVector tau2_Down, tau2_DM0_Down, tau2_DM1_Down, tau2_DM10_Down, tau2_UncMet_Down, tau2_ClusteredMet_Down;
   TLorentzVector tau2_JetEC2_Down, tau2_JetEta0to3_Down, tau2_JetEta0to5_Down, tau2_JetEta3to5_Down, tau2_JetRelativeBal_Down, tau2_JetRelativeSample_Down;
+  TLorentzVector tau1_RecoilReso_Up, tau1_RecoilReso_Down, tau1_RecoilResp_Up, tau1_RecoilResp_Down;
+  TLorentzVector tau2_RecoilReso_Up, tau2_RecoilReso_Down, tau2_RecoilResp_Up, tau2_RecoilResp_Down;
   TLorentzVector tau1_LES_DM0_Up, tau1_LES_DM0_Down, tau1_LES_DM1_Up, tau1_LES_DM1_Down;
   TLorentzVector tau2_LES_DM0_Up, tau2_LES_DM0_Down, tau2_LES_DM1_Up, tau2_LES_DM1_Down;
 
@@ -295,6 +297,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorRecoilResoDown = -10;
       float metcorRecoilRespUp = -10;
       float metcorRecoilRespDown = -10;
+      float metcorphiRecoilResoUp = -10;
+      float metcorphiRecoilResoDown = -10;
+      float metcorphiRecoilRespUp = -10;
+      float metcorphiRecoilRespDown = -10;
 
 
       TBranch *newBranch1 = t->Branch("m_sv", &svFitMass, "m_sv/F");
@@ -699,42 +705,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float tau2_eta_DM10_Down = -10;
       float tau2_phi_DM10_Down = -10;
       float tau2_m_DM10_Down   = -10;
-      // up LES DM0 =========================
-      float tau1_pt_LES_DM0_Up  = -10;
-      float tau1_eta_LES_DM0_Up = -10;
-      float tau1_phi_LES_DM0_Up = -10;
-      float tau1_m_LES_DM0_Up   = -10;
-      float tau2_pt_LES_DM0_Up  = -10;
-      float tau2_eta_LES_DM0_Up = -10;
-      float tau2_phi_LES_DM0_Up = -10;
-      float tau2_m_LES_DM0_Up   = -10;
-      // down 
-      float tau1_pt_LES_DM0_Down  = -10;
-      float tau1_eta_LES_DM0_Down = -10;
-      float tau1_phi_LES_DM0_Down = -10;
-      float tau1_m_LES_DM0_Down   = -10;
-      float tau2_pt_LES_DM0_Down  = -10;
-      float tau2_eta_LES_DM0_Down = -10;
-      float tau2_phi_LES_DM0_Down = -10;
-      float tau2_m_LES_DM0_Down   = -10;
-      // up LES DM1 =========================
-      float tau1_pt_LES_DM1_Up  = -10;
-      float tau1_eta_LES_DM1_Up = -10;
-      float tau1_phi_LES_DM1_Up = -10;
-      float tau1_m_LES_DM1_Up   = -10;
-      float tau2_pt_LES_DM1_Up  = -10;
-      float tau2_eta_LES_DM1_Up = -10;
-      float tau2_phi_LES_DM1_Up = -10;
-      float tau2_m_LES_DM1_Up   = -10;
-      // down 
-      float tau1_pt_LES_DM1_Down  = -10;
-      float tau1_eta_LES_DM1_Down = -10;
-      float tau1_phi_LES_DM1_Down = -10;
-      float tau1_m_LES_DM1_Down   = -10;
-      float tau2_pt_LES_DM1_Down  = -10;
-      float tau2_eta_LES_DM1_Down = -10;
-      float tau2_phi_LES_DM1_Down = -10;
-      float tau2_m_LES_DM1_Down   = -10;      
       // up UncMet ========================= 
       float tau1_pt_UncMet_Up  = -10;
       float tau1_eta_UncMet_Up = -10;
@@ -1574,7 +1544,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float met_JetRelativeSampleUp, met_JetRelativeSampleDown, metphi_JetRelativeSampleUp, metphi_JetRelativeSampleDown;
       float JetRelativeSampleUpMETx = 0., JetRelativeSampleUpMETy = 0., JetRelativeSampleDownMETx = 0., JetRelativeSampleDownMETy = 0.; 
 
-      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down;
+      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down, metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
       float met_reso_Upx, met_reso_Downx, met_resp_Upx, met_resp_Downx;
       float met_reso_Upy, met_reso_Downy, met_resp_Upy, met_resp_Downy;
 
