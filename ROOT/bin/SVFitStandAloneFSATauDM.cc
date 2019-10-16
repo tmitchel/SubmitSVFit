@@ -512,8 +512,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       int njets =-999.   ;  // number of jets (hadronic jet multiplicity) (int)
 
       // define MET
-      double measuredMETx = 0.;
-      double measuredMETy = 0.;
       float mvamet;
       float mvametphi;
       float pfmet;
@@ -539,10 +537,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float met_JetEta3to5Up, met_JetEta3to5Down, metphi_JetEta3to5Up, metphi_JetEta3to5Down;
       float met_JetRelativeBalUp, met_JetRelativeBalDown, metphi_JetRelativeBalUp, metphi_JetRelativeBalDown;
       float met_JetRelativeSampleUp, met_JetRelativeSampleDown, metphi_JetRelativeSampleUp, metphi_JetRelativeSampleDown;
-
-      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down, metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
-      float met_reso_Upx, met_reso_Downx, met_resp_Upx, met_resp_Downx;
-      float met_reso_Upy, met_reso_Downy, met_resp_Upy, met_resp_Downy;
+      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down;
+      float metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
 
       float eCorrectedEt = 0., eEnergyScaleUp = 0., eEnergyScaleDown = 0., eEnergySigmaUp = 0., eEnergySigmaDown = 0.;
 
@@ -660,8 +656,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         if (metType == 1) { // 1 = Mva Met
           std::cerr << "Only PF Met is currently supported. You're in for a world full of problems if you continue." << std::endl;
           TMet.SetPtEtaPhiM(mvamet,0,mvametphi,0);
-          measuredMETx = mvamet*TMath::Cos(mvametphi);
-          measuredMETy = mvamet*TMath::Sin(mvametphi);
           
           covMET[0][0] =  mvaCovMatrix00;
           covMET[1][0] =  mvaCovMatrix10;
@@ -706,10 +700,14 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           metcorrJetRelativeSampleUpMET_ey         = met_JetRelativeSampleUp*TMath::Sin(metphi_JetRelativeSampleUp);
           metcorrJetRelativeSampleDownMET_ex       = met_JetRelativeSampleDown*TMath::Cos(metphi_JetRelativeSampleDown);
           metcorrJetRelativeSampleDownMET_ey       = met_JetRelativeSampleDown*TMath::Sin(metphi_JetRelativeSampleDown);
-          met_reso_Upx = met_reso_Up*TMath::Cos(metphi_reso_Up);
-          met_reso_Downx = met_reso_Down*TMath::Cos(metphi_reso_Down);
-          met_reso_Upy = met_reso_Up*TMath::Cos(metphi_reso_Up);
-          met_reso_Downy = met_reso_Down*TMath::Cos(metphi_reso_Down);
+          metcorrRecoilResoUp_ex = met_reso_Up*TMath::Cos(metphi_reso_Up);
+          metcorrRecoilResoUp_ey = met_reso_Down*TMath::Cos(metphi_reso_Down);
+          metcorrRecoilResoDown_ex = met_reso_Up*TMath::Cos(metphi_reso_Up);
+          metcorrRecoilResoDown_ey = met_reso_Down*TMath::Cos(metphi_reso_Down);
+          metcorrRecoilRespUp_ex = met_resp_Up*TMath::Cos(metphi_resp_Up);
+          metcorrRecoilRespUp_ey = met_resp_Down*TMath::Cos(metphi_resp_Down);
+          metcorrRecoilRespDown_ex = met_resp_Up*TMath::Cos(metphi_resp_Up);
+          metcorrRecoilRespDown_ey = met_resp_Down*TMath::Cos(metphi_resp_Down);
 
           covMET[0][0] =  pfCovMatrix00;
           covMET[1][0] =  pfCovMatrix10;
@@ -1100,6 +1098,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
      
      std::cout << "\n\n" << std::endl;
      //std::cout << "\n\nex: " << metcorr_ex << "   ey: " << metcorr_ey <<  " phi: " << metcorphi<<"\n"<<std::endl; 
+    newBranch1->Fill();
+    newBranch2->Fill();
     newDMBranch1->Fill();
     newDMBranch2->Fill();
     newDMBranch3->Fill();
