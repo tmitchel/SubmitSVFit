@@ -2008,6 +2008,21 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
               tau2_DM1_Up = tau2;
             }
 
+            // tau DM10 shifted up
+            if (gen_match_2 == 5 && decayMode2 == 10) {
+              runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM10_Up, svFitPt_DM10_Up,
+                    svFitEta_DM10_Up, svFitPhi_DM10_Up, svFitMET_DM10_Up, svFitTransverseMass_DM10_Up, tau1_DM10_Up, tau2_DM10_Up);
+            } else {
+              svFitMass_DM10_Up = svFitMass;
+              svFitPt_DM10_Up = svFitPt;
+              svFitEta_DM10_Up = svFitEta;
+              svFitPhi_DM10_Up = svFitPhi;
+              svFitMET_DM10_Up = svFitMET;
+              svFitTransverseMass_DM10_Up = svFitTransverseMass;
+              tau1_DM10_Up = tau1;
+              tau2_DM10_Up = tau2;
+            }
+
             // lep->tau DM0 shifted up
             if (gen_match_2 < 5 && decayMode2 == 0) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_LES_DM0_Up, svFitPt_LES_DM0_Up,
@@ -2037,21 +2052,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
               svFitTransverseMass_LES_DM1_Up = svFitTransverseMass;
               tau1_LES_DM1_Up = tau1;
               tau2_LES_DM1_Up = tau2;
-            }
-
-            // tau DM10 shifted up
-            if (gen_match_2 == 5 && decayMode2 == 10) {
-              runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM10_Up, svFitPt_DM10_Up,
-                    svFitEta_DM10_Up, svFitPhi_DM10_Up, svFitMET_DM10_Up, svFitTransverseMass_DM10_Up, tau1_DM10_Up, tau2_DM10_Up);
-            } else {
-              svFitMass_DM10_Up = svFitMass;
-              svFitPt_DM10_Up = svFitPt;
-              svFitEta_DM10_Up = svFitEta;
-              svFitPhi_DM10_Up = svFitPhi;
-              svFitMET_DM10_Up = svFitMET;
-              svFitTransverseMass_DM10_Up = svFitTransverseMass;
-              tau1_DM10_Up = tau1;
-              tau2_DM10_Up = tau2;
             }
 
             ///////////////////////////////
