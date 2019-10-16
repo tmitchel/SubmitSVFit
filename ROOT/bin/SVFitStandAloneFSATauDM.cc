@@ -365,15 +365,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	
 
       // tau leptons                                                                                                  
-      // nominal ========================
-      float tau1_pt  = -10;
-      float tau1_eta = -10;
-      float tau1_phi = -10;
-      float tau1_m   = -10;
-      float tau2_pt  = -10;
-      float tau2_eta = -10;
-      float tau2_phi = -10;
-      float tau2_m   = -10;
 
       TBranch *newDMBranch1 = t->Branch("m_sv_Up", &svFitMass_Up, "m_sv_Up/F");
       TBranch *newDMBranch2 = t->Branch("pt_sv_Up", &svFitPt_Up, "pt_sv_Up/F");
@@ -540,14 +531,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float clusteredMetPtDown;
       float clusteredMetPhiUp;
       float clusteredMetPhiDown;
-      double uncMetUpMETx = 0.;
-      double uncMetUpMETy = 0.;
-      double uncMetDownMETx = 0.;
-      double uncMetDownMETy = 0.;
-      double clusteredMetUpMETx = 0.;
-      double clusteredMetUpMETy = 0.;
-      double clusteredMetDownMETx = 0.;
-      double clusteredMetDownMETy = 0.;
 
       // JES Uncertainties
       float met_JetEC2Up, met_JetEC2Down, metphi_JetEC2Up, metphi_JetEC2Down;
@@ -761,40 +744,40 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, svFitMass_ClusteredMet_Down,
               svFitPt_ClusteredMet_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEC2Up_ex, metcorrJetEC2Up_ey, covMET, 0, svFitMass_JetEC2_Up, svFitPt_JetEC2_Up,
+          runSVFit(measuredTauLeptons, metcorrJetEC2UpMET_ex, metcorrJetEC2UpMET_ey, covMET, 0, svFitMass_JetEC2_Up, svFitPt_JetEC2_Up,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEC2Down_ex, metcorrJetEC2Down_ey, covMET, 0, svFitMass_JetEC2_Down, svFitPt_JetEC2_Down,
+          runSVFit(measuredTauLeptons, metcorrJetEC2DownMET_ex, metcorrJetEC2DownMET_ey, covMET, 0, svFitMass_JetEC2_Down, svFitPt_JetEC2_Down,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to3Up_ex, metcorrJetEta0to3Up_ey, covMET, 0, svFitMass_JetEta0to3_Up, svFitPt_JetEta0to3_Up,
+          runSVFit(measuredTauLeptons, metcorrJetEta0to3UpMET_ex, metcorrJetEta0to3UpMET_ey, covMET, 0, svFitMass_JetEta0to3_Up, svFitPt_JetEta0to3_Up,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to3Down_ex, metcorrJetEta0to3Down_ey, covMET, 0, svFitMass_JetEta0to3_Down,
+          runSVFit(measuredTauLeptons, metcorrJetEta0to3DownMET_ex, metcorrJetEta0to3DownMET_ey, covMET, 0, svFitMass_JetEta0to3_Down,
               svFitPt_JetEta0to3_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to5Up_ex, metcorrJetEta0to5Up_ey, covMET, 0, svFitMass_JetEta0to5_Up,
+          runSVFit(measuredTauLeptons, metcorrJetEta0to5UpMET_ex, metcorrJetEta0to5UpMET_ey, covMET, 0, svFitMass_JetEta0to5_Up,
               svFitPt_JetEta0to5_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to5Down_ex, metcorrJetEta0to5Down_ey, covMET, 0, svFitMass_JetEta0to5_Down,
+          runSVFit(measuredTauLeptons, metcorrJetEta0to5DownMET_ex, metcorrJetEta0to5DownMET_ey, covMET, 0, svFitMass_JetEta0to5_Down,
               svFitPt_JetEta0to5_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta3to5Up_ex, metcorrJetEta3to5Up_ey, covMET, 0, svFitMass_JetEta3to5_Up, svFitPt_JetEta3to5_Up,
+          runSVFit(measuredTauLeptons, metcorrJetEta3to5UpMET_ex, metcorrJetEta3to5UpMET_ey, covMET, 0, svFitMass_JetEta3to5_Up, svFitPt_JetEta3to5_Up,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta3to5Down_ex, metcorrJetEta3to5Down_ey, covMET, 0, svFitMass_JetEta3to5_Down,
+          runSVFit(measuredTauLeptons, metcorrJetEta3to5DownMET_ex, metcorrJetEta3to5DownMET_ey, covMET, 0, svFitMass_JetEta3to5_Down,
               svFitPt_JetEta3to5_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeBalUp_ex, metcorrJetRelativeBalUp_ey, covMET, 0, svFitMass_JetRelativeBal_Up,
+          runSVFit(measuredTauLeptons, metcorrJetRelativeBalUpMET_ex, metcorrJetRelativeBalUpMET_ey, covMET, 0, svFitMass_JetRelativeBal_Up,
               svFitPt_JetRelativeBal_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeBalDown_ex, metcorrJetRelativeBalDown_ey, covMET, 0, svFitMass_JetRelativeBal_Down,
+          runSVFit(measuredTauLeptons, metcorrJetRelativeBalDownMET_ex, metcorrJetRelativeBalDownMET_ey, covMET, 0, svFitMass_JetRelativeBal_Down,
               svFitPt_JetRelativeBal_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleUp_ex, metcorrJetRelativeSampleUp_ey, covMET, 0, svFitMass_JetRelativeSample_Up,
+          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleUpMET_ex, metcorrJetRelativeSampleUpMET_ey, covMET, 0, svFitMass_JetRelativeSample_Up,
               svFitPt_JetRelativeSample_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleDown_ex, metcorrJetRelativeSampleDown_ey, covMET, 0, svFitMass_JetRelativeSample_Down,
+          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleDownMET_ex, metcorrJetRelativeSampleDownMET_ey, covMET, 0, svFitMass_JetRelativeSample_Down,
               svFitPt_JetRelativeSample_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrRecoilResoUp_ex, metcorrRecoilResoUp_ey, covMET, 0, svFitMass_RecoilReso_Up,
