@@ -209,6 +209,40 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorrClusteredDown_ex = -10; // corrClusteredDownected met px (float)
       float metcorrClusteredDown_ey = -10;  // corrClusteredDownected met py (float)
 
+      float metcorrRecoilResoUp_ex = -10;
+      float metcorrRecoilResoUp_ey = -10;
+      float metcorrRecoilResoDown_ex = -10;
+      float metcorrRecoilResoDown_ey = -10;
+      float metcorrRecoilRespUp_ex = -10;
+      float metcorrRecoilRespUp_ey = -10;
+      float metcorrRecoilRespDown_ex = -10;
+      float metcorrRecoilRespDown_ey = -10;
+
+      float metcorrJetEC2Up_ex = -10;
+      float metcorrJetEC2Up_ey = -10;
+      float metcorrJetEC2Down_ex = -10;
+      float metcorrJetEC2Down_ey = -10;
+      float metcorrJetEta0to3Up_ex = -10;
+      float metcorrJetEta0to3Up_ey = -10;
+      float metcorrJetEta0to3Down_ex = -10;
+      float metcorrJetEta0to3Down_ey = -10;
+      float metcorrJetEta0to5Up_ex = -10;
+      float metcorrJetEta0to5Up_ey = -10;
+      float metcorrJetEta0to5Down_ex = -10;
+      float metcorrJetEta0to5Down_ey = -10;
+      float metcorrJetEta3to5Up_ex = -10;
+      float metcorrJetEta3to5Up_ey = -10;
+      float metcorrJetEta3to5Down_ex = -10;
+      float metcorrJetEta3to5Down_ey = -10;
+      float metcorrJetRelativeBalUp_ex = -10;
+      float metcorrJetRelativeBalUp_ey = -10;
+      float metcorrJetRelativeBalDown_ex = -10;
+      float metcorrJetRelativeBalDown_ey = -10;
+      float metcorrJetRelativeSampleUp_ex = -10;
+      float metcorrJetRelativeSampleUp_ey = -10;
+      float metcorrJetRelativeSampleDown_ex = -10;
+      float metcorrJetRelativeSampleDown_ey = -10;
+
 
       TBranch *newBranch1 = t->Branch("m_sv", &svFitMass, "m_sv/F");
       TBranch *newBranch2 = t->Branch("pt_sv", &svFitPt, "pt_sv/F");
