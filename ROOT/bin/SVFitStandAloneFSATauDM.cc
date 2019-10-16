@@ -112,7 +112,9 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
   TLorentzVector tau1_JetEC2_Down, tau1_JetEta0to3_Down, tau1_JetEta0to5_Down, tau1_JetEta3to5_Down, tau1_JetRelativeBal_Down, tau1_JetRelativeSample_Down;
   TLorentzVector tau2_Down, tau2_DM0_Down, tau2_DM1_Down, tau2_DM10_Down, tau2_UncMet_Down, tau2_ClusteredMet_Down;
   TLorentzVector tau2_JetEC2_Down, tau2_JetEta0to3_Down, tau2_JetEta0to5_Down, tau2_JetEta3to5_Down, tau2_JetRelativeBal_Down, tau2_JetRelativeSample_Down;
-  
+  TLorentzVector tau1_LES_DM0_Up, tau1_LES_DM0_Down, tau1_LES_DM1_Up, tau1_LES_DM1_Down;
+  TLorentzVector tau2_LES_DM0_Up, tau2_LES_DM0_Down, tau2_LES_DM1_Up, tau2_LES_DM1_Down;
+
   classic_svFit::MeasuredTauLepton::kDecayType decayType1 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType;
   classic_svFit::MeasuredTauLepton::kDecayType decayType2 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType; 
   
@@ -289,14 +291,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorphiJetRelativeSampleDown = -10;
       float metcorJetRelativeSampleUp = -10;
       float metcorphiJetRelativeSampleUp = -10;
-      float metcorrRecoilResoUp = -10;
-      float metcorrRecoilResoUp = -10;
-      float metcorrRecoilResoDown = -10;
-      float metcorrRecoilResoDown = -10;
-      float metcorrRecoilRespUp = -10;
-      float metcorrRecoilRespUp = -10;
-      float metcorrRecoilRespDown = -10;
-      float metcorrRecoilRespDown = -10;
+      float metcorRecoilResoUp = -10;
+      float metcorRecoilResoDown = -10;
+      float metcorRecoilRespUp = -10;
+      float metcorRecoilRespDown = -10;
 
 
       TBranch *newBranch1 = t->Branch("m_sv", &svFitMass, "m_sv/F");
@@ -1576,9 +1574,9 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float met_JetRelativeSampleUp, met_JetRelativeSampleDown, metphi_JetRelativeSampleUp, metphi_JetRelativeSampleDown;
       float JetRelativeSampleUpMETx = 0., JetRelativeSampleUpMETy = 0., JetRelativeSampleDownMETx = 0., JetRelativeSampleDownMETy = 0.; 
 
-      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down, metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
-      float met_reso_Upx, met_reso_Downx, met_resp_Upx, met_resp_Downx, metphi_reso_Upx, metphi_reso_Downx, metphi_resp_Upx, metphi_resp_Downx;
-      float met_reso_Upy, met_reso_Downy, met_resp_Upy, met_resp_Downy, metphi_reso_Upy, metphi_reso_Downy, metphi_resp_Upy, metphi_resp_Downy;
+      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down;
+      float met_reso_Upx, met_reso_Downx, met_resp_Upx, met_resp_Downx;
+      float met_reso_Upy, met_reso_Downy, met_resp_Upy, met_resp_Downy;
 
       float eCorrectedEt = 0., eEnergyScaleUp = 0., eEnergyScaleDown = 0., eEnergySigmaUp = 0., eEnergySigmaDown = 0.;
 
@@ -1851,17 +1849,17 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         metcorJetRelativeSampleUp = TMath::Sqrt( metcorrJetRelativeSampleUp_ex*metcorrJetRelativeSampleUp_ex + metcorrJetRelativeSampleUp_ey*metcorrJetRelativeSampleUp_ey);
         metcorphiJetRelativeSampleUp = TMath::ATan2( metcorrJetRelativeSampleUp_ey, metcorrJetRelativeSampleUp_ex );
 
-        metcorRecoilResoUp = TMath::Sqrt( metcorRecoilResoUp_ex*metcorRecoilResoUp_ex + metcorRecoilResoUp_ey*metcorRecoilResoUp_ey);
-        metcorphiRecoilResoUp = TMath::ATan2( metcorRecoilResoUp_ey, metcorRecoilResoUp_ex );
+        metcorRecoilResoUp = TMath::Sqrt( metcorrRecoilResoUp_ex*metcorrRecoilResoUp_ex + metcorrRecoilResoUp_ey*metcorrRecoilResoUp_ey);
+        metcorphiRecoilResoUp = TMath::ATan2( metcorrRecoilResoUp_ey, metcorrRecoilResoUp_ex );
 
-        metcorRecoilResoDown = TMath::Sqrt( metcorRecoilResoDown_ex*metcorRecoilResoDown_ex + metcorRecoilResoDown_ey*metcorRecoilResoDown_ey);
-        metcorphiRecoilResoDown = TMath::ATan2( metcorRecoilResoDown_ey, metcorRecoilResoDown_ex );
+        metcorRecoilResoDown = TMath::Sqrt( metcorrRecoilResoDown_ex*metcorrRecoilResoDown_ex + metcorrRecoilResoDown_ey*metcorrRecoilResoDown_ey);
+        metcorphiRecoilResoDown = TMath::ATan2( metcorrRecoilResoDown_ey, metcorrRecoilResoDown_ex );
 
-        metcorRecoilRespUp = TMath::Sqrt( metcorRecoilRespUp_ex*metcorRecoilRespUp_ex + metcorRecoilRespUp_ey*metcorRecoilRespUp_ey);
-        metcorphiRecoilRespUp = TMath::ATan2( metcorRecoilRespUp_ey, metcorRecoilRespUp_ex );
+        metcorRecoilRespUp = TMath::Sqrt( metcorrRecoilRespUp_ex*metcorrRecoilRespUp_ex + metcorrRecoilRespUp_ey*metcorrRecoilRespUp_ey);
+        metcorphiRecoilRespUp = TMath::ATan2( metcorrRecoilRespUp_ey, metcorrRecoilRespUp_ex );
 
-        metcorRecoilRespDown = TMath::Sqrt( metcorRecoilRespDown_ex*metcorRecoilRespDown_ex + metcorRecoilRespDown_ey*metcorRecoilRespDown_ey);
-        metcorphiRecoilRespDown = TMath::ATan2( metcorRecoilRespDown_ey, metcorRecoilRespDown_ex );
+        metcorRecoilRespDown = TMath::Sqrt( metcorrRecoilRespDown_ex*metcorrRecoilRespDown_ex + metcorrRecoilRespDown_ey*metcorrRecoilRespDown_ey);
+        metcorphiRecoilRespDown = TMath::ATan2( metcorrRecoilRespDown_ey, metcorrRecoilRespDown_ex );
 
 
         if (channel == "mt" || channel == "et") {
