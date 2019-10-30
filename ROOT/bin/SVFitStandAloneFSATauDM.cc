@@ -88,7 +88,6 @@ int main (int argc, char* argv[])
   if ( copyFiles(parser, f, fProduce) == 0 ) return -1;
 
   fProduce = new TFile(newFileName.c_str(),"UPDATE");
-  std::cout<<"listing the directories================="<<std::endl;
   fProduce->ls();
   readdir(fProduce,parser,TreeToUse,parser.doubleValue("doES"),parser.doubleValue("isWJets"),
           parser.doubleValue("metType"),parser.doubleValue("tesSize"));
@@ -742,9 +741,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
               classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2,  mass2, decayMode2)
           };
 
-          std::cout << "era: " << era << "evt: " << evt << " run: " << run << " lumi: " << lumi << " pt1 " << pt1
-                    << " mass1 " << mass1 << " pt2: " << pt2 << " mass2: " << mass2 << std::endl;
-
           runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0,
                svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
@@ -1053,7 +1049,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
             // tau DM0 shifted down
             if (gen_match_2 == 5 && decayMode2 == 0) {
-              std::cout << "DM0 shift Down" << std::endl;
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM0_Down, svFitPt_DM0_Down,
                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
@@ -1065,7 +1060,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
             // tau DM1 shifted down
             if (gen_match_2 == 5 && decayMode2 == 1) {
-              std::cout << "DM1 shift down" << std::endl;
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM1_Down, svFitPt_DM1_Down,
                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
@@ -1077,7 +1071,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
             // tau DM10 shifted down
             if (gen_match_2 == 5 && decayMode2 == 10) {
-              std::cout << "DM10 shift down" << std::endl;
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM10_Down, svFitPt_DM10_Down,
                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
