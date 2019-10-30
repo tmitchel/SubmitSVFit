@@ -364,7 +364,26 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitPt_RecoilResp_Down = -10;
 	
 
-      // tau leptons                                                                                                  
+      // tau leptons           
+
+      float tau1_pt  = -10;
+      float tau1_eta = -10;
+      float tau1_phi = -10;
+      float tau1_m   = -10;
+      float tau2_pt  = -10;
+      float tau2_eta = -10;
+      float tau2_phi = -10;
+      float tau2_m   = -10;
+
+      TBranch *tauBranch1 = t->Branch("tau1_pt", &tau1_pt, "tau1_pt/F");
+      TBranch *tauBranch2 = t->Branch("tau1_eta", &tau1_eta, "tau1_eta/F");
+      TBranch *tauBranch3 = t->Branch("tau1_phi", &tau1_phi, "tau1_phi/F");
+      TBranch *tauBranch4 = t->Branch("tau1_m", &tau1_m, "tau1_m/F");
+      TBranch *tauBranch5 = t->Branch("tau2_pt", &tau2_pt, "tau2_pt/F");
+      TBranch *tauBranch6 = t->Branch("tau2_eta", &tau2_eta, "tau2_eta/F");
+      TBranch *tauBranch7 = t->Branch("tau2_phi", &tau2_phi, "tau2_phi/F");
+      TBranch *tauBranch8 = t->Branch("tau2_m", &tau2_m, "tau2_m/F");
+
 
       TBranch *newDMBranch1 = t->Branch("m_sv_Up", &svFitMass_Up, "m_sv_Up/F");
       TBranch *newDMBranch2 = t->Branch("pt_sv_Up", &svFitPt_Up, "pt_sv_Up/F");
@@ -1091,13 +1110,28 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             }
           }  // end doES
         }  // eTau / muTau     
-     else {
-       svFitMass = -100;
-       svFitPt = -100;
-     }
-     
-     std::cout << "\n\n" << std::endl;
-     //std::cout << "\n\nex: " << metcorr_ex << "   ey: " << metcorr_ey <<  " phi: " << metcorphi<<"\n"<<std::endl; 
+    else {
+      svFitMass = -100;
+      svFitPt = -100;
+    }
+
+    tau1_pt  = tau1.Pt();
+    tau1_eta = tau1.Eta();
+    tau1_phi = tau1.Phi();
+    tau1_m   = tau1.M();
+    tau2_pt  = tau2.Pt();
+    tau2_eta = tau2.Eta();
+    tau2_phi = tau2.Phi();
+    tau2_m   = tau2.M();
+
+    tauBranch1->Fill();
+    tauBranch2->Fill();
+    tauBranch3->Fill();
+    tauBranch4->Fill();
+    tauBranch5->Fill();
+    tauBranch6->Fill();
+    tauBranch7->Fill();
+    tauBranch8->Fill();
     newBranch1->Fill();
     newBranch2->Fill();
     newDMBranch1->Fill();
