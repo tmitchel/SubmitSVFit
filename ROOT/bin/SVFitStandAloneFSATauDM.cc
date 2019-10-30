@@ -816,21 +816,21 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                svFitMass_EEScale_Up, svFitPt_EEScale_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
               std::vector<classic_svFit::MeasuredTauLepton> measuredTauScaleDn{
-                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType1, scale_dn.Pt(), scale_dn.Eta(), scale_dn.Phi(), scale_dn.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
               runSVFit(measuredTauScaleDn, metcorr_ex, metcorr_ey, covMET, 0,
                svFitMass_EEScale_Down, svFitPt_EEScale_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
               std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaUp{
-                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType1, sigma_up.Pt(), sigma_up.Eta(), sigma_up.Phi(), sigma_up.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
               runSVFit(measuredTauSigmaUp, metcorr_ex, metcorr_ey, covMET, 0,
                svFitMass_EESigma_Up, svFitPt_EESigma_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
               std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaDn{
-                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType1, sigma_dn.Pt(), sigma_dn.Eta(), sigma_dn.Phi(), sigma_dn.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
               runSVFit(measuredTauSigmaDn, metcorr_ex, metcorr_ey, covMET, 0,

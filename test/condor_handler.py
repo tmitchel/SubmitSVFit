@@ -38,7 +38,7 @@ def default_farmout(jobName, input_name, output_dir, bash_name, submit_dir, dag_
         submit_dir, dag_dir, output_dir)
     farmoutString += ' --input-files-per-job=%i %s %s ' % (
         filesperjob, jobName, bash_name)
-    farmoutString += '--use-hdfs --memory-requirements=5000 --vsize-limit=8000'
+    farmoutString += '--use-hdfs --memory-requirements=3000 --vsize-limit=8000'
     return farmoutString
 
 
