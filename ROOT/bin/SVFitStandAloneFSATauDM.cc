@@ -88,7 +88,6 @@ int main (int argc, char* argv[])
   if ( copyFiles(parser, f, fProduce) == 0 ) return -1;
 
   fProduce = new TFile(newFileName.c_str(),"UPDATE");
-  std::cout<<"listing the directories================="<<std::endl;
   fProduce->ls();
   readdir(fProduce,parser,TreeToUse,parser.doubleValue("doES"),parser.doubleValue("isWJets"),
           parser.doubleValue("metType"),parser.doubleValue("tesSize"));
@@ -102,20 +101,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 {
   
   TLorentzVector tau1, tau2;
-  // up systematics
-  TLorentzVector tau1_Up, tau1_DM0_Up, tau1_DM1_Up, tau1_DM10_Up, tau1_UncMet_Up, tau1_ClusteredMet_Up;
-  TLorentzVector tau1_JetEC2_Up, tau1_JetEta0to3_Up, tau1_JetEta0to5_Up, tau1_JetEta3to5_Up, tau1_JetRelativeBal_Up, tau1_JetRelativeSample_Up;
-  TLorentzVector tau2_Up, tau2_DM0_Up, tau2_DM1_Up, tau2_DM10_Up, tau2_UncMet_Up, tau2_ClusteredMet_Up;
-  TLorentzVector tau2_JetEC2_Up, tau2_JetEta0to3_Up, tau2_JetEta0to5_Up, tau2_JetEta3to5_Up, tau2_JetRelativeBal_Up, tau2_JetRelativeSample_Up;
-  // down systematics
-  TLorentzVector tau1_Down, tau1_DM0_Down, tau1_DM1_Down, tau1_DM10_Down, tau1_UncMet_Down, tau1_ClusteredMet_Down;
-  TLorentzVector tau1_JetEC2_Down, tau1_JetEta0to3_Down, tau1_JetEta0to5_Down, tau1_JetEta3to5_Down, tau1_JetRelativeBal_Down, tau1_JetRelativeSample_Down;
-  TLorentzVector tau2_Down, tau2_DM0_Down, tau2_DM1_Down, tau2_DM10_Down, tau2_UncMet_Down, tau2_ClusteredMet_Down;
-  TLorentzVector tau2_JetEC2_Down, tau2_JetEta0to3_Down, tau2_JetEta0to5_Down, tau2_JetEta3to5_Down, tau2_JetRelativeBal_Down, tau2_JetRelativeSample_Down;
-  TLorentzVector tau1_RecoilReso_Up, tau1_RecoilReso_Down, tau1_RecoilResp_Up, tau1_RecoilResp_Down;
-  TLorentzVector tau2_RecoilReso_Up, tau2_RecoilReso_Down, tau2_RecoilResp_Up, tau2_RecoilResp_Down;
-  TLorentzVector tau1_LES_DM0_Up, tau1_LES_DM0_Down, tau1_LES_DM1_Up, tau1_LES_DM1_Down;
-  TLorentzVector tau2_LES_DM0_Up, tau2_LES_DM0_Down, tau2_LES_DM1_Up, tau2_LES_DM1_Down;
 
   classic_svFit::MeasuredTauLepton::kDecayType decayType1 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType;
   classic_svFit::MeasuredTauLepton::kDecayType decayType2 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType; 
@@ -232,399 +217,154 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorrRecoilRespDown_ex = -10;
       float metcorrRecoilRespDown_ey = -10;
 
-      float metcorrJetEC2Up_ex = -10;
-      float metcorrJetEC2Up_ey = -10;
-      float metcorrJetEC2Down_ex = -10;
-      float metcorrJetEC2Down_ey = -10;
-      float metcorrJetEta0to3Up_ex = -10;
-      float metcorrJetEta0to3Up_ey = -10;
-      float metcorrJetEta0to3Down_ex = -10;
-      float metcorrJetEta0to3Down_ey = -10;
-      float metcorrJetEta0to5Up_ex = -10;
-      float metcorrJetEta0to5Up_ey = -10;
-      float metcorrJetEta0to5Down_ex = -10;
-      float metcorrJetEta0to5Down_ey = -10;
-      float metcorrJetEta3to5Up_ex = -10;
-      float metcorrJetEta3to5Up_ey = -10;
-      float metcorrJetEta3to5Down_ex = -10;
-      float metcorrJetEta3to5Down_ey = -10;
-      float metcorrJetRelativeBalUp_ex = -10;
-      float metcorrJetRelativeBalUp_ey = -10;
-      float metcorrJetRelativeBalDown_ex = -10;
-      float metcorrJetRelativeBalDown_ey = -10;
-      float metcorrJetRelativeSampleUp_ex = -10;
-      float metcorrJetRelativeSampleUp_ey = -10;
-      float metcorrJetRelativeSampleDown_ex = -10;
-      float metcorrJetRelativeSampleDown_ey = -10;
-
-
-      // For saving
-      float metcor = -10; // corrected metcor
-      float metcorphi = -10; // corrected metcorphi
-      float metcorClusteredDown = -10;   
-      float metcorphiClusteredDown = -10;
-      float metcorClusteredUp = -10;     
-      float metcorphiClusteredUp = -10;  
-      float metcorUncDown = -10;         
-      float metcorphiUncDown = -10;      
-      float metcorUncUp = -10;           
-      float metcorphiUncUp = -10;        
-      float metcorJetEC2Down = -10;
-      float metcorphiJetEC2Down = -10;
-      float metcorJetEC2Up = -10;
-      float metcorphiJetEC2Up = -10;
-      float metcorJetEta0to3Down = -10;
-      float metcorphiJetEta0to3Down = -10;
-      float metcorJetEta0to3Up = -10;
-      float metcorphiJetEta0to3Up = -10;
-      float metcorJetEta0to5Down = -10;
-      float metcorphiJetEta0to5Down = -10;
-      float metcorJetEta0to5Up = -10;
-      float metcorphiJetEta0to5Up = -10;
-      float metcorJetEta3to5Down = -10;
-      float metcorphiJetEta3to5Down = -10;
-      float metcorJetEta3to5Up = -10;
-      float metcorphiJetEta3to5Up = -10;
-      float metcorJetRelativeBalDown = -10;
-      float metcorphiJetRelativeBalDown = -10;
-      float metcorJetRelativeBalUp = -10;
-      float metcorphiJetRelativeBalUp = -10;
-      float metcorJetRelativeSampleDown = -10;
-      float metcorphiJetRelativeSampleDown = -10;
-      float metcorJetRelativeSampleUp = -10;
-      float metcorphiJetRelativeSampleUp = -10;
-      float metcorRecoilResoUp = -10;
-      float metcorRecoilResoDown = -10;
-      float metcorRecoilRespUp = -10;
-      float metcorRecoilRespDown = -10;
-      float metcorphiRecoilResoUp = -10;
-      float metcorphiRecoilResoDown = -10;
-      float metcorphiRecoilRespUp = -10;
-      float metcorphiRecoilRespDown = -10;
-
+      float metcorrJetEC2UpMET_ex = -10;
+      float metcorrJetEC2UpMET_ey = -10;
+      float metcorrJetEC2DownMET_ex = -10;
+      float metcorrJetEC2DownMET_ey = -10;
+      float metcorrJetEta0to3UpMET_ex = -10;
+      float metcorrJetEta0to3UpMET_ey = -10;
+      float metcorrJetEta0to3DownMET_ex = -10;
+      float metcorrJetEta0to3DownMET_ey = -10;
+      float metcorrJetEta0to5UpMET_ex = -10;
+      float metcorrJetEta0to5UpMET_ey = -10;
+      float metcorrJetEta0to5DownMET_ex = -10;
+      float metcorrJetEta0to5DownMET_ey = -10;
+      float metcorrJetEta3to5UpMET_ex = -10;
+      float metcorrJetEta3to5UpMET_ey = -10;
+      float metcorrJetEta3to5DownMET_ex = -10;
+      float metcorrJetEta3to5DownMET_ey = -10;
+      float metcorrJetRelativeBalUpMET_ex = -10;
+      float metcorrJetRelativeBalUpMET_ey = -10;
+      float metcorrJetRelativeBalDownMET_ex = -10;
+      float metcorrJetRelativeBalDownMET_ey = -10;
+      float metcorrJetRelativeSampleUpMET_ex = -10;
+      float metcorrJetRelativeSampleUpMET_ey = -10;
+      float metcorrJetRelativeSampleDownMET_ex = -10;
+      float metcorrJetRelativeSampleDownMET_ey = -10;
 
       TBranch *newBranch1 = t->Branch("m_sv", &svFitMass, "m_sv/F");
       TBranch *newBranch2 = t->Branch("pt_sv", &svFitPt, "pt_sv/F");
-      TBranch *newBranch3 = t->Branch("eta_sv", &svFitEta, "eta_sv/F");
-      TBranch *newBranch4 = t->Branch("phi_sv", &svFitPhi, "phi_sv/F");
-      TBranch *newBranch5 = t->Branch("met_sv", &svFitMET, "met_sv/F");
-      TBranch *newBranch6 = t->Branch("mt_sv", &svFitTransverseMass, "mt_sv/F");
-      
-      TBranch *newBranch7 = t->Branch("metcorr_ex", &metcorr_ex, "metcorr_ex/F");
-      TBranch *newBranch8 = t->Branch("metcorr_ey", &metcorr_ey, "metcorr_ey/F");
-      TBranch *newBranch9 = t->Branch("metcor", &metcor, "metcor/F");
-      TBranch *newBranch10 = t->Branch("metcorphi", &metcorphi, "metcorphi/F");
       
       // If doing ES shifts, we need extra ouput branches
       //
       float svFitMass_Up = -10;
       float svFitPt_Up = -10;
-      float svFitEta_Up = -10;
-      float svFitPhi_Up = -10;
-      float svFitMET_Up = -10;
-      float svFitTransverseMass_Up = -10;
       float svFitMass_Down = -10;
       float svFitPt_Down = -10;
-      float svFitEta_Down = -10;
-      float svFitPhi_Down = -10;
-      float svFitMET_Down = -10;
-      float svFitTransverseMass_Down = -10;
       
       float svFitMass_DM0_Up = -10;
       float svFitPt_DM0_Up = -10;
-      float svFitEta_DM0_Up = -10;
-      float svFitPhi_DM0_Up = -10;
-      float svFitMET_DM0_Up = -10;
-      float svFitTransverseMass_DM0_Up = -10;
       float svFitMass_DM0_Down = -10;
       float svFitPt_DM0_Down = -10;
-      float svFitEta_DM0_Down = -10;
-      float svFitPhi_DM0_Down = -10;
-      float svFitMET_DM0_Down = -10;
-      float svFitTransverseMass_DM0_Down = -10;
       
       float svFitMass_DM1_Up = -10;
       float svFitPt_DM1_Up = -10;
-      float svFitEta_DM1_Up = -10;
-      float svFitPhi_DM1_Up = -10;
-      float svFitMET_DM1_Up = -10;
-      float svFitTransverseMass_DM1_Up = -10;
       float svFitMass_DM1_Down = -10;
       float svFitPt_DM1_Down = -10;
-      float svFitEta_DM1_Down = -10;
-      float svFitPhi_DM1_Down = -10;
-      float svFitMET_DM1_Down = -10;
-      float svFitTransverseMass_DM1_Down = -10;
 
       float svFitMass_DM10_Up = -10;
       float svFitPt_DM10_Up = -10;
-      float svFitEta_DM10_Up = -10;
-      float svFitPhi_DM10_Up = -10;
-      float svFitMET_DM10_Up = -10;
-      float svFitTransverseMass_DM10_Up = -10;
       float svFitMass_DM10_Down = -10;
       float svFitPt_DM10_Down = -10;
-      float svFitEta_DM10_Down = -10;
-      float svFitPhi_DM10_Down = -10;
-      float svFitMET_DM10_Down = -10;
-      float svFitTransverseMass_DM10_Down = -10;
 
       float svFitMass_LES_DM0_Up = -10;
       float svFitPt_LES_DM0_Up = -10;
-      float svFitEta_LES_DM0_Up = -10;
-      float svFitPhi_LES_DM0_Up = -10;
-      float svFitMET_LES_DM0_Up = -10;
-      float svFitTransverseMass_LES_DM0_Up = -10;
       float svFitMass_LES_DM0_Down = -10;
       float svFitPt_LES_DM0_Down = -10;
-      float svFitEta_LES_DM0_Down = -10;
-      float svFitPhi_LES_DM0_Down = -10;
-      float svFitMET_LES_DM0_Down = -10;
-      float svFitTransverseMass_LES_DM0_Down = -10;
-      
+
       float svFitMass_LES_DM1_Up = -10;
       float svFitPt_LES_DM1_Up = -10;
-      float svFitEta_LES_DM1_Up = -10;
-      float svFitPhi_LES_DM1_Up = -10;
-      float svFitMET_LES_DM1_Up = -10;
-      float svFitTransverseMass_LES_DM1_Up = -10;
       float svFitMass_LES_DM1_Down = -10;
       float svFitPt_LES_DM1_Down = -10;
-      float svFitEta_LES_DM1_Down = -10;
-      float svFitPhi_LES_DM1_Down = -10;
-      float svFitMET_LES_DM1_Down = -10;
-      float svFitTransverseMass_LES_DM1_Down = -10;
 
       float svFitMass_EEScale_Up = -10;
       float svFitPt_EEScale_Up = -10;
-      float svFitEta_EEScale_Up = -10;
-      float svFitPhi_EEScale_Up = -10;
-      float svFitMET_EEScale_Up = -10;
-      float svFitTransverseMass_EEScale_Up = -10;
       float svFitMass_EEScale_Down = -10;
       float svFitPt_EEScale_Down = -10;
-      float svFitEta_EEScale_Down = -10;
-      float svFitPhi_EEScale_Down = -10;
-      float svFitMET_EEScale_Down = -10;
-      float svFitTransverseMass_EEScale_Down = -10;
 
       float svFitMass_EESigma_Up = -10;
       float svFitPt_EESigma_Up = -10;
-      float svFitEta_EESigma_Up = -10;
-      float svFitPhi_EESigma_Up = -10;
-      float svFitMET_EESigma_Up = -10;
-      float svFitTransverseMass_EESigma_Up = -10;
       float svFitMass_EESigma_Down = -10;
       float svFitPt_EESigma_Down = -10;
-      float svFitEta_EESigma_Down = -10;
-      float svFitPhi_EESigma_Down = -10;
-      float svFitMET_EESigma_Down = -10;
-      float svFitTransverseMass_EESigma_Down = -10;
 
       float svFitMass_MESbin1_Up = -10;
       float svFitPt_MESbin1_Up = -10;
-      float svFitEta_MESbin1_Up = -10;
-      float svFitPhi_MESbin1_Up = -10;
-      float svFitMET_MESbin1_Up = -10;
-      float svFitTransverseMass_MESbin1_Up = -10;
       float svFitMass_MESbin1_Down = -10;
       float svFitPt_MESbin1_Down = -10;
-      float svFitEta_MESbin1_Down = -10;
-      float svFitPhi_MESbin1_Down = -10;
-      float svFitMET_MESbin1_Down = -10;
-      float svFitTransverseMass_MESbin1_Down = -10;
 
       float svFitMass_MESbin2_Up = -10;
       float svFitPt_MESbin2_Up = -10;
-      float svFitEta_MESbin2_Up = -10;
-      float svFitPhi_MESbin2_Up = -10;
-      float svFitMET_MESbin2_Up = -10;
-      float svFitTransverseMass_MESbin2_Up = -10;
       float svFitMass_MESbin2_Down = -10;
       float svFitPt_MESbin2_Down = -10;
-      float svFitEta_MESbin2_Down = -10;
-      float svFitPhi_MESbin2_Down = -10;
-      float svFitMET_MESbin2_Down = -10;
-      float svFitTransverseMass_MESbin2_Down = -10;
 
       float svFitMass_MESbin3_Up = -10;
       float svFitPt_MESbin3_Up = -10;
-      float svFitEta_MESbin3_Up = -10;
-      float svFitPhi_MESbin3_Up = -10;
-      float svFitMET_MESbin3_Up = -10;
-      float svFitTransverseMass_MESbin3_Up = -10;
       float svFitMass_MESbin3_Down = -10;
       float svFitPt_MESbin3_Down = -10;
-      float svFitEta_MESbin3_Down = -10;
-      float svFitPhi_MESbin3_Down = -10;
-      float svFitMET_MESbin3_Down = -10;
-      float svFitTransverseMass_MESbin3_Down = -10;
 
       float svFitMass_MESbin4_Up = -10;
       float svFitPt_MESbin4_Up = -10;
-      float svFitEta_MESbin4_Up = -10;
-      float svFitPhi_MESbin4_Up = -10;
-      float svFitMET_MESbin4_Up = -10;
-      float svFitTransverseMass_MESbin4_Up = -10;
       float svFitMass_MESbin4_Down = -10;
       float svFitPt_MESbin4_Down = -10;
-      float svFitEta_MESbin4_Down = -10;
-      float svFitPhi_MESbin4_Down = -10;
-      float svFitMET_MESbin4_Down = -10;
-      float svFitTransverseMass_MESbin4_Down = -10;
 
       float svFitMass_MESbin5_Up = -10;
       float svFitPt_MESbin5_Up = -10;
-      float svFitEta_MESbin5_Up = -10;
-      float svFitPhi_MESbin5_Up = -10;
-      float svFitMET_MESbin5_Up = -10;
-      float svFitTransverseMass_MESbin5_Up = -10;
       float svFitMass_MESbin5_Down = -10;
       float svFitPt_MESbin5_Down = -10;
-      float svFitEta_MESbin5_Down = -10;
-      float svFitPhi_MESbin5_Down = -10;
-      float svFitMET_MESbin5_Down = -10;
-      float svFitTransverseMass_MESbin5_Down = -10;
 
       float svFitMass_UncMet_Up = -10;
       float svFitPt_UncMet_Up = -10;
-      float svFitEta_UncMet_Up = -10;
-      float svFitPhi_UncMet_Up = -10;
-      float svFitMET_UncMet_Up = -10;
-      float svFitTransverseMass_UncMet_Up = -10;
       float svFitMass_UncMet_Down = -10;
       float svFitPt_UncMet_Down = -10;
-      float svFitEta_UncMet_Down = -10;
-      float svFitPhi_UncMet_Down = -10;
-      float svFitMET_UncMet_Down = -10;
-      float svFitTransverseMass_UncMet_Down = -10;
 
       float svFitMass_ClusteredMet_Up = -10;
       float svFitPt_ClusteredMet_Up = -10;
-      float svFitEta_ClusteredMet_Up = -10;
-      float svFitPhi_ClusteredMet_Up = -10;
-      float svFitMET_ClusteredMet_Up = -10;
-      float svFitTransverseMass_ClusteredMet_Up = -10;
       float svFitMass_ClusteredMet_Down = -10;
       float svFitPt_ClusteredMet_Down = -10;
-      float svFitEta_ClusteredMet_Down = -10;
-      float svFitPhi_ClusteredMet_Down = -10;
-      float svFitMET_ClusteredMet_Down = -10;
-      float svFitTransverseMass_ClusteredMet_Down = -10;
       
       float svFitMass_JetEC2_Up = -10;
       float svFitPt_JetEC2_Up = -10;
-      float svFitEta_JetEC2_Up = -10;
-      float svFitPhi_JetEC2_Up = -10;
-      float svFitMET_JetEC2_Up = -10;
-      float svFitTransverseMass_JetEC2_Up = -10;
-
       float svFitMass_JetEC2_Down = -10;
       float svFitPt_JetEC2_Down = -10;
-      float svFitEta_JetEC2_Down = -10;
-      float svFitPhi_JetEC2_Down = -10;
-      float svFitMET_JetEC2_Down = -10;
-      float svFitTransverseMass_JetEC2_Down = -10;
 
       float svFitMass_JetEta0to3_Up = -10;
       float svFitPt_JetEta0to3_Up = -10;
-      float svFitEta_JetEta0to3_Up = -10;
-      float svFitPhi_JetEta0to3_Up = -10;
-      float svFitMET_JetEta0to3_Up = -10;
-      float svFitTransverseMass_JetEta0to3_Up = -10;
-
       float svFitMass_JetEta0to3_Down = -10;
       float svFitPt_JetEta0to3_Down = -10;
-      float svFitEta_JetEta0to3_Down = -10;
-      float svFitPhi_JetEta0to3_Down = -10;
-      float svFitMET_JetEta0to3_Down = -10;
-      float svFitTransverseMass_JetEta0to3_Down = -10;
 
       float svFitMass_JetEta0to5_Up = -10;
       float svFitPt_JetEta0to5_Up = -10;
-      float svFitEta_JetEta0to5_Up = -10;
-      float svFitPhi_JetEta0to5_Up = -10;
-      float svFitMET_JetEta0to5_Up = -10;
-      float svFitTransverseMass_JetEta0to5_Up = -10;
-
       float svFitMass_JetEta0to5_Down = -10;
       float svFitPt_JetEta0to5_Down = -10;
-      float svFitEta_JetEta0to5_Down = -10;
-      float svFitPhi_JetEta0to5_Down = -10;
-      float svFitMET_JetEta0to5_Down = -10;
-      float svFitTransverseMass_JetEta0to5_Down = -10;
 
       float svFitMass_JetEta3to5_Up = -10;
       float svFitPt_JetEta3to5_Up = -10;
-      float svFitEta_JetEta3to5_Up = -10;
-      float svFitPhi_JetEta3to5_Up = -10;
-      float svFitMET_JetEta3to5_Up = -10;
-      float svFitTransverseMass_JetEta3to5_Up = -10;
-
       float svFitMass_JetEta3to5_Down = -10;
       float svFitPt_JetEta3to5_Down = -10;
-      float svFitEta_JetEta3to5_Down = -10;
-      float svFitPhi_JetEta3to5_Down = -10;
-      float svFitMET_JetEta3to5_Down = -10;
-      float svFitTransverseMass_JetEta3to5_Down = -10;
 
       float svFitMass_JetRelativeBal_Up = -10;
       float svFitPt_JetRelativeBal_Up = -10;
-      float svFitEta_JetRelativeBal_Up = -10;
-      float svFitPhi_JetRelativeBal_Up = -10;
-      float svFitMET_JetRelativeBal_Up = -10;
-      float svFitTransverseMass_JetRelativeBal_Up = -10;
-
       float svFitMass_JetRelativeBal_Down = -10;
       float svFitPt_JetRelativeBal_Down = -10;
-      float svFitEta_JetRelativeBal_Down = -10;
-      float svFitPhi_JetRelativeBal_Down = -10;
-      float svFitMET_JetRelativeBal_Down = -10;
-      float svFitTransverseMass_JetRelativeBal_Down = -10;
 
       float svFitMass_JetRelativeSample_Up = -10;
       float svFitPt_JetRelativeSample_Up = -10;
-      float svFitEta_JetRelativeSample_Up = -10;
-      float svFitPhi_JetRelativeSample_Up = -10;
-      float svFitMET_JetRelativeSample_Up = -10;
-      float svFitTransverseMass_JetRelativeSample_Up = -10;
-
       float svFitMass_JetRelativeSample_Down = -10;
       float svFitPt_JetRelativeSample_Down = -10;
-      float svFitEta_JetRelativeSample_Down = -10;
-      float svFitPhi_JetRelativeSample_Down = -10;
-      float svFitMET_JetRelativeSample_Down = -10;
-      float svFitTransverseMass_JetRelativeSample_Down = -10;
 
       float svFitMass_RecoilReso_Up = -10;
       float svFitPt_RecoilReso_Up = -10;
-      float svFitEta_RecoilReso_Up = -10;
-      float svFitPhi_RecoilReso_Up = -10;
-      float svFitMET_RecoilReso_Up = -10;
-      float svFitTransverseMass_RecoilReso_Up = -10;
       float svFitMass_RecoilReso_Down = -10;
       float svFitPt_RecoilReso_Down = -10;
-      float svFitEta_RecoilReso_Down = -10;
-      float svFitPhi_RecoilReso_Down = -10;
-      float svFitMET_RecoilReso_Down = -10;
-      float svFitTransverseMass_RecoilReso_Down = -10;
 
       float svFitMass_RecoilResp_Up = -10;
       float svFitPt_RecoilResp_Up = -10;
-      float svFitEta_RecoilResp_Up = -10;
-      float svFitPhi_RecoilResp_Up = -10;
-      float svFitMET_RecoilResp_Up = -10;
-      float svFitTransverseMass_RecoilResp_Up = -10;
       float svFitMass_RecoilResp_Down = -10;
       float svFitPt_RecoilResp_Down = -10;
-      float svFitEta_RecoilResp_Down = -10;
-      float svFitPhi_RecoilResp_Down = -10;
-      float svFitMET_RecoilResp_Down = -10;
-      float svFitTransverseMass_RecoilResp_Down = -10;
 	
 
-      // tau leptons                                                                                                  
-      // nominal ========================
+      // tau leptons           
+
       float tau1_pt  = -10;
       float tau1_eta = -10;
       float tau1_phi = -10;
@@ -633,846 +373,134 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float tau2_eta = -10;
       float tau2_phi = -10;
       float tau2_m   = -10;
-      // up (whatever it is) ============
-      float tau1_pt_Up  = -10;
-      float tau1_eta_Up = -10;
-      float tau1_phi_Up = -10;
-      float tau1_m_Up   = -10;
-      float tau2_pt_Up  = -10;
-      float tau2_eta_Up = -10;
-      float tau2_phi_Up = -10;
-      float tau2_m_Up   = -10;
-      // down 
-      float tau1_pt_Down  = -10;
-      float tau1_eta_Down = -10;
-      float tau1_phi_Down = -10;
-      float tau1_m_Down   = -10;
-      float tau2_pt_Down  = -10;
-      float tau2_eta_Down = -10;
-      float tau2_phi_Down = -10;
-      float tau2_m_Down   = -10;
-      // up DM0 =========================
-      float tau1_pt_DM0_Up  = -10;
-      float tau1_eta_DM0_Up = -10;
-      float tau1_phi_DM0_Up = -10;
-      float tau1_m_DM0_Up   = -10;
-      float tau2_pt_DM0_Up  = -10;
-      float tau2_eta_DM0_Up = -10;
-      float tau2_phi_DM0_Up = -10;
-      float tau2_m_DM0_Up   = -10;
-      // down 
-      float tau1_pt_DM0_Down  = -10;
-      float tau1_eta_DM0_Down = -10;
-      float tau1_phi_DM0_Down = -10;
-      float tau1_m_DM0_Down   = -10;
-      float tau2_pt_DM0_Down  = -10;
-      float tau2_eta_DM0_Down = -10;
-      float tau2_phi_DM0_Down = -10;
-      float tau2_m_DM0_Down   = -10;
-      // up DM1 =========================
-      float tau1_pt_DM1_Up  = -10;
-      float tau1_eta_DM1_Up = -10;
-      float tau1_phi_DM1_Up = -10;
-      float tau1_m_DM1_Up   = -10;
-      float tau2_pt_DM1_Up  = -10;
-      float tau2_eta_DM1_Up = -10;
-      float tau2_phi_DM1_Up = -10;
-      float tau2_m_DM1_Up   = -10;
-      // down 
-      float tau1_pt_DM1_Down  = -10;
-      float tau1_eta_DM1_Down = -10;
-      float tau1_phi_DM1_Down = -10;
-      float tau1_m_DM1_Down   = -10;
-      float tau2_pt_DM1_Down  = -10;
-      float tau2_eta_DM1_Down = -10;
-      float tau2_phi_DM1_Down = -10;
-      float tau2_m_DM1_Down   = -10;
-      // up DM10 =========================
-      float tau1_pt_DM10_Up  = -10;
-      float tau1_eta_DM10_Up = -10;
-      float tau1_phi_DM10_Up = -10;
-      float tau1_m_DM10_Up   = -10;
-      float tau2_pt_DM10_Up  = -10;
-      float tau2_eta_DM10_Up = -10;
-      float tau2_phi_DM10_Up = -10;
-      float tau2_m_DM10_Up   = -10;
-      // down 
-      float tau1_pt_DM10_Down  = -10;
-      float tau1_eta_DM10_Down = -10;
-      float tau1_phi_DM10_Down = -10;
-      float tau1_m_DM10_Down   = -10;
-      float tau2_pt_DM10_Down  = -10;
-      float tau2_eta_DM10_Down = -10;
-      float tau2_phi_DM10_Down = -10;
-      float tau2_m_DM10_Down   = -10;
-      // up UncMet ========================= 
-      float tau1_pt_UncMet_Up  = -10;
-      float tau1_eta_UncMet_Up = -10;
-      float tau1_phi_UncMet_Up = -10;
-      float tau1_m_UncMet_Up   = -10;
-      float tau2_pt_UncMet_Up  = -10;
-      float tau2_eta_UncMet_Up = -10;
-      float tau2_phi_UncMet_Up = -10;
-      float tau2_m_UncMet_Up   = -10;
-      // down 
-      float tau1_pt_UncMet_Down  = -10;
-      float tau1_eta_UncMet_Down = -10;
-      float tau1_phi_UncMet_Down = -10;
-      float tau1_m_UncMet_Down   = -10;
-      float tau2_pt_UncMet_Down  = -10;
-      float tau2_eta_UncMet_Down = -10;
-      float tau2_phi_UncMet_Down = -10;
-      float tau2_m_UncMet_Down   = -10;
-      // up ClusteredMet ========================= 
-      float tau1_pt_ClusteredMet_Up  = -10;
-      float tau1_eta_ClusteredMet_Up = -10;
-      float tau1_phi_ClusteredMet_Up = -10;
-      float tau1_m_ClusteredMet_Up   = -10;
-      float tau2_pt_ClusteredMet_Up  = -10;
-      float tau2_eta_ClusteredMet_Up = -10;
-      float tau2_phi_ClusteredMet_Up = -10;
-      float tau2_m_ClusteredMet_Up   = -10;
-      // down 
-      float tau1_pt_ClusteredMet_Down  = -10;
-      float tau1_eta_ClusteredMet_Down = -10;
-      float tau1_phi_ClusteredMet_Down = -10;
-      float tau1_m_ClusteredMet_Down   = -10;
-      float tau2_pt_ClusteredMet_Down  = -10;
-      float tau2_eta_ClusteredMet_Down = -10;
-      float tau2_phi_ClusteredMet_Down = -10;
-      float tau2_m_ClusteredMet_Down   = -10;
-      // up JES JetEC2 ========================= 
-      float tau1_pt_JetEC2_Up = -10;
-      float tau1_eta_JetEC2_Up = -10;
-      float tau1_phi_JetEC2_Up = -10;
-      float tau1_m_JetEC2_Up = -10;
-      float tau2_pt_JetEC2_Up = -10;
-      float tau2_eta_JetEC2_Up = -10;
-      float tau2_phi_JetEC2_Up = -10;
-      float tau2_m_JetEC2_Up = -10;
-      // down
-      float tau1_pt_JetEC2_Down = -10;
-      float tau1_eta_JetEC2_Down = -10;
-      float tau1_phi_JetEC2_Down = -10;
-      float tau1_m_JetEC2_Down = -10;
-      float tau2_pt_JetEC2_Down = -10;
-      float tau2_eta_JetEC2_Down = -10;
-      float tau2_phi_JetEC2_Down = -10;
-      float tau2_m_JetEC2_Down = -10;
-      // up JES JetEta0to3 ========================= 
-      float tau1_pt_JetEta0to3_Up = -10;
-      float tau1_eta_JetEta0to3_Up = -10;
-      float tau1_phi_JetEta0to3_Up = -10;
-      float tau1_m_JetEta0to3_Up = -10;
-      float tau2_pt_JetEta0to3_Up = -10;
-      float tau2_eta_JetEta0to3_Up = -10;
-      float tau2_phi_JetEta0to3_Up = -10;
-      float tau2_m_JetEta0to3_Up = -10;
-      // down
-      float tau1_pt_JetEta0to3_Down = -10;
-      float tau1_eta_JetEta0to3_Down = -10;
-      float tau1_phi_JetEta0to3_Down = -10;
-      float tau1_m_JetEta0to3_Down = -10;
-      float tau2_pt_JetEta0to3_Down = -10;
-      float tau2_eta_JetEta0to3_Down = -10;
-      float tau2_phi_JetEta0to3_Down = -10;
-      float tau2_m_JetEta0to3_Down = -10;
-      // up JES JetEta0to5 ========================= 
-      float tau1_pt_JetEta0to5_Up = -10;
-      float tau1_eta_JetEta0to5_Up = -10;
-      float tau1_phi_JetEta0to5_Up = -10;
-      float tau1_m_JetEta0to5_Up = -10;
-      float tau2_pt_JetEta0to5_Up = -10;
-      float tau2_eta_JetEta0to5_Up = -10;
-      float tau2_phi_JetEta0to5_Up = -10;
-      float tau2_m_JetEta0to5_Up = -10;
-      // down
-      float tau1_pt_JetEta0to5_Down = -10;
-      float tau1_eta_JetEta0to5_Down = -10;
-      float tau1_phi_JetEta0to5_Down = -10;
-      float tau1_m_JetEta0to5_Down = -10;
-      float tau2_pt_JetEta0to5_Down = -10;
-      float tau2_eta_JetEta0to5_Down = -10;
-      float tau2_phi_JetEta0to5_Down = -10;
-      float tau2_m_JetEta0to5_Down = -10;
-      // up JES JetEta3to5 ========================= 
-      float tau1_pt_JetEta3to5_Up = -10;
-      float tau1_eta_JetEta3to5_Up = -10;
-      float tau1_phi_JetEta3to5_Up = -10;
-      float tau1_m_JetEta3to5_Up = -10;
-      float tau2_pt_JetEta3to5_Up = -10;
-      float tau2_eta_JetEta3to5_Up = -10;
-      float tau2_phi_JetEta3to5_Up = -10;
-      float tau2_m_JetEta3to5_Up = -10;
-      // down
-      float tau1_pt_JetEta3to5_Down = -10;
-      float tau1_eta_JetEta3to5_Down = -10;
-      float tau1_phi_JetEta3to5_Down = -10;
-      float tau1_m_JetEta3to5_Down = -10;
-      float tau2_pt_JetEta3to5_Down = -10;
-      float tau2_eta_JetEta3to5_Down = -10;
-      float tau2_phi_JetEta3to5_Down = -10;
-      float tau2_m_JetEta3to5_Down = -10;
-      // up JES JetRelativeBal ========================= 
-      float tau1_pt_JetRelativeBal_Up = -10;
-      float tau1_eta_JetRelativeBal_Up = -10;
-      float tau1_phi_JetRelativeBal_Up = -10;
-      float tau1_m_JetRelativeBal_Up = -10;
-      float tau2_pt_JetRelativeBal_Up = -10;
-      float tau2_eta_JetRelativeBal_Up = -10;
-      float tau2_phi_JetRelativeBal_Up = -10;
-      float tau2_m_JetRelativeBal_Up = -10;
-      // down
-      float tau1_pt_JetRelativeBal_Down = -10;
-      float tau1_eta_JetRelativeBal_Down = -10;
-      float tau1_phi_JetRelativeBal_Down = -10;
-      float tau1_m_JetRelativeBal_Down = -10;
-      float tau2_pt_JetRelativeBal_Down = -10;
-      float tau2_eta_JetRelativeBal_Down = -10;
-      float tau2_phi_JetRelativeBal_Down = -10;
-      float tau2_m_JetRelativeBal_Down = -10;
-      // up JES JetRelativeSample ========================= 
-      float tau1_pt_JetRelativeSample_Up = -10;
-      float tau1_eta_JetRelativeSample_Up = -10;
-      float tau1_phi_JetRelativeSample_Up = -10;
-      float tau1_m_JetRelativeSample_Up = -10;
-      float tau2_pt_JetRelativeSample_Up = -10;
-      float tau2_eta_JetRelativeSample_Up = -10;
-      float tau2_phi_JetRelativeSample_Up = -10;
-      float tau2_m_JetRelativeSample_Up = -10;
-      // down
-      float tau1_pt_JetRelativeSample_Down = -10;
-      float tau1_eta_JetRelativeSample_Down = -10;
-      float tau1_phi_JetRelativeSample_Down = -10;
-      float tau1_m_JetRelativeSample_Down = -10;
-      float tau2_pt_JetRelativeSample_Down = -10;
-      float tau2_eta_JetRelativeSample_Down = -10;
-      float tau2_phi_JetRelativeSample_Down = -10;
-      float tau2_m_JetRelativeSample_Down = -10;
 
-      // up RecoilResoUp ========================= 
-      float tau1_pt_RecoilReso_Up = -10;
-      float tau1_eta_RecoilReso_Up = -10;
-      float tau1_phi_RecoilReso_Up = -10;
-      float tau1_m_RecoilReso_Up = -10;
-      float tau2_pt_RecoilReso_Up = -10;
-      float tau2_eta_RecoilReso_Up = -10;
-      float tau2_phi_RecoilReso_Up = -10;
-      float tau2_m_RecoilReso_Up = -10;
-      // down
-      float tau1_pt_RecoilReso_Down = -10;
-      float tau1_eta_RecoilReso_Down = -10;
-      float tau1_phi_RecoilReso_Down = -10;
-      float tau1_m_RecoilReso_Down = -10;
-      float tau2_pt_RecoilReso_Down = -10;
-      float tau2_eta_RecoilReso_Down = -10;
-      float tau2_phi_RecoilReso_Down = -10;
-      float tau2_m_RecoilReso_Down = -10;
+      TBranch *tauBranch1 = t->Branch("tau1_pt", &tau1_pt, "tau1_pt/F");
+      TBranch *tauBranch2 = t->Branch("tau1_eta", &tau1_eta, "tau1_eta/F");
+      TBranch *tauBranch3 = t->Branch("tau1_phi", &tau1_phi, "tau1_phi/F");
+      TBranch *tauBranch4 = t->Branch("tau1_m", &tau1_m, "tau1_m/F");
+      TBranch *tauBranch5 = t->Branch("tau2_pt", &tau2_pt, "tau2_pt/F");
+      TBranch *tauBranch6 = t->Branch("tau2_eta", &tau2_eta, "tau2_eta/F");
+      TBranch *tauBranch7 = t->Branch("tau2_phi", &tau2_phi, "tau2_phi/F");
+      TBranch *tauBranch8 = t->Branch("tau2_m", &tau2_m, "tau2_m/F");
 
-      // up RecoilRespUp ========================= 
-      float tau1_pt_RecoilResp_Up = -10;
-      float tau1_eta_RecoilResp_Up = -10;
-      float tau1_phi_RecoilResp_Up = -10;
-      float tau1_m_RecoilResp_Up = -10;
-      float tau2_pt_RecoilResp_Up = -10;
-      float tau2_eta_RecoilResp_Up = -10;
-      float tau2_phi_RecoilResp_Up = -10;
-      float tau2_m_RecoilResp_Up = -10;
-      // down
-      float tau1_pt_RecoilResp_Down = -10;
-      float tau1_eta_RecoilResp_Down = -10;
-      float tau1_phi_RecoilResp_Down = -10;
-      float tau1_m_RecoilResp_Down = -10;
-      float tau2_pt_RecoilResp_Down = -10;
-      float tau2_eta_RecoilResp_Down = -10;
-      float tau2_phi_RecoilResp_Down = -10;
-      float tau2_m_RecoilResp_Down = -10;
 
-      TBranch *newBranch11 = t->Branch("m_sv_Up", &svFitMass_Up, "m_sv_Up/F");
-      TBranch *newBranch12 = t->Branch("pt_sv_Up", &svFitPt_Up, "pt_sv_Up/F");
-      TBranch *newBranch13 = t->Branch("eta_sv_Up", &svFitEta_Up, "eta_sv_Up/F");
-      TBranch *newBranch14 = t->Branch("phi_sv_Up", &svFitPhi_Up, "phi_sv_Up/F");
-      TBranch *newBranch15 = t->Branch("met_sv_Up", &svFitMET_Up, "met_sv_Up/F");
-      TBranch *newBranch16 = t->Branch("mt_sv_Up", &svFitTransverseMass_Up, "mt_sv_Up/F");
+      TBranch *newDMBranch1 = t->Branch("m_sv_Up", &svFitMass_Up, "m_sv_Up/F");
+      TBranch *newDMBranch2 = t->Branch("pt_sv_Up", &svFitPt_Up, "pt_sv_Up/F");
+      TBranch *newDMBranch3 = t->Branch("m_sv_Down", &svFitMass_Down, "m_sv_Down/F");
+      TBranch *newDMBranch4 = t->Branch("pt_sv_Down", &svFitPt_Down, "pt_sv_Down/F");
 
-      TBranch *newBranch17 = t->Branch("m_sv_Down", &svFitMass_Down, "m_sv_Down/F");
-      TBranch *newBranch18 = t->Branch("pt_sv_Down", &svFitPt_Down, "pt_sv_Down/F");
-      TBranch *newBranch19 = t->Branch("eta_sv_Down", &svFitEta_Down, "eta_sv_Down/F");
-      TBranch *newBranch20 = t->Branch("phi_sv_Down", &svFitPhi_Down, "phi_sv_Down/F");
-      TBranch *newBranch21 = t->Branch("met_sv_Down", &svFitMET_Down, "met_sv_Down/F");
-      TBranch *newBranch22 = t->Branch("mt_sv_Down", &svFitTransverseMass_Down, "mt_sv_Down/F");
+      TBranch *newDM0Branch1 = t->Branch("m_sv_DM0_Up", &svFitMass_DM0_Up, "m_sv_DM0_Up/F");
+      TBranch *newDM0Branch2 = t->Branch("pt_sv_DM0_Up", &svFitPt_DM0_Up, "pt_sv_DM0_Up/F");
+      TBranch *newDM0Branch3 = t->Branch("m_sv_DM0_Down", &svFitMass_DM0_Down, "m_sv_DM0_Down/F");
+      TBranch *newDM0Branch4 = t->Branch("pt_sv_DM0_Down", &svFitPt_DM0_Down, "pt_sv_DM0_Down/F");
 
-      TBranch *newBranch23 = t->Branch("m_sv_DM0_Up", &svFitMass_DM0_Up, "m_sv_DM0_Up/F");
-      TBranch *newBranch24 = t->Branch("pt_sv_DM0_Up", &svFitPt_DM0_Up, "pt_sv_DM0_Up/F");
-      TBranch *newBranch25 = t->Branch("eta_sv_DM0_Up", &svFitEta_DM0_Up, "eta_sv_DM0_Up/F");
-      TBranch *newBranch26 = t->Branch("phi_sv_DM0_Up", &svFitPhi_DM0_Up, "phi_sv_DM0_Up/F");
-      TBranch *newBranch27 = t->Branch("met_sv_DM0_Up", &svFitMET_DM0_Up, "met_sv_DM0_Up/F");
-      TBranch *newBranch28 = t->Branch("mt_sv_DM0_Up", &svFitTransverseMass_DM0_Up, "mt_sv_DM0_Up/F");
+      TBranch *newEEScaleBranch1 = t->Branch("m_sv_EEScale_Up", &svFitMass_EEScale_Up, "m_sv_EEScale_Up/F");
+      TBranch *newEEScaleBranch2 = t->Branch("pt_sv_EEScale_Up", &svFitPt_EEScale_Up, "pt_sv_EEScale_Up/F");
+      TBranch *newEEScaleBranch3 = t->Branch("m_sv_EEScale_Down", &svFitMass_EEScale_Down, "m_sv_EEScale_Down/F");
+      TBranch *newEEScaleBranch4 = t->Branch("pt_sv_EEScale_Down", &svFitPt_EEScale_Down, "pt_sv_EEScale_Down/F");
 
-      TBranch *newBranch29 = t->Branch("m_sv_DM0_Down", &svFitMass_DM0_Down, "m_sv_DM0_Down/F");
-      TBranch *newBranch30 = t->Branch("pt_sv_DM0_Down", &svFitPt_DM0_Down, "pt_sv_DM0_Down/F");
-      TBranch *newBranch31 = t->Branch("eta_sv_DM0_Down", &svFitEta_DM0_Down, "eta_sv_DM0_Down/F");
-      TBranch *newBranch32 = t->Branch("phi_sv_DM0_Down", &svFitPhi_DM0_Down, "phi_sv_DM0_Down/F");
-      TBranch *newBranch33 = t->Branch("met_sv_DM0_Down", &svFitMET_DM0_Down, "met_sv_DM0_Down/F");
-      TBranch *newBranch34 = t->Branch("mt_sv_DM0_Down", &svFitTransverseMass_DM0_Down, "mt_sv_DM0_Down/F");
+      TBranch *newEESigmaBranch1 = t->Branch("m_sv_EESigma_Up", &svFitMass_EESigma_Up, "m_sv_EESigma_Up/F");
+      TBranch *newEESigmaBranch2 = t->Branch("pt_sv_EESigma_Up", &svFitPt_EESigma_Up, "pt_sv_EESigma_Up/F");
+      TBranch *newEESigmaBranch3 = t->Branch("m_sv_EESigma_Down", &svFitMass_EESigma_Down, "m_sv_EESigma_Down/F");
+      TBranch *newEESigmaBranch4 = t->Branch("pt_sv_EESigma_Down", &svFitPt_EESigma_Down, "pt_sv_EESigma_Down/F");
 
-      //
-      TBranch *branchEEScaleUp1 = t->Branch("m_sv_EEScale_Up", &svFitMass_EEScale_Up, "m_sv_EEScale_Up/F");
-      TBranch *branchEEScaleUp2 = t->Branch("pt_sv_EEScale_Up", &svFitPt_EEScale_Up, "pt_sv_EEScale_Up/F");
-      TBranch *branchEEScaleUp3 = t->Branch("eta_sv_EEScale_Up", &svFitEta_EEScale_Up, "eta_sv_EEScale_Up/F");
-      TBranch *branchEEScaleUp4 = t->Branch("phi_sv_EEScale_Up", &svFitPhi_EEScale_Up, "phi_sv_EEScale_Up/F");
-      TBranch *branchEEScaleUp5 = t->Branch("met_sv_EEScale_Up", &svFitMET_EEScale_Up, "met_sv_EEScale_Up/F");
-      TBranch *branchEEScaleUp6 = t->Branch("mt_sv_EEScale_Up", &svFitTransverseMass_EEScale_Up, "mt_sv_EEScale_Up/F");
+      TBranch *newMESbin1Branch1 = t->Branch("m_sv_MESbin1_Up", &svFitMass_MESbin1_Up, "m_sv_MESbin1_Up/F");
+      TBranch *newMESbin1Branch2 = t->Branch("pt_sv_MESbin1_Up", &svFitPt_MESbin1_Up, "pt_sv_MESbin1_Up/F");
+      TBranch *newMESbin1Branch3 = t->Branch("m_sv_MESbin1_Down", &svFitMass_MESbin1_Down, "m_sv_MESbin1_Down/F");
+      TBranch *newMESbin1Branch4 = t->Branch("pt_sv_MESbin1_Down", &svFitPt_MESbin1_Down, "pt_sv_MESbin1_Down/F");
 
-      TBranch *branchEEScaleDn1 = t->Branch("m_sv_EEScale_Down", &svFitMass_EEScale_Down, "m_sv_EEScale_Down/F");
-      TBranch *branchEEScaleDn2 = t->Branch("pt_sv_EEScale_Down", &svFitPt_EEScale_Down, "pt_sv_EEScale_Down/F");
-      TBranch *branchEEScaleDn3 = t->Branch("eta_sv_EEScale_Down", &svFitEta_EEScale_Down, "eta_sv_EEScale_Down/F");
-      TBranch *branchEEScaleDn4 = t->Branch("phi_sv_EEScale_Down", &svFitPhi_EEScale_Down, "phi_sv_EEScale_Down/F");
-      TBranch *branchEEScaleDn5 = t->Branch("met_sv_EEScale_Down", &svFitMET_EEScale_Down, "met_sv_EEScale_Down/F");
-      TBranch *branchEEScaleDn6 = t->Branch("mt_sv_EEScale_Down", &svFitTransverseMass_EEScale_Down, "mt_sv_EEScale_Down/F");
+      TBranch *newMESbin2Branch1 = t->Branch("m_sv_MESbin2_Up", &svFitMass_MESbin2_Up, "m_sv_MESbin2_Up/F");
+      TBranch *newMESbin2Branch2 = t->Branch("pt_sv_MESbin2_Up", &svFitPt_MESbin2_Up, "pt_sv_MESbin2_Up/F");
+      TBranch *newMESbin2Branch3 = t->Branch("m_sv_MESbin2_Down", &svFitMass_MESbin2_Down, "m_sv_MESbin2_Down/F");
+      TBranch *newMESbin2Branch4 = t->Branch("pt_sv_MESbin2_Down", &svFitPt_MESbin2_Down, "pt_sv_MESbin2_Down/F");
 
-      TBranch *branchEESigmaUp1 = t->Branch("m_sv_EESigma_Up", &svFitMass_EESigma_Up, "m_sv_EESigma_Up/F");
-      TBranch *branchEESigmaUp2 = t->Branch("pt_sv_EESigma_Up", &svFitPt_EESigma_Up, "pt_sv_EESigma_Up/F");
-      TBranch *branchEESigmaUp3 = t->Branch("eta_sv_EESigma_Up", &svFitEta_EESigma_Up, "eta_sv_EESigma_Up/F");
-      TBranch *branchEESigmaUp4 = t->Branch("phi_sv_EESigma_Up", &svFitPhi_EESigma_Up, "phi_sv_EESigma_Up/F");
-      TBranch *branchEESigmaUp5 = t->Branch("met_sv_EESigma_Up", &svFitMET_EESigma_Up, "met_sv_EESigma_Up/F");
-      TBranch *branchEESigmaUp6 = t->Branch("mt_sv_EESigma_Up", &svFitTransverseMass_EESigma_Up, "mt_sv_EESigma_Up/F");
+      TBranch *newMESbin3Branch1 = t->Branch("m_sv_MESbin3_Up", &svFitMass_MESbin3_Up, "m_sv_MESbin3_Up/F");
+      TBranch *newMESbin3Branch2 = t->Branch("pt_sv_MESbin3_Up", &svFitPt_MESbin3_Up, "pt_sv_MESbin3_Up/F");
+      TBranch *newMESbin3Branch3 = t->Branch("m_sv_MESbin3_Down", &svFitMass_MESbin3_Down, "m_sv_MESbin3_Down/F");
+      TBranch *newMESbin3Branch4 = t->Branch("pt_sv_MESbin3_Down", &svFitPt_MESbin3_Down, "pt_sv_MESbin3_Down/F");
 
-      TBranch *branchEESigmaDn1 = t->Branch("m_sv_EESigma_Down", &svFitMass_EESigma_Down, "m_sv_EESigma_Down/F");
-      TBranch *branchEESigmaDn2 = t->Branch("pt_sv_EESigma_Down", &svFitPt_EESigma_Down, "pt_sv_EESigma_Down/F");
-      TBranch *branchEESigmaDn3 = t->Branch("eta_sv_EESigma_Down", &svFitEta_EESigma_Down, "eta_sv_EESigma_Down/F");
-      TBranch *branchEESigmaDn4 = t->Branch("phi_sv_EESigma_Down", &svFitPhi_EESigma_Down, "phi_sv_EESigma_Down/F");
-      TBranch *branchEESigmaDn5 = t->Branch("met_sv_EESigma_Down", &svFitMET_EESigma_Down, "met_sv_EESigma_Down/F");
-      TBranch *branchEESigmaDn6 = t->Branch("mt_sv_EESigma_Down", &svFitTransverseMass_EESigma_Down, "mt_sv_EESigma_Down/F");
+      TBranch *newMESbin4Branch1 = t->Branch("m_sv_MESbin4_Up", &svFitMass_MESbin4_Up, "m_sv_MESbin4_Up/F");
+      TBranch *newMESbin4Branch2 = t->Branch("pt_sv_MESbin4_Up", &svFitPt_MESbin4_Up, "pt_sv_MESbin4_Up/F");
+      TBranch *newMESbin4Branch3 = t->Branch("m_sv_MESbin4_Down", &svFitMass_MESbin4_Down, "m_sv_MESbin4_Down/F");
+      TBranch *newMESbin4Branch4 = t->Branch("pt_sv_MESbin4_Down", &svFitPt_MESbin4_Down, "pt_sv_MESbin4_Down/F");
 
-      TBranch *branchMESbin1Up1 = t->Branch("m_sv_MESbin1_Up", &svFitMass_MESbin1_Up, "m_sv_MESbin1_Up/F");
-      TBranch *branchMESbin1Up2 = t->Branch("pt_sv_MESbin1_Up", &svFitPt_MESbin1_Up, "pt_sv_MESbin1_Up/F");
-      TBranch *branchMESbin1Up3 = t->Branch("eta_sv_MESbin1_Up", &svFitEta_MESbin1_Up, "eta_sv_MESbin1_Up/F");
-      TBranch *branchMESbin1Up4 = t->Branch("phi_sv_MESbin1_Up", &svFitPhi_MESbin1_Up, "phi_sv_MESbin1_Up/F");
-      TBranch *branchMESbin1Up5 = t->Branch("met_sv_MESbin1_Up", &svFitMET_MESbin1_Up, "met_sv_MESbin1_Up/F");
-      TBranch *branchMESbin1Up6 = t->Branch("mt_sv_MESbin1_Up", &svFitTransverseMass_MESbin1_Up, "mt_sv_MESbin1_Up/F");
+      TBranch *newMESbin5Branch1 = t->Branch("m_sv_MESbin5_Up", &svFitMass_MESbin5_Up, "m_sv_MESbin5_Up/F");
+      TBranch *newMESbin5Branch2 = t->Branch("pt_sv_MESbin5_Up", &svFitPt_MESbin5_Up, "pt_sv_MESbin5_Up/F");
+      TBranch *newMESbin5Branch3 = t->Branch("m_sv_MESbin5_Down", &svFitMass_MESbin5_Down, "m_sv_MESbin5_Down/F");
+      TBranch *newMESbin5Branch4 = t->Branch("pt_sv_MESbin5_Down", &svFitPt_MESbin5_Down, "pt_sv_MESbin5_Down/F");
 
-      TBranch *branchMESbin1Dn1 = t->Branch("m_sv_MESbin1_Down", &svFitMass_MESbin1_Down, "m_sv_MESbin1_Down/F");
-      TBranch *branchMESbin1Dn2 = t->Branch("pt_sv_MESbin1_Down", &svFitPt_MESbin1_Down, "pt_sv_MESbin1_Down/F");
-      TBranch *branchMESbin1Dn3 = t->Branch("eta_sv_MESbin1_Down", &svFitEta_MESbin1_Down, "eta_sv_MESbin1_Down/F");
-      TBranch *branchMESbin1Dn4 = t->Branch("phi_sv_MESbin1_Down", &svFitPhi_MESbin1_Down, "phi_sv_MESbin1_Down/F");
-      TBranch *branchMESbin1Dn5 = t->Branch("met_sv_MESbin1_Down", &svFitMET_MESbin1_Down, "met_sv_MESbin1_Down/F");
-      TBranch *branchMESbin1Dn6 = t->Branch("mt_sv_MESbin1_Down", &svFitTransverseMass_MESbin1_Down, "mt_sv_MESbin1_Down/F");
+      TBranch *newDM1Branch1 = t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F");
+      TBranch *newDM1Branch2 = t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F");
+      TBranch *newDM1Branch3 = t->Branch("m_sv_DM1_Down", &svFitMass_DM1_Down, "m_sv_DM1_Down/F");
+      TBranch *newDM1Branch4 = t->Branch("pt_sv_DM1_Down", &svFitPt_DM1_Down, "pt_sv_DM1_Down/F");
 
-      TBranch *branchMESbin2Up1 = t->Branch("m_sv_MESbin2_Up", &svFitMass_MESbin2_Up, "m_sv_MESbin2_Up/F");
-      TBranch *branchMESbin2Up2 = t->Branch("pt_sv_MESbin2_Up", &svFitPt_MESbin2_Up, "pt_sv_MESbin2_Up/F");
-      TBranch *branchMESbin2Up3 = t->Branch("eta_sv_MESbin2_Up", &svFitEta_MESbin2_Up, "eta_sv_MESbin2_Up/F");
-      TBranch *branchMESbin2Up4 = t->Branch("phi_sv_MESbin2_Up", &svFitPhi_MESbin2_Up, "phi_sv_MESbin2_Up/F");
-      TBranch *branchMESbin2Up5 = t->Branch("met_sv_MESbin2_Up", &svFitMET_MESbin2_Up, "met_sv_MESbin2_Up/F");
-      TBranch *branchMESbin2Up6 = t->Branch("mt_sv_MESbin2_Up", &svFitTransverseMass_MESbin2_Up, "mt_sv_MESbin2_Up/F");
+      TBranch *newDM10Branch1 = t->Branch("m_sv_DM10_Up", &svFitMass_DM10_Up, "m_sv_DM10_Up/F");
+      TBranch *newDM10Branch2 = t->Branch("pt_sv_DM10_Up", &svFitPt_DM10_Up, "pt_sv_DM10_Up/F");
+      TBranch *newDM10Branch3 = t->Branch("m_sv_DM10_Down", &svFitMass_DM10_Down, "m_sv_DM10_Down/F");
+      TBranch *newDM10Branch4 = t->Branch("pt_sv_DM10_Down", &svFitPt_DM10_Down, "pt_sv_DM10_Down/F");
 
-      TBranch *branchMESbin2Dn1 = t->Branch("m_sv_MESbin2_Down", &svFitMass_MESbin2_Down, "m_sv_MESbin2_Down/F");
-      TBranch *branchMESbin2Dn2 = t->Branch("pt_sv_MESbin2_Down", &svFitPt_MESbin2_Down, "pt_sv_MESbin2_Down/F");
-      TBranch *branchMESbin2Dn3 = t->Branch("eta_sv_MESbin2_Down", &svFitEta_MESbin2_Down, "eta_sv_MESbin2_Down/F");
-      TBranch *branchMESbin2Dn4 = t->Branch("phi_sv_MESbin2_Down", &svFitPhi_MESbin2_Down, "phi_sv_MESbin2_Down/F");
-      TBranch *branchMESbin2Dn5 = t->Branch("met_sv_MESbin2_Down", &svFitMET_MESbin2_Down, "met_sv_MESbin2_Down/F");
-      TBranch *branchMESbin2Dn6 = t->Branch("mt_sv_MESbin2_Down", &svFitTransverseMass_MESbin2_Down, "mt_sv_MESbin2_Down/F");
+      TBranch *newLESDM0Branch1 = t->Branch("m_sv_LES_DM0_Up", &svFitMass_LES_DM0_Up, "m_sv_LES_DM0_Up/F");
+      TBranch *newLESDM0Branch2 = t->Branch("pt_sv_LES_DM0_Up", &svFitPt_LES_DM0_Up, "pt_sv_LES_DM0_Up/F");
+      TBranch *newLESDM0Branch3 = t->Branch("m_sv_LES_DM0_Down", &svFitMass_LES_DM0_Down, "m_sv_LES_DM0_Down/F");
+      TBranch *newLESDM0Branch4 = t->Branch("pt_sv_LES_DM0_Down", &svFitPt_LES_DM0_Down, "pt_sv_LES_DM0_Down/F");
 
-      TBranch *branchMESbin3Up1 = t->Branch("m_sv_MESbin3_Up", &svFitMass_MESbin3_Up, "m_sv_MESbin3_Up/F");
-      TBranch *branchMESbin3Up2 = t->Branch("pt_sv_MESbin3_Up", &svFitPt_MESbin3_Up, "pt_sv_MESbin3_Up/F");
-      TBranch *branchMESbin3Up3 = t->Branch("eta_sv_MESbin3_Up", &svFitEta_MESbin3_Up, "eta_sv_MESbin3_Up/F");
-      TBranch *branchMESbin3Up4 = t->Branch("phi_sv_MESbin3_Up", &svFitPhi_MESbin3_Up, "phi_sv_MESbin3_Up/F");
-      TBranch *branchMESbin3Up5 = t->Branch("met_sv_MESbin3_Up", &svFitMET_MESbin3_Up, "met_sv_MESbin3_Up/F");
-      TBranch *branchMESbin3Up6 = t->Branch("mt_sv_MESbin3_Up", &svFitTransverseMass_MESbin3_Up, "mt_sv_MESbin3_Up/F");
+      TBranch *newLESDM1Branch1 = t->Branch("m_sv_LES_DM1_Up", &svFitMass_LES_DM1_Up, "m_sv_LES_DM1_Up/F");
+      TBranch *newLESDM1Branch2 = t->Branch("pt_sv_LES_DM1_Up", &svFitPt_LES_DM1_Up, "pt_sv_LES_DM1_Up/F");
+      TBranch *newLESDM1Branch3 = t->Branch("m_sv_LES_DM1_Down", &svFitMass_LES_DM1_Down, "m_sv_LES_DM1_Down/F");
+      TBranch *newLESDM1Branch4 = t->Branch("pt_sv_LES_DM1_Down", &svFitPt_LES_DM1_Down, "pt_sv_LES_DM1_Down/F");
 
-      TBranch *branchMESbin3Dn1 = t->Branch("m_sv_MESbin3_Down", &svFitMass_MESbin3_Down, "m_sv_MESbin3_Down/F");
-      TBranch *branchMESbin3Dn2 = t->Branch("pt_sv_MESbin3_Down", &svFitPt_MESbin3_Down, "pt_sv_MESbin3_Down/F");
-      TBranch *branchMESbin3Dn3 = t->Branch("eta_sv_MESbin3_Down", &svFitEta_MESbin3_Down, "eta_sv_MESbin3_Down/F");
-      TBranch *branchMESbin3Dn4 = t->Branch("phi_sv_MESbin3_Down", &svFitPhi_MESbin3_Down, "phi_sv_MESbin3_Down/F");
-      TBranch *branchMESbin3Dn5 = t->Branch("met_sv_MESbin3_Down", &svFitMET_MESbin3_Down, "met_sv_MESbin3_Down/F");
-      TBranch *branchMESbin3Dn6 = t->Branch("mt_sv_MESbin3_Down", &svFitTransverseMass_MESbin3_Down, "mt_sv_MESbin3_Down/F");
+      TBranch *newUncMetBranch1 = t->Branch("m_sv_UncMet_Up", &svFitMass_UncMet_Up, "m_sv_UncMet_Up/F");
+      TBranch *newUncMetBranch2 = t->Branch("pt_sv_UncMet_Up", &svFitPt_UncMet_Up, "pt_sv_UncMet_Up/F");
+      TBranch *newUncMetBranch3 = t->Branch("m_sv_UncMet_Down", &svFitMass_UncMet_Down, "m_sv_UncMet_Down/F");
+      TBranch *newUncMetBranch4 = t->Branch("pt_sv_UncMet_Down", &svFitPt_UncMet_Down, "pt_sv_UncMet_Down/F");
 
-      TBranch *branchMESbin4Up1 = t->Branch("m_sv_MESbin4_Up", &svFitMass_MESbin4_Up, "m_sv_MESbin4_Up/F");
-      TBranch *branchMESbin4Up2 = t->Branch("pt_sv_MESbin4_Up", &svFitPt_MESbin4_Up, "pt_sv_MESbin4_Up/F");
-      TBranch *branchMESbin4Up3 = t->Branch("eta_sv_MESbin4_Up", &svFitEta_MESbin4_Up, "eta_sv_MESbin4_Up/F");
-      TBranch *branchMESbin4Up4 = t->Branch("phi_sv_MESbin4_Up", &svFitPhi_MESbin4_Up, "phi_sv_MESbin4_Up/F");
-      TBranch *branchMESbin4Up5 = t->Branch("met_sv_MESbin4_Up", &svFitMET_MESbin4_Up, "met_sv_MESbin4_Up/F");
-      TBranch *branchMESbin4Up6 = t->Branch("mt_sv_MESbin4_Up", &svFitTransverseMass_MESbin4_Up, "mt_sv_MESbin4_Up/F");
+      TBranch *newClusteredMetBranch1 = t->Branch("m_sv_ClusteredMet_Up", &svFitMass_ClusteredMet_Up, "m_sv_ClusteredMet_Up/F");
+      TBranch *newClusteredMetBranch2 = t->Branch("pt_sv_ClusteredMet_Up", &svFitPt_ClusteredMet_Up, "pt_sv_ClusteredMet_Up/F");
+      TBranch *newClusteredMetBranch3 = t->Branch("m_sv_ClusteredMet_Down", &svFitMass_ClusteredMet_Down, "m_sv_ClusteredMet_Down/F");
+      TBranch *newClusteredMetBranch4 = t->Branch("pt_sv_ClusteredMet_Down", &svFitPt_ClusteredMet_Down, "pt_sv_ClusteredMet_Down/F");
 
-      TBranch *branchMESbin4Dn1 = t->Branch("m_sv_MESbin4_Down", &svFitMass_MESbin4_Down, "m_sv_MESbin4_Down/F");
-      TBranch *branchMESbin4Dn2 = t->Branch("pt_sv_MESbin4_Down", &svFitPt_MESbin4_Down, "pt_sv_MESbin4_Down/F");
-      TBranch *branchMESbin4Dn3 = t->Branch("eta_sv_MESbin4_Down", &svFitEta_MESbin4_Down, "eta_sv_MESbin4_Down/F");
-      TBranch *branchMESbin4Dn4 = t->Branch("phi_sv_MESbin4_Down", &svFitPhi_MESbin4_Down, "phi_sv_MESbin4_Down/F");
-      TBranch *branchMESbin4Dn5 = t->Branch("met_sv_MESbin4_Down", &svFitMET_MESbin4_Down, "met_sv_MESbin4_Down/F");
-      TBranch *branchMESbin4Dn6 = t->Branch("mt_sv_MESbin4_Down", &svFitTransverseMass_MESbin4_Down, "mt_sv_MESbin4_Down/F");
+      TBranch *newJetEC2Branch1 = t->Branch("m_sv_JetEC2_Up", &svFitMass_JetEC2_Up, "m_sv_JetEC2_Up/F");
+      TBranch *newJetEC2Branch2 = t->Branch("pt_sv_JetEC2_Up", &svFitPt_JetEC2_Up, "pt_sv_JetEC2_Up/F");
+      TBranch *newJetEC2Branch3 = t->Branch("m_sv_JetEC2_Down", &svFitMass_JetEC2_Down, "m_sv_JetEC2_Down/F");
+      TBranch *newJetEC2Branch4 = t->Branch("pt_sv_JetEC2_Down", &svFitPt_JetEC2_Down, "pt_sv_JetEC2_Down/F");
 
-      TBranch *branchMESbin5Up1 = t->Branch("m_sv_MESbin5_Up", &svFitMass_MESbin5_Up, "m_sv_MESbin5_Up/F");
-      TBranch *branchMESbin5Up2 = t->Branch("pt_sv_MESbin5_Up", &svFitPt_MESbin5_Up, "pt_sv_MESbin5_Up/F");
-      TBranch *branchMESbin5Up3 = t->Branch("eta_sv_MESbin5_Up", &svFitEta_MESbin5_Up, "eta_sv_MESbin5_Up/F");
-      TBranch *branchMESbin5Up4 = t->Branch("phi_sv_MESbin5_Up", &svFitPhi_MESbin5_Up, "phi_sv_MESbin5_Up/F");
-      TBranch *branchMESbin5Up5 = t->Branch("met_sv_MESbin5_Up", &svFitMET_MESbin5_Up, "met_sv_MESbin5_Up/F");
-      TBranch *branchMESbin5Up6 = t->Branch("mt_sv_MESbin5_Up", &svFitTransverseMass_MESbin5_Up, "mt_sv_MESbin5_Up/F");
+      TBranch *newJetEta0to3Branch1 = t->Branch("m_sv_JetEta0to3_Up", &svFitMass_JetEta0to3_Up, "m_sv_JetEta0to3_Up/F");
+      TBranch *newJetEta0to3Branch2 = t->Branch("pt_sv_JetEta0to3_Up", &svFitPt_JetEta0to3_Up, "pt_sv_JetEta0to3_Up/F");
+      TBranch *newJetEta0to3Branch3 = t->Branch("m_sv_JetEta0to3_Down", &svFitMass_JetEta0to3_Down, "m_sv_JetEta0to3_Down/F");
+      TBranch *newJetEta0to3Branch4 = t->Branch("pt_sv_JetEta0to3_Down", &svFitPt_JetEta0to3_Down, "pt_sv_JetEta0to3_Down/F");
 
-      TBranch *branchMESbin5Dn1 = t->Branch("m_sv_MESbin5_Down", &svFitMass_MESbin5_Down, "m_sv_MESbin5_Down/F");
-      TBranch *branchMESbin5Dn2 = t->Branch("pt_sv_MESbin5_Down", &svFitPt_MESbin5_Down, "pt_sv_MESbin5_Down/F");
-      TBranch *branchMESbin5Dn3 = t->Branch("eta_sv_MESbin5_Down", &svFitEta_MESbin5_Down, "eta_sv_MESbin5_Down/F");
-      TBranch *branchMESbin5Dn4 = t->Branch("phi_sv_MESbin5_Down", &svFitPhi_MESbin5_Down, "phi_sv_MESbin5_Down/F");
-      TBranch *branchMESbin5Dn5 = t->Branch("met_sv_MESbin5_Down", &svFitMET_MESbin5_Down, "met_sv_MESbin5_Down/F");
-      TBranch *branchMESbin5Dn6 = t->Branch("mt_sv_MESbin5_Down", &svFitTransverseMass_MESbin5_Down, "mt_sv_MESbin5_Down/F");
+      TBranch *newJetEta0to5Branch1 = t->Branch("m_sv_JetEta0to5_Up", &svFitMass_JetEta0to5_Up, "m_sv_JetEta0to5_Up/F");
+      TBranch *newJetEta0to5Branch2 = t->Branch("pt_sv_JetEta0to5_Up", &svFitPt_JetEta0to5_Up, "pt_sv_JetEta0to5_Up/F");
+      TBranch *newJetEta0to5Branch3 = t->Branch("m_sv_JetEta0to5_Down", &svFitMass_JetEta0to5_Down, "m_sv_JetEta0to5_Down/F");
+      TBranch *newJetEta0to5Branch4 = t->Branch("pt_sv_JetEta0to5_Down", &svFitPt_JetEta0to5_Down, "pt_sv_JetEta0to5_Down/F");
 
-      TBranch *newBranch35 = t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F");
-      TBranch *newBranch36 = t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F");
-      TBranch *newBranch37 = t->Branch("eta_sv_DM1_Up", &svFitEta_DM1_Up, "eta_sv_DM1_Up/F");
-      TBranch *newBranch38 = t->Branch("phi_sv_DM1_Up", &svFitPhi_DM1_Up, "phi_sv_DM1_Up/F");
-      TBranch *newBranch39 = t->Branch("met_sv_DM1_Up", &svFitMET_DM1_Up, "met_sv_DM1_Up/F");
-      TBranch *newBranch40 = t->Branch("mt_sv_DM1_Up", &svFitTransverseMass_DM1_Up, "mt_sv_DM1_Up/F");
+      TBranch *newJetEta3to5Branch1 = t->Branch("m_sv_JetEta3to5_Up", &svFitMass_JetEta3to5_Up, "m_sv_JetEta3to5_Up/F");
+      TBranch *newJetEta3to5Branch2 = t->Branch("pt_sv_JetEta3to5_Up", &svFitPt_JetEta3to5_Up, "pt_sv_JetEta3to5_Up/F");
+      TBranch *newJetEta3to5Branch3 = t->Branch("m_sv_JetEta3to5_Down", &svFitMass_JetEta3to5_Down, "m_sv_JetEta3to5_Down/F");
+      TBranch *newJetEta3to5Branch4 = t->Branch("pt_sv_JetEta3to5_Down", &svFitPt_JetEta3to5_Down, "pt_sv_JetEta3to5_Down/F");
 
-      TBranch *newBranch41 = t->Branch("m_sv_DM1_Down", &svFitMass_DM1_Down, "m_sv_DM1_Down/F");
-      TBranch *newBranch42 = t->Branch("pt_sv_DM1_Down", &svFitPt_DM1_Down, "pt_sv_DM1_Down/F");
-      TBranch *newBranch43 = t->Branch("eta_sv_DM1_Down", &svFitEta_DM1_Down, "eta_sv_DM1_Down/F");
-      TBranch *newBranch44 = t->Branch("phi_sv_DM1_Down", &svFitPhi_DM1_Down, "phi_sv_DM1_Down/F");
-      TBranch *newBranch45 = t->Branch("met_sv_DM1_Down", &svFitMET_DM1_Down, "met_sv_DM1_Down/F");
-      TBranch *newBranch46 = t->Branch("mt_sv_DM1_Down", &svFitTransverseMass_DM1_Down, "mt_sv_DM1_Down/F");
+      TBranch *newJetRelativeBalBranch1 = t->Branch("m_sv_JetRelativeBal_Up", &svFitMass_JetRelativeBal_Up, "m_sv_JetRelativeBal_Up/F");
+      TBranch *newJetRelativeBalBranch2 = t->Branch("pt_sv_JetRelativeBal_Up", &svFitPt_JetRelativeBal_Up, "pt_sv_JetRelativeBal_Up/F");
+      TBranch *newJetRelativeBalBranch3 = t->Branch("m_sv_JetRelativeBal_Down", &svFitMass_JetRelativeBal_Down, "m_sv_JetRelativeBal_Down/F");
+      TBranch *newJetRelativeBalBranch4 = t->Branch("pt_sv_JetRelativeBal_Down", &svFitPt_JetRelativeBal_Down, "pt_sv_JetRelativeBal_Down/F");
 
-      TBranch *newBranch47 = t->Branch("m_sv_DM10_Up", &svFitMass_DM10_Up, "m_sv_DM10_Up/F");
-      TBranch *newBranch48 = t->Branch("pt_sv_DM10_Up", &svFitPt_DM10_Up, "pt_sv_DM10_Up/F");
-      TBranch *newBranch49 = t->Branch("eta_sv_DM10_Up", &svFitEta_DM10_Up, "eta_sv_DM10_Up/F");
-      TBranch *newBranch50 = t->Branch("phi_sv_DM10_Up", &svFitPhi_DM10_Up, "phi_sv_DM10_Up/F");
-      TBranch *newBranch51 = t->Branch("met_sv_DM10_Up", &svFitMET_DM10_Up, "met_sv_DM10_Up/F");
-      TBranch *newBranch52 = t->Branch("mt_sv_DM10_Up", &svFitTransverseMass_DM10_Up, "mt_sv_DM10_Up/F");
+      TBranch *newJetRelativeSampleBranch1 = t->Branch("m_sv_JetRelativeSample_Up", &svFitMass_JetRelativeSample_Up, "m_sv_JetRelativeSample_Up/F");
+      TBranch *newJetRelativeSampleBranch2 = t->Branch("pt_sv_JetRelativeSample_Up", &svFitPt_JetRelativeSample_Up, "pt_sv_JetRelativeSample_Up/F");
+      TBranch *newJetRelativeSampleBranch3 = t->Branch("m_sv_JetRelativeSample_Down", &svFitMass_JetRelativeSample_Down, "m_sv_JetRelativeSample_Down/F");
+      TBranch *newJetRelativeSampleBranch4 = t->Branch("pt_sv_JetRelativeSample_Down", &svFitPt_JetRelativeSample_Down, "pt_sv_JetRelativeSample_Down/F");
 
-      TBranch *newBranch53 = t->Branch("m_sv_DM10_Down", &svFitMass_DM10_Down, "m_sv_DM10_Down/F");
-      TBranch *newBranch54 = t->Branch("pt_sv_DM10_Down", &svFitPt_DM10_Down, "pt_sv_DM10_Down/F");
-      TBranch *newBranch55 = t->Branch("eta_sv_DM10_Down", &svFitEta_DM10_Down, "eta_sv_DM10_Down/F");
-      TBranch *newBranch56 = t->Branch("phi_sv_DM10_Down", &svFitPhi_DM10_Down, "phi_sv_DM10_Down/F");
-      TBranch *newBranch57 = t->Branch("met_sv_DM10_Down", &svFitMET_DM10_Down, "met_sv_DM10_Down/F");
-      TBranch *newBranch58 = t->Branch("mt_sv_DM10_Down", &svFitTransverseMass_DM10_Down, "mt_sv_DM10_Down/F");
+      TBranch *newRecoilResoBranch1 = t->Branch("m_sv_RecoilReso_Up", &svFitMass_RecoilReso_Up, "m_sv_RecoilReso_Up/F");
+      TBranch *newRecoilResoBranch2 = t->Branch("pt_sv_RecoilReso_Up", &svFitPt_RecoilReso_Up, "pt_sv_RecoilReso_Up/F");
+      TBranch *newRecoilResoBranch3 = t->Branch("m_sv_RecoilReso_Down", &svFitMass_RecoilReso_Down, "m_sv_RecoilReso_Down/F");
+      TBranch *newRecoilResoBranch4 = t->Branch("pt_sv_RecoilReso_Down", &svFitPt_RecoilReso_Down, "pt_sv_RecoilReso_Down/F");
 
-      TBranch *newLESBranch23 = t->Branch("m_sv_LES_DM0_Up", &svFitMass_LES_DM0_Up, "m_sv_LES_DM0_Up/F");
-      TBranch *newLESBranch24 = t->Branch("pt_sv_LES_DM0_Up", &svFitPt_LES_DM0_Up, "pt_sv_LES_DM0_Up/F");
-      TBranch *newLESBranch25 = t->Branch("eta_sv_LES_DM0_Up", &svFitEta_LES_DM0_Up, "eta_sv_LES_DM0_Up/F");
-      TBranch *newLESBranch26 = t->Branch("phi_sv_LES_DM0_Up", &svFitPhi_LES_DM0_Up, "phi_sv_LES_DM0_Up/F");
-      TBranch *newLESBranch27 = t->Branch("met_sv_LES_DM0_Up", &svFitMET_LES_DM0_Up, "met_sv_LES_DM0_Up/F");
-      TBranch *newLESBranch28 = t->Branch("mt_sv_LES_DM0_Up", &svFitTransverseMass_LES_DM0_Up, "mt_sv_LES_DM0_Up/F");
-
-      TBranch *newLESBranch29 = t->Branch("m_sv_LES_DM0_Down", &svFitMass_LES_DM0_Down, "m_sv_LES_DM0_Down/F");
-      TBranch *newLESBranch30 = t->Branch("pt_sv_LES_DM0_Down", &svFitPt_LES_DM0_Down, "pt_sv_LES_DM0_Down/F");
-      TBranch *newLESBranch31 = t->Branch("eta_sv_LES_DM0_Down", &svFitEta_LES_DM0_Down, "eta_sv_LES_DM0_Down/F");
-      TBranch *newLESBranch32 = t->Branch("phi_sv_LES_DM0_Down", &svFitPhi_LES_DM0_Down, "phi_sv_LES_DM0_Down/F");
-      TBranch *newLESBranch33 = t->Branch("met_sv_LES_DM0_Down", &svFitMET_LES_DM0_Down, "met_sv_LES_DM0_Down/F");
-      TBranch *newLESBranch34 = t->Branch("mt_sv_LES_DM0_Down", &svFitTransverseMass_LES_DM0_Down, "mt_sv_LES_DM0_Down/F");
-
-      TBranch *newLESBranch35 = t->Branch("m_sv_LES_DM1_Up", &svFitMass_LES_DM1_Up, "m_sv_LES_DM1_Up/F");
-      TBranch *newLESBranch36 = t->Branch("pt_sv_LES_DM1_Up", &svFitPt_LES_DM1_Up, "pt_sv_LES_DM1_Up/F");
-      TBranch *newLESBranch37 = t->Branch("eta_sv_LES_DM1_Up", &svFitEta_LES_DM1_Up, "eta_sv_LES_DM1_Up/F");
-      TBranch *newLESBranch38 = t->Branch("phi_sv_LES_DM1_Up", &svFitPhi_LES_DM1_Up, "phi_sv_LES_DM1_Up/F");
-      TBranch *newLESBranch39 = t->Branch("met_sv_LES_DM1_Up", &svFitMET_LES_DM1_Up, "met_sv_LES_DM1_Up/F");
-      TBranch *newLESBranch40 = t->Branch("mt_sv_LES_DM1_Up", &svFitTransverseMass_LES_DM1_Up, "mt_sv_LES_DM1_Up/F");
-
-      TBranch *newLESBranch41 = t->Branch("m_sv_LES_DM1_Down", &svFitMass_LES_DM1_Down, "m_sv_LES_DM1_Down/F");
-      TBranch *newLESBranch42 = t->Branch("pt_sv_LES_DM1_Down", &svFitPt_LES_DM1_Down, "pt_sv_LES_DM1_Down/F");
-      TBranch *newLESBranch43 = t->Branch("eta_sv_LES_DM1_Down", &svFitEta_LES_DM1_Down, "eta_sv_LES_DM1_Down/F");
-      TBranch *newLESBranch44 = t->Branch("phi_sv_LES_DM1_Down", &svFitPhi_LES_DM1_Down, "phi_sv_LES_DM1_Down/F");
-      TBranch *newLESBranch45 = t->Branch("met_sv_LES_DM1_Down", &svFitMET_LES_DM1_Down, "met_sv_LES_DM1_Down/F");
-      TBranch *newLESBranch46 = t->Branch("mt_sv_LES_DM1_Down", &svFitTransverseMass_LES_DM1_Down, "mt_sv_LES_DM1_Down/F");
-
-      TBranch *newBranch59 = t->Branch("m_sv_UncMet_Up", &svFitMass_UncMet_Up, "m_sv_UncMet_Up/F");
-      TBranch *newBranch60 = t->Branch("pt_sv_UncMet_Up", &svFitPt_UncMet_Up, "pt_sv_UncMet_Up/F");
-      TBranch *newBranch61 = t->Branch("eta_sv_UncMet_Up", &svFitEta_UncMet_Up, "eta_sv_UncMet_Up/F");
-      TBranch *newBranch62 = t->Branch("phi_sv_UncMet_Up", &svFitPhi_UncMet_Up, "phi_sv_UncMet_Up/F");
-      TBranch *newBranch63 = t->Branch("met_sv_UncMet_Up", &svFitMET_UncMet_Up, "met_sv_UncMet_Up/F");
-      TBranch *newBranch64 = t->Branch("mt_sv_UncMet_Up", &svFitTransverseMass_UncMet_Up, "mt_sv_UncMet_Up/F");
-
-      TBranch *newBranch65 = t->Branch("m_sv_UncMet_Down", &svFitMass_UncMet_Down, "m_sv_UncMet_Down/F");
-      TBranch *newBranch66 = t->Branch("pt_sv_UncMet_Down", &svFitPt_UncMet_Down, "pt_sv_UncMet_Down/F");
-      TBranch *newBranch67 = t->Branch("eta_sv_UncMet_Down", &svFitEta_UncMet_Down, "eta_sv_UncMet_Down/F");
-      TBranch *newBranch68 = t->Branch("phi_sv_UncMet_Down", &svFitPhi_UncMet_Down, "phi_sv_UncMet_Down/F");
-      TBranch *newBranch69 = t->Branch("met_sv_UncMet_Down", &svFitMET_UncMet_Down, "met_sv_UncMet_Down/F");
-      TBranch *newBranch70 = t->Branch("mt_sv_UncMet_Down", &svFitTransverseMass_UncMet_Down, "mt_sv_UncMet_Down/F");
-
-      TBranch *newBranch71 = t->Branch("m_sv_ClusteredMet_Up", &svFitMass_ClusteredMet_Up, "m_sv_ClusteredMet_Up/F");
-      TBranch *newBranch72 = t->Branch("pt_sv_ClusteredMet_Up", &svFitPt_ClusteredMet_Up, "pt_sv_ClusteredMet_Up/F");
-      TBranch *newBranch73 = t->Branch("eta_sv_ClusteredMet_Up", &svFitEta_ClusteredMet_Up, "eta_sv_ClusteredMet_Up/F");
-      TBranch *newBranch74 = t->Branch("phi_sv_ClusteredMet_Up", &svFitPhi_ClusteredMet_Up, "phi_sv_ClusteredMet_Up/F");
-      TBranch *newBranch75 = t->Branch("met_sv_ClusteredMet_Up", &svFitMET_ClusteredMet_Up, "met_sv_ClusteredMet_Up/F");
-      TBranch *newBranch76 = t->Branch("mt_sv_ClusteredMet_Up", &svFitTransverseMass_ClusteredMet_Up, "mt_sv_ClusteredMet_Up/F");
-
-      TBranch *newBranch77 = t->Branch("m_sv_ClusteredMet_Down", &svFitMass_ClusteredMet_Down, "m_sv_ClusteredMet_Down/F");
-      TBranch *newBranch78 = t->Branch("pt_sv_ClusteredMet_Down", &svFitPt_ClusteredMet_Down, "pt_sv_ClusteredMet_Down/F");
-      TBranch *newBranch79 = t->Branch("eta_sv_ClusteredMet_Down", &svFitEta_ClusteredMet_Down, "eta_sv_ClusteredMet_Down/F");
-      TBranch *newBranch80 = t->Branch("phi_sv_ClusteredMet_Down", &svFitPhi_ClusteredMet_Down, "phi_sv_ClusteredMet_Down/F");
-      TBranch *newBranch81 = t->Branch("met_sv_ClusteredMet_Down", &svFitMET_ClusteredMet_Down, "met_sv_ClusteredMet_Down/F");
-      TBranch *newBranch82 = t->Branch("mt_sv_ClusteredMet_Down", &svFitTransverseMass_ClusteredMet_Down, "mt_sv_ClusteredMet_Down/F");
-
-      TBranch *newBranch83 = t->Branch("m_sv_JetEC2_Up", &svFitMass_JetEC2_Up, "m_sv_JetEC2_Up/F");
-      TBranch *newBranch84 = t->Branch("pt_sv_JetEC2_Up", &svFitPt_JetEC2_Up, "pt_sv_JetEC2_Up/F");
-      TBranch *newBranch85 = t->Branch("eta_sv_JetEC2_Up", &svFitEta_JetEC2_Up, "eta_sv_JetEC2_Up/F");
-      TBranch *newBranch86 = t->Branch("phi_sv_JetEC2_Up", &svFitPhi_JetEC2_Up, "phi_sv_JetEC2_Up/F");
-      TBranch *newBranch87 = t->Branch("met_sv_JetEC2_Up", &svFitMET_JetEC2_Up, "met_sv_JetEC2_Up/F");
-      TBranch *newBranch88 = t->Branch("mt_sv_JetEC2_Up", &svFitTransverseMass_JetEC2_Up, "mt_sv_JetEC2_Up/F");
-
-      TBranch *newBranch89 = t->Branch("m_sv_JetEC2_Down", &svFitMass_JetEC2_Down, "m_sv_JetEC2_Down/F");
-      TBranch *newBranch90 = t->Branch("pt_sv_JetEC2_Down", &svFitPt_JetEC2_Down, "pt_sv_JetEC2_Down/F");
-      TBranch *newBranch91 = t->Branch("eta_sv_JetEC2_Down", &svFitEta_JetEC2_Down, "eta_sv_JetEC2_Down/F");
-      TBranch *newBranch92 = t->Branch("phi_sv_JetEC2_Down", &svFitPhi_JetEC2_Down, "phi_sv_JetEC2_Down/F");
-      TBranch *newBranch93 = t->Branch("met_sv_JetEC2_Down", &svFitMET_JetEC2_Down, "met_sv_JetEC2_Down/F");
-      TBranch *newBranch94 = t->Branch("mt_sv_JetEC2_Down", &svFitTransverseMass_JetEC2_Down, "mt_sv_JetEC2_Down/F");
-
-      TBranch *newBranch95 = t->Branch("m_sv_JetEta0to3_Up", &svFitMass_JetEta0to3_Up, "m_sv_JetEta0to3_Up/F");
-      TBranch *newBranch96 = t->Branch("pt_sv_JetEta0to3_Up", &svFitPt_JetEta0to3_Up, "pt_sv_JetEta0to3_Up/F");
-      TBranch *newBranch97 = t->Branch("eta_sv_JetEta0to3_Up", &svFitEta_JetEta0to3_Up, "eta_sv_JetEta0to3_Up/F");
-      TBranch *newBranch98 = t->Branch("phi_sv_JetEta0to3_Up", &svFitPhi_JetEta0to3_Up, "phi_sv_JetEta0to3_Up/F");
-      TBranch *newBranch99 = t->Branch("met_sv_JetEta0to3_Up", &svFitMET_JetEta0to3_Up, "met_sv_JetEta0to3_Up/F");
-      TBranch *newBranch100 = t->Branch("mt_sv_JetEta0to3_Up", &svFitTransverseMass_JetEta0to3_Up, "mt_sv_JetEta0to3_Up/F");
-
-      TBranch *newBranch101 = t->Branch("m_sv_JetEta0to3_Down", &svFitMass_JetEta0to3_Down, "m_sv_JetEta0to3_Down/F");
-      TBranch *newBranch102 = t->Branch("pt_sv_JetEta0to3_Down", &svFitPt_JetEta0to3_Down, "pt_sv_JetEta0to3_Down/F");
-      TBranch *newBranch103 = t->Branch("eta_sv_JetEta0to3_Down", &svFitEta_JetEta0to3_Down, "eta_sv_JetEta0to3_Down/F");
-      TBranch *newBranch104 = t->Branch("phi_sv_JetEta0to3_Down", &svFitPhi_JetEta0to3_Down, "phi_sv_JetEta0to3_Down/F");
-      TBranch *newBranch105 = t->Branch("met_sv_JetEta0to3_Down", &svFitMET_JetEta0to3_Down, "met_sv_JetEta0to3_Down/F");
-      TBranch *newBranch106 = t->Branch("mt_sv_JetEta0to3_Down", &svFitTransverseMass_JetEta0to3_Down, "mt_sv_JetEta0to3_Down/F");
-
-      TBranch *newBranch107 = t->Branch("m_sv_JetEta0to5_Up", &svFitMass_JetEta0to5_Up, "m_sv_JetEta0to5_Up/F");
-      TBranch *newBranch108 = t->Branch("pt_sv_JetEta0to5_Up", &svFitPt_JetEta0to5_Up, "pt_sv_JetEta0to5_Up/F");
-      TBranch *newBranch109 = t->Branch("eta_sv_JetEta0to5_Up", &svFitEta_JetEta0to5_Up, "eta_sv_JetEta0to5_Up/F");
-      TBranch *newBranch110 = t->Branch("phi_sv_JetEta0to5_Up", &svFitPhi_JetEta0to5_Up, "phi_sv_JetEta0to5_Up/F");
-      TBranch *newBranch111 = t->Branch("met_sv_JetEta0to5_Up", &svFitMET_JetEta0to5_Up, "met_sv_JetEta0to5_Up/F");
-      TBranch *newBranch112 = t->Branch("mt_sv_JetEta0to5_Up", &svFitTransverseMass_JetEta0to5_Up, "mt_sv_JetEta0to5_Up/F");
-
-      TBranch *newBranch113 = t->Branch("m_sv_JetEta0to5_Down", &svFitMass_JetEta0to5_Down, "m_sv_JetEta0to5_Down/F");
-      TBranch *newBranch114 = t->Branch("pt_sv_JetEta0to5_Down", &svFitPt_JetEta0to5_Down, "pt_sv_JetEta0to5_Down/F");
-      TBranch *newBranch115 = t->Branch("eta_sv_JetEta0to5_Down", &svFitEta_JetEta0to5_Down, "eta_sv_JetEta0to5_Down/F");
-      TBranch *newBranch116 = t->Branch("phi_sv_JetEta0to5_Down", &svFitPhi_JetEta0to5_Down, "phi_sv_JetEta0to5_Down/F");
-      TBranch *newBranch117 = t->Branch("met_sv_JetEta0to5_Down", &svFitMET_JetEta0to5_Down, "met_sv_JetEta0to5_Down/F");
-      TBranch *newBranch118 = t->Branch("mt_sv_JetEta0to5_Down", &svFitTransverseMass_JetEta0to5_Down, "mt_sv_JetEta0to5_Down/F");
-
-      TBranch *newBranch119 = t->Branch("m_sv_JetEta3to5_Up", &svFitMass_JetEta3to5_Up, "m_sv_JetEta3to5_Up/F");
-      TBranch *newBranch120 = t->Branch("pt_sv_JetEta3to5_Up", &svFitPt_JetEta3to5_Up, "pt_sv_JetEta3to5_Up/F");
-      TBranch *newBranch121 = t->Branch("eta_sv_JetEta3to5_Up", &svFitEta_JetEta3to5_Up, "eta_sv_JetEta3to5_Up/F");
-      TBranch *newBranch122 = t->Branch("phi_sv_JetEta3to5_Up", &svFitPhi_JetEta3to5_Up, "phi_sv_JetEta3to5_Up/F");
-      TBranch *newBranch123 = t->Branch("met_sv_JetEta3to5_Up", &svFitMET_JetEta3to5_Up, "met_sv_JetEta3to5_Up/F");
-      TBranch *newBranch124 = t->Branch("mt_sv_JetEta3to5_Up", &svFitTransverseMass_JetEta3to5_Up, "mt_sv_JetEta3to5_Up/F");
-
-      TBranch *newBranch125 = t->Branch("m_sv_JetEta3to5_Down", &svFitMass_JetEta3to5_Down, "m_sv_JetEta3to5_Down/F");
-      TBranch *newBranch126 = t->Branch("pt_sv_JetEta3to5_Down", &svFitPt_JetEta3to5_Down, "pt_sv_JetEta3to5_Down/F");
-      TBranch *newBranch127 = t->Branch("eta_sv_JetEta3to5_Down", &svFitEta_JetEta3to5_Down, "eta_sv_JetEta3to5_Down/F");
-      TBranch *newBranch128 = t->Branch("phi_sv_JetEta3to5_Down", &svFitPhi_JetEta3to5_Down, "phi_sv_JetEta3to5_Down/F");
-      TBranch *newBranch129 = t->Branch("met_sv_JetEta3to5_Down", &svFitMET_JetEta3to5_Down, "met_sv_JetEta3to5_Down/F");
-      TBranch *newBranch130 = t->Branch("mt_sv_JetEta3to5_Down", &svFitTransverseMass_JetEta3to5_Down, "mt_sv_JetEta3to5_Down/F");
-
-      TBranch *newBranch131 = t->Branch("m_sv_JetRelativeBal_Up", &svFitMass_JetRelativeBal_Up, "m_sv_JetRelativeBal_Up/F");
-      TBranch *newBranch132 = t->Branch("pt_sv_JetRelativeBal_Up", &svFitPt_JetRelativeBal_Up, "pt_sv_JetRelativeBal_Up/F");
-      TBranch *newBranch133 = t->Branch("eta_sv_JetRelativeBal_Up", &svFitEta_JetRelativeBal_Up, "eta_sv_JetRelativeBal_Up/F");
-      TBranch *newBranch134 = t->Branch("phi_sv_JetRelativeBal_Up", &svFitPhi_JetRelativeBal_Up, "phi_sv_JetRelativeBal_Up/F");
-      TBranch *newBranch135 = t->Branch("met_sv_JetRelativeBal_Up", &svFitMET_JetRelativeBal_Up, "met_sv_JetRelativeBal_Up/F");
-      TBranch *newBranch136 = t->Branch("mt_sv_JetRelativeBal_Up", &svFitTransverseMass_JetRelativeBal_Up, "mt_sv_JetRelativeBal_Up/F");
-
-      TBranch *newBranch137 = t->Branch("m_sv_JetRelativeBal_Down", &svFitMass_JetRelativeBal_Down, "m_sv_JetRelativeBal_Down/F");
-      TBranch *newBranch138 = t->Branch("pt_sv_JetRelativeBal_Down", &svFitPt_JetRelativeBal_Down, "pt_sv_JetRelativeBal_Down/F");
-      TBranch *newBranch139 = t->Branch("eta_sv_JetRelativeBal_Down", &svFitEta_JetRelativeBal_Down, "eta_sv_JetRelativeBal_Down/F");
-      TBranch *newBranch140 = t->Branch("phi_sv_JetRelativeBal_Down", &svFitPhi_JetRelativeBal_Down, "phi_sv_JetRelativeBal_Down/F");
-      TBranch *newBranch141 = t->Branch("met_sv_JetRelativeBal_Down", &svFitMET_JetRelativeBal_Down, "met_sv_JetRelativeBal_Down/F");
-      TBranch *newBranch142 = t->Branch("mt_sv_JetRelativeBal_Down", &svFitTransverseMass_JetRelativeBal_Down, "mt_sv_JetRelativeBal_Down/F");
-
-      TBranch *newBranch143 = t->Branch("m_sv_JetRelativeSample_Up", &svFitMass_JetRelativeSample_Up, "m_sv_JetRelativeSample_Up/F");
-      TBranch *newBranch144 = t->Branch("pt_sv_JetRelativeSample_Up", &svFitPt_JetRelativeSample_Up, "pt_sv_JetRelativeSample_Up/F");
-      TBranch *newBranch145 = t->Branch("eta_sv_JetRelativeSample_Up", &svFitEta_JetRelativeSample_Up, "eta_sv_JetRelativeSample_Up/F");
-      TBranch *newBranch146 = t->Branch("phi_sv_JetRelativeSample_Up", &svFitPhi_JetRelativeSample_Up, "phi_sv_JetRelativeSample_Up/F");
-      TBranch *newBranch147 = t->Branch("met_sv_JetRelativeSample_Up", &svFitMET_JetRelativeSample_Up, "met_sv_JetRelativeSample_Up/F");
-      TBranch *newBranch148 = t->Branch("mt_sv_JetRelativeSample_Up", &svFitTransverseMass_JetRelativeSample_Up, "mt_sv_JetRelativeSample_Up/F");
-
-      TBranch *newBranch149 = t->Branch("m_sv_JetRelativeSample_Down", &svFitMass_JetRelativeSample_Down, "m_sv_JetRelativeSample_Down/F");
-      TBranch *newBranch150 = t->Branch("pt_sv_JetRelativeSample_Down", &svFitPt_JetRelativeSample_Down, "pt_sv_JetRelativeSample_Down/F");
-      TBranch *newBranch151 = t->Branch("eta_sv_JetRelativeSample_Down", &svFitEta_JetRelativeSample_Down, "eta_sv_JetRelativeSample_Down/F");
-      TBranch *newBranch152 = t->Branch("phi_sv_JetRelativeSample_Down", &svFitPhi_JetRelativeSample_Down, "phi_sv_JetRelativeSample_Down/F");
-      TBranch *newBranch153 = t->Branch("met_sv_JetRelativeSample_Down", &svFitMET_JetRelativeSample_Down, "met_sv_JetRelativeSample_Down/F");
-      TBranch *newBranch154 = t->Branch("mt_sv_JetRelativeSample_Down", &svFitTransverseMass_JetRelativeSample_Down, "mt_sv_JetRelativeSample_Down/F");
-
-      TBranch *newResoBranch143 = t->Branch("m_sv_RecoilReso_Up", &svFitMass_RecoilReso_Up, "m_sv_RecoilReso_Up/F");
-      TBranch *newResoBranch144 = t->Branch("pt_sv_RecoilReso_Up", &svFitPt_RecoilReso_Up, "pt_sv_RecoilReso_Up/F");
-      TBranch *newResoBranch145 = t->Branch("eta_sv_RecoilReso_Up", &svFitEta_RecoilReso_Up, "eta_sv_RecoilReso_Up/F");
-      TBranch *newResoBranch146 = t->Branch("phi_sv_RecoilReso_Up", &svFitPhi_RecoilReso_Up, "phi_sv_RecoilReso_Up/F");
-      TBranch *newResoBranch147 = t->Branch("met_sv_RecoilReso_Up", &svFitMET_RecoilReso_Up, "met_sv_RecoilReso_Up/F");
-      TBranch *newResoBranch148 = t->Branch("mt_sv_RecoilReso_Up", &svFitTransverseMass_RecoilReso_Up, "mt_sv_RecoilReso_Up/F");
-      TBranch *newResoBranch149 = t->Branch("m_sv_RecoilReso_Down", &svFitMass_RecoilReso_Down, "m_sv_RecoilReso_Down/F");
-      TBranch *newResoBranch150 = t->Branch("pt_sv_RecoilReso_Down", &svFitPt_RecoilReso_Down, "pt_sv_RecoilReso_Down/F");
-      TBranch *newResoBranch151 = t->Branch("eta_sv_RecoilReso_Down", &svFitEta_RecoilReso_Down, "eta_sv_RecoilReso_Down/F");
-      TBranch *newResoBranch152 = t->Branch("phi_sv_RecoilReso_Down", &svFitPhi_RecoilReso_Down, "phi_sv_RecoilReso_Down/F");
-      TBranch *newResoBranch153 = t->Branch("met_sv_RecoilReso_Down", &svFitMET_RecoilReso_Down, "met_sv_RecoilReso_Down/F");
-      TBranch *newResoBranch154 = t->Branch("mt_sv_RecoilReso_Down", &svFitTransverseMass_RecoilReso_Down, "mt_sv_RecoilReso_Down/F");
-
-      TBranch *newRespBranch143 = t->Branch("m_sv_RecoilResp_Up", &svFitMass_RecoilResp_Up, "m_sv_RecoilResp_Up/F");
-      TBranch *newRespBranch144 = t->Branch("pt_sv_RecoilResp_Up", &svFitPt_RecoilResp_Up, "pt_sv_RecoilResp_Up/F");
-      TBranch *newRespBranch145 = t->Branch("eta_sv_RecoilResp_Up", &svFitEta_RecoilResp_Up, "eta_sv_RecoilResp_Up/F");
-      TBranch *newRespBranch146 = t->Branch("phi_sv_RecoilResp_Up", &svFitPhi_RecoilResp_Up, "phi_sv_RecoilResp_Up/F");
-      TBranch *newRespBranch147 = t->Branch("met_sv_RecoilResp_Up", &svFitMET_RecoilResp_Up, "met_sv_RecoilResp_Up/F");
-      TBranch *newRespBranch148 = t->Branch("mt_sv_RecoilResp_Up", &svFitTransverseMass_RecoilResp_Up, "mt_sv_RecoilResp_Up/F");
-      TBranch *newRespBranch149 = t->Branch("m_sv_RecoilResp_Down", &svFitMass_RecoilResp_Down, "m_sv_RecoilResp_Down/F");
-      TBranch *newRespBranch150 = t->Branch("pt_sv_RecoilResp_Down", &svFitPt_RecoilResp_Down, "pt_sv_RecoilResp_Down/F");
-      TBranch *newRespBranch151 = t->Branch("eta_sv_RecoilResp_Down", &svFitEta_RecoilResp_Down, "eta_sv_RecoilResp_Down/F");
-      TBranch *newRespBranch152 = t->Branch("phi_sv_RecoilResp_Down", &svFitPhi_RecoilResp_Down, "phi_sv_RecoilResp_Down/F");
-      TBranch *newRespBranch153 = t->Branch("met_sv_RecoilResp_Down", &svFitMET_RecoilResp_Down, "met_sv_RecoilResp_Down/F");
-      TBranch *newRespBranch154 = t->Branch("mt_sv_RecoilResp_Down", &svFitTransverseMass_RecoilResp_Down, "mt_sv_RecoilResp_Down/F");
-
-      TBranch *newBranch155 = t->Branch("metcorClusteredDown",    &metcorClusteredDown,   "metcorClusteredDown/F");
-      TBranch *newBranch156 = t->Branch("metcorphiClusteredDown", &metcorphiClusteredDown,"metcorphiClusteredDown/F");
-      TBranch *newBranch157 = t->Branch("metcorClusteredUp",      &metcorClusteredUp,     "metcorClusteredUp/F");
-      TBranch *newBranch158 = t->Branch("metcorphiClusteredUp",   &metcorphiClusteredUp,  "metcorphiClusteredUp/F");
-      TBranch *newBranch159 = t->Branch("metcorUncDown",          &metcorUncDown,         "metcorUncDown/F");
-      TBranch *newBranch160 = t->Branch("metcorphiUncDown",       &metcorphiUncDown,      "metcorphiUncDown/F");
-      TBranch *newBranch161 = t->Branch("metcorUncUp",            &metcorUncUp,           "metcorUncUp/F");
-      TBranch *newBranch162 = t->Branch("metcorphiUncUp",         &metcorphiUncUp,        "metcorphiUncUp/F");
-
-      TBranch *newBranch163 = t->Branch("metcorJetEC2Down",          &metcorJetEC2Down,         "metcorJetEC2Down/F");
-      TBranch *newBranch164 = t->Branch("metcorphiJetEC2Down",       &metcorphiJetEC2Down,      "metcorphiJetEC2Down/F");
-      TBranch *newBranch165 = t->Branch("metcorJetEC2Up",            &metcorJetEC2Up,           "metcorJetEC2Up/F");
-      TBranch *newBranch166 = t->Branch("metcorphiJetEC2Up",         &metcorphiJetEC2Up,        "metcorphiJetEC2Up/F");
-      TBranch *newBranch167 = t->Branch("metcorJetEta0to3Down",          &metcorJetEta0to3Down,         "metcorJetEta0to3Down/F");
-      TBranch *newBranch168 = t->Branch("metcorphiJetEta0to3Down",       &metcorphiJetEta0to3Down,      "metcorphiJetEta0to3Down/F");
-      TBranch *newBranch169 = t->Branch("metcorJetEta0to3Up",            &metcorJetEta0to3Up,           "metcorJetEta0to3Up/F");
-      TBranch *newBranch170 = t->Branch("metcorphiJetEta0to3Up",         &metcorphiJetEta0to3Up,        "metcorphiJetEta0to3Up/F");
-      TBranch *newBranch171 = t->Branch("metcorJetEta0to5Down",          &metcorJetEta0to5Down,         "metcorJetEta0to5Down/F");
-      TBranch *newBranch172 = t->Branch("metcorphiJetEta0to5Down",       &metcorphiJetEta0to5Down,      "metcorphiJetEta0to5Down/F");
-      TBranch *newBranch173 = t->Branch("metcorJetEta0to5Up",            &metcorJetEta0to5Up,           "metcorJetEta0to5Up/F");
-      TBranch *newBranch174 = t->Branch("metcorphiJetEta0to5Up",         &metcorphiJetEta0to5Up,        "metcorphiJetEta0to5Up/F");
-      TBranch *newBranch175 = t->Branch("metcorJetEta3to5Down",          &metcorJetEta3to5Down,         "metcorJetEta3to5Down/F");
-      TBranch *newBranch176 = t->Branch("metcorphiJetEta3to5Down",       &metcorphiJetEta3to5Down,      "metcorphiJetEta3to5Down/F");
-      TBranch *newBranch177 = t->Branch("metcorJetEta3to5Up",            &metcorJetEta3to5Up,           "metcorJetEta3to5Up/F");
-      TBranch *newBranch178 = t->Branch("metcorphiJetEta3to5Up",         &metcorphiJetEta3to5Up,        "metcorphiJetEta3to5Up/F");
-      TBranch *newBranch179 = t->Branch("metcorJetRelativeBalDown",          &metcorJetRelativeBalDown,         "metcorJetRelativeBalDown/F");
-      TBranch *newBranch180 = t->Branch("metcorphiJetRelativeBalDown",       &metcorphiJetRelativeBalDown,      "metcorphiJetRelativeBalDown/F");
-      TBranch *newBranch181 = t->Branch("metcorJetRelativeBalUp",            &metcorJetRelativeBalUp,           "metcorJetRelativeBalUp/F");
-      TBranch *newBranch182 = t->Branch("metcorphiJetRelativeBalUp",         &metcorphiJetRelativeBalUp,        "metcorphiJetRelativeBalUp/F");
-      TBranch *newBranch183 = t->Branch("metcorJetRelativeSampleDown",          &metcorJetRelativeSampleDown,         "metcorJetRelativeSampleDown/F");
-      TBranch *newBranch184 = t->Branch("metcorphiJetRelativeSampleDown",       &metcorphiJetRelativeSampleDown,      "metcorphiJetRelativeSampleDown/F");
-      TBranch *newBranch185 = t->Branch("metcorJetRelativeSampleUp",            &metcorJetRelativeSampleUp,           "metcorJetRelativeSampleUp/F");
-      TBranch *newBranch186 = t->Branch("metcorphiJetRelativeSampleUp",         &metcorphiJetRelativeSampleUp,        "metcorphiJetRelativeSampleUp/F");
-
+      TBranch *newRecoilRespBranch1 = t->Branch("m_sv_RecoilResp_Up", &svFitMass_RecoilResp_Up, "m_sv_RecoilResp_Up/F");
+      TBranch *newRecoilRespBranch2 = t->Branch("pt_sv_RecoilResp_Up", &svFitPt_RecoilResp_Up, "pt_sv_RecoilResp_Up/F");
+      TBranch *newRecoilRespBranch3 = t->Branch("m_sv_RecoilResp_Down", &svFitMass_RecoilResp_Down, "m_sv_RecoilResp_Down/F");
+      TBranch *newRecoilRespBranch4 = t->Branch("pt_sv_RecoilResp_Down", &svFitPt_RecoilResp_Down, "pt_sv_RecoilResp_Down/F");
     
       // adding tau-related branches
       std::vector<TBranch*> tau4VectorBranches;
-      tau4VectorBranches.push_back(t->Branch("tau1_pt",  &tau1_pt,  "tau1_pt/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta", &tau1_eta, "tau1_eta/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi", &tau1_phi, "tau1_phi/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m",   &tau1_m,   "tau1_m/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt",  &tau2_pt,  "tau2_pt/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta", &tau2_eta, "tau2_eta/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi", &tau2_phi, "tau2_phi/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m",   &tau2_m,   "tau2_m/F"));
-      // up
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_Up",  &tau1_pt_Up,  "tau1_pt_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_Up", &tau1_eta_Up, "tau1_eta_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_Up", &tau1_phi_Up, "tau1_phi_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_Up",   &tau1_m_Up,   "tau1_m_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_Up",  &tau2_pt_Up,  "tau2_pt_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_Up", &tau2_eta_Up, "tau2_eta_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_Up", &tau2_phi_Up, "tau2_phi_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_Up",   &tau2_m_Up,   "tau2_m_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_Down",  &tau1_pt_Down,  "tau1_pt_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_Down", &tau1_eta_Down, "tau1_eta_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_Down", &tau1_phi_Down, "tau1_phi_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_Down",   &tau1_m_Down,   "tau1_m_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_Down",  &tau2_pt_Down,  "tau2_pt_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_Down", &tau2_eta_Down, "tau2_eta_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_Down", &tau2_phi_Down, "tau2_phi_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_Down",   &tau2_m_Down,   "tau2_m_Down/F"));
-      // up DM0
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_DM0_Up",  &tau1_pt_DM0_Up,  "tau1_pt_DM0_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_DM0_Up", &tau1_eta_DM0_Up, "tau1_eta_DM0_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_DM0_Up", &tau1_phi_DM0_Up, "tau1_phi_DM0_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_DM0_Up",   &tau1_m_DM0_Up,   "tau1_m_DM0_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_DM0_Up",  &tau2_pt_DM0_Up,  "tau2_pt_DM0_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_DM0_Up", &tau2_eta_DM0_Up, "tau2_eta_DM0_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_DM0_Up", &tau2_phi_DM0_Up, "tau2_phi_DM0_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_DM0_Up",   &tau2_m_DM0_Up,   "tau2_m_DM0_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_DM0_Down",  &tau1_pt_DM0_Down,  "tau1_pt_DM0_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_DM0_Down", &tau1_eta_DM0_Down, "tau1_eta_DM0_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_DM0_Down", &tau1_phi_DM0_Down, "tau1_phi_DM0_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_DM0_Down",   &tau1_m_DM0_Down,   "tau1_m_DM0_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_DM0_Down",  &tau2_pt_DM0_Down,  "tau2_pt_DM0_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_DM0_Down", &tau2_eta_DM0_Down, "tau2_eta_DM0_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_DM0_Down", &tau2_phi_DM0_Down, "tau2_phi_DM0_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_DM0_Down",   &tau2_m_DM0_Down,   "tau2_m_DM0_Down/F"));
-      // up DM1
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_DM1_Up",  &tau1_pt_DM1_Up,  "tau1_pt_DM1_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_DM1_Up", &tau1_eta_DM1_Up, "tau1_eta_DM1_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_DM1_Up", &tau1_phi_DM1_Up, "tau1_phi_DM1_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_DM1_Up",   &tau1_m_DM1_Up,   "tau1_m_DM1_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_DM1_Up",  &tau2_pt_DM1_Up,  "tau2_pt_DM1_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_DM1_Up", &tau2_eta_DM1_Up, "tau2_eta_DM1_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_DM1_Up", &tau2_phi_DM1_Up, "tau2_phi_DM1_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_DM1_Up",   &tau2_m_DM1_Up,   "tau2_m_DM1_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_DM1_Down",  &tau1_pt_DM1_Down,  "tau1_pt_DM1_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_DM1_Down", &tau1_eta_DM1_Down, "tau1_eta_DM1_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_DM1_Down", &tau1_phi_DM1_Down, "tau1_phi_DM1_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_DM1_Down",   &tau1_m_DM1_Down,   "tau1_m_DM1_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_DM1_Down",  &tau2_pt_DM1_Down,  "tau2_pt_DM1_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_DM1_Down", &tau2_eta_DM1_Down, "tau2_eta_DM1_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_DM1_Down", &tau2_phi_DM1_Down, "tau2_phi_DM1_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_DM1_Down",   &tau2_m_DM1_Down,   "tau2_m_DM1_Down/F"));
-      // up DM10
-    
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_DM10_Up",  &tau1_pt_DM10_Up,  "tau1_pt_DM10_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_DM10_Up", &tau1_eta_DM10_Up, "tau1_eta_DM10_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_DM10_Up", &tau1_phi_DM10_Up, "tau1_phi_DM10_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_DM10_Up",   &tau1_m_DM10_Up,   "tau1_m_DM10_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_DM10_Up",  &tau2_pt_DM10_Up,  "tau2_pt_DM10_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_DM10_Up", &tau2_eta_DM10_Up, "tau2_eta_DM10_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_DM10_Up", &tau2_phi_DM10_Up, "tau2_phi_DM10_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_DM10_Up",   &tau2_m_DM10_Up,   "tau2_m_DM10_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_DM10_Down",  &tau1_pt_DM10_Down,  "tau1_pt_DM10_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_DM10_Down", &tau1_eta_DM10_Down, "tau1_eta_DM10_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_DM10_Down", &tau1_phi_DM10_Down, "tau1_phi_DM10_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_DM10_Down",   &tau1_m_DM10_Down,   "tau1_m_DM10_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_DM10_Down",  &tau2_pt_DM10_Down,  "tau2_pt_DM10_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_DM10_Down", &tau2_eta_DM10_Down, "tau2_eta_DM10_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_DM10_Down", &tau2_phi_DM10_Down, "tau2_phi_DM10_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_DM10_Down",   &tau2_m_DM10_Down,   "tau2_m_DM10_Down/F"));
-      // up UncMet
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_UncMet_Up",  &tau1_pt_UncMet_Up,  "tau1_pt_UncMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_UncMet_Up", &tau1_eta_UncMet_Up, "tau1_eta_UncMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_UncMet_Up", &tau1_phi_UncMet_Up, "tau1_phi_UncMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_UncMet_Up",   &tau1_m_UncMet_Up,   "tau1_m_UncMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_UncMet_Up",  &tau2_pt_UncMet_Up,  "tau2_pt_UncMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_UncMet_Up", &tau2_eta_UncMet_Up, "tau2_eta_UncMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_UncMet_Up", &tau2_phi_UncMet_Up, "tau2_phi_UncMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_UncMet_Up",   &tau2_m_UncMet_Up,   "tau2_m_UncMet_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_UncMet_Down",  &tau1_pt_UncMet_Down,  "tau1_pt_UncMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_UncMet_Down", &tau1_eta_UncMet_Down, "tau1_eta_UncMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_UncMet_Down", &tau1_phi_UncMet_Down, "tau1_phi_UncMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_UncMet_Down",   &tau1_m_UncMet_Down,   "tau1_m_UncMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_UncMet_Down",  &tau2_pt_UncMet_Down,  "tau2_pt_UncMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_UncMet_Down", &tau2_eta_UncMet_Down, "tau2_eta_UncMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_UncMet_Down", &tau2_phi_UncMet_Down, "tau2_phi_UncMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_UncMet_Down",   &tau2_m_UncMet_Down,   "tau2_m_UncMet_Down/F"));
-      // up ClusteredMet
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_ClusteredMet_Up",  &tau1_pt_ClusteredMet_Up,  "tau1_pt_ClusteredMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_ClusteredMet_Up", &tau1_eta_ClusteredMet_Up, "tau1_eta_ClusteredMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_ClusteredMet_Up", &tau1_phi_ClusteredMet_Up, "tau1_phi_ClusteredMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_ClusteredMet_Up",   &tau1_m_ClusteredMet_Up,   "tau1_m_ClusteredMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_ClusteredMet_Up",  &tau2_pt_ClusteredMet_Up,  "tau2_pt_ClusteredMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_ClusteredMet_Up", &tau2_eta_ClusteredMet_Up, "tau2_eta_ClusteredMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_ClusteredMet_Up", &tau2_phi_ClusteredMet_Up, "tau2_phi_ClusteredMet_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_ClusteredMet_Up",   &tau2_m_ClusteredMet_Up,   "tau2_m_ClusteredMet_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_ClusteredMet_Down",  &tau1_pt_ClusteredMet_Down,  "tau1_pt_ClusteredMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_ClusteredMet_Down", &tau1_eta_ClusteredMet_Down, "tau1_eta_ClusteredMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_ClusteredMet_Down", &tau1_phi_ClusteredMet_Down, "tau1_phi_ClusteredMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_ClusteredMet_Down",   &tau1_m_ClusteredMet_Down,   "tau1_m_ClusteredMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_ClusteredMet_Down",  &tau2_pt_ClusteredMet_Down,  "tau2_pt_ClusteredMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_ClusteredMet_Down", &tau2_eta_ClusteredMet_Down, "tau2_eta_ClusteredMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_ClusteredMet_Down", &tau2_phi_ClusteredMet_Down, "tau2_phi_ClusteredMet_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_ClusteredMet_Down",   &tau2_m_ClusteredMet_Down,   "tau2_m_ClusteredMet_Down/F"));
-
-      // up JetEC2
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEC2_Up",  &tau1_pt_JetEC2_Up,  "tau1_pt_JetEC2_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEC2_Up", &tau1_eta_JetEC2_Up, "tau1_eta_JetEC2_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEC2_Up", &tau1_phi_JetEC2_Up, "tau1_phi_JetEC2_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEC2_Up",   &tau1_m_JetEC2_Up,   "tau1_m_JetEC2_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEC2_Up",  &tau2_pt_JetEC2_Up,  "tau2_pt_JetEC2_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEC2_Up", &tau2_eta_JetEC2_Up, "tau2_eta_JetEC2_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEC2_Up", &tau2_phi_JetEC2_Up, "tau2_phi_JetEC2_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEC2_Up",   &tau2_m_JetEC2_Up,   "tau2_m_JetEC2_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEC2_Down",  &tau1_pt_JetEC2_Down,  "tau1_pt_JetEC2_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEC2_Down", &tau1_eta_JetEC2_Down, "tau1_eta_JetEC2_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEC2_Down", &tau1_phi_JetEC2_Down, "tau1_phi_JetEC2_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEC2_Down",   &tau1_m_JetEC2_Down,   "tau1_m_JetEC2_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEC2_Down",  &tau2_pt_JetEC2_Down,  "tau2_pt_JetEC2_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEC2_Down", &tau2_eta_JetEC2_Down, "tau2_eta_JetEC2_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEC2_Down", &tau2_phi_JetEC2_Down, "tau2_phi_JetEC2_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEC2_Down",   &tau2_m_JetEC2_Down,   "tau2_m_JetEC2_Down/F"));
-      // up JetEta0to3
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEta0to3_Up",  &tau1_pt_JetEta0to3_Up,  "tau1_pt_JetEta0to3_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEta0to3_Up", &tau1_eta_JetEta0to3_Up, "tau1_eta_JetEta0to3_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEta0to3_Up", &tau1_phi_JetEta0to3_Up, "tau1_phi_JetEta0to3_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEta0to3_Up",   &tau1_m_JetEta0to3_Up,   "tau1_m_JetEta0to3_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEta0to3_Up",  &tau2_pt_JetEta0to3_Up,  "tau2_pt_JetEta0to3_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEta0to3_Up", &tau2_eta_JetEta0to3_Up, "tau2_eta_JetEta0to3_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEta0to3_Up", &tau2_phi_JetEta0to3_Up, "tau2_phi_JetEta0to3_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEta0to3_Up",   &tau2_m_JetEta0to3_Up,   "tau2_m_JetEta0to3_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEta0to3_Down",  &tau1_pt_JetEta0to3_Down,  "tau1_pt_JetEta0to3_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEta0to3_Down", &tau1_eta_JetEta0to3_Down, "tau1_eta_JetEta0to3_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEta0to3_Down", &tau1_phi_JetEta0to3_Down, "tau1_phi_JetEta0to3_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEta0to3_Down",   &tau1_m_JetEta0to3_Down,   "tau1_m_JetEta0to3_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEta0to3_Down",  &tau2_pt_JetEta0to3_Down,  "tau2_pt_JetEta0to3_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEta0to3_Down", &tau2_eta_JetEta0to3_Down, "tau2_eta_JetEta0to3_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEta0to3_Down", &tau2_phi_JetEta0to3_Down, "tau2_phi_JetEta0to3_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEta0to3_Down",   &tau2_m_JetEta0to3_Down,   "tau2_m_JetEta0to3_Down/F"));
-      // up JetEta0to5
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEta0to5_Up",  &tau1_pt_JetEta0to5_Up,  "tau1_pt_JetEta0to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEta0to5_Up", &tau1_eta_JetEta0to5_Up, "tau1_eta_JetEta0to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEta0to5_Up", &tau1_phi_JetEta0to5_Up, "tau1_phi_JetEta0to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEta0to5_Up",   &tau1_m_JetEta0to5_Up,   "tau1_m_JetEta0to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEta0to5_Up",  &tau2_pt_JetEta0to5_Up,  "tau2_pt_JetEta0to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEta0to5_Up", &tau2_eta_JetEta0to5_Up, "tau2_eta_JetEta0to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEta0to5_Up", &tau2_phi_JetEta0to5_Up, "tau2_phi_JetEta0to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEta0to5_Up",   &tau2_m_JetEta0to5_Up,   "tau2_m_JetEta0to5_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEta0to5_Down",  &tau1_pt_JetEta0to5_Down,  "tau1_pt_JetEta0to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEta0to5_Down", &tau1_eta_JetEta0to5_Down, "tau1_eta_JetEta0to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEta0to5_Down", &tau1_phi_JetEta0to5_Down, "tau1_phi_JetEta0to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEta0to5_Down",   &tau1_m_JetEta0to5_Down,   "tau1_m_JetEta0to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEta0to5_Down",  &tau2_pt_JetEta0to5_Down,  "tau2_pt_JetEta0to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEta0to5_Down", &tau2_eta_JetEta0to5_Down, "tau2_eta_JetEta0to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEta0to5_Down", &tau2_phi_JetEta0to5_Down, "tau2_phi_JetEta0to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEta0to5_Down",   &tau2_m_JetEta0to5_Down,   "tau2_m_JetEta0to5_Down/F"));
-      // up JetEta3to5
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEta3to5_Up",  &tau1_pt_JetEta3to5_Up,  "tau1_pt_JetEta3to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEta3to5_Up", &tau1_eta_JetEta3to5_Up, "tau1_eta_JetEta3to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEta3to5_Up", &tau1_phi_JetEta3to5_Up, "tau1_phi_JetEta3to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEta3to5_Up",   &tau1_m_JetEta3to5_Up,   "tau1_m_JetEta3to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEta3to5_Up",  &tau2_pt_JetEta3to5_Up,  "tau2_pt_JetEta3to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEta3to5_Up", &tau2_eta_JetEta3to5_Up, "tau2_eta_JetEta3to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEta3to5_Up", &tau2_phi_JetEta3to5_Up, "tau2_phi_JetEta3to5_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEta3to5_Up",   &tau2_m_JetEta3to5_Up,   "tau2_m_JetEta3to5_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetEta3to5_Down",  &tau1_pt_JetEta3to5_Down,  "tau1_pt_JetEta3to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetEta3to5_Down", &tau1_eta_JetEta3to5_Down, "tau1_eta_JetEta3to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetEta3to5_Down", &tau1_phi_JetEta3to5_Down, "tau1_phi_JetEta3to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetEta3to5_Down",   &tau1_m_JetEta3to5_Down,   "tau1_m_JetEta3to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetEta3to5_Down",  &tau2_pt_JetEta3to5_Down,  "tau2_pt_JetEta3to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetEta3to5_Down", &tau2_eta_JetEta3to5_Down, "tau2_eta_JetEta3to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetEta3to5_Down", &tau2_phi_JetEta3to5_Down, "tau2_phi_JetEta3to5_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetEta3to5_Down",   &tau2_m_JetEta3to5_Down,   "tau2_m_JetEta3to5_Down/F"));
-      // up JetRelativeBal
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetRelativeBal_Up",  &tau1_pt_JetRelativeBal_Up,  "tau1_pt_JetRelativeBal_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetRelativeBal_Up", &tau1_eta_JetRelativeBal_Up, "tau1_eta_JetRelativeBal_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetRelativeBal_Up", &tau1_phi_JetRelativeBal_Up, "tau1_phi_JetRelativeBal_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetRelativeBal_Up",   &tau1_m_JetRelativeBal_Up,   "tau1_m_JetRelativeBal_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetRelativeBal_Up",  &tau2_pt_JetRelativeBal_Up,  "tau2_pt_JetRelativeBal_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetRelativeBal_Up", &tau2_eta_JetRelativeBal_Up, "tau2_eta_JetRelativeBal_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetRelativeBal_Up", &tau2_phi_JetRelativeBal_Up, "tau2_phi_JetRelativeBal_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetRelativeBal_Up",   &tau2_m_JetRelativeBal_Up,   "tau2_m_JetRelativeBal_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetRelativeBal_Down",  &tau1_pt_JetRelativeBal_Down,  "tau1_pt_JetRelativeBal_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetRelativeBal_Down", &tau1_eta_JetRelativeBal_Down, "tau1_eta_JetRelativeBal_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetRelativeBal_Down", &tau1_phi_JetRelativeBal_Down, "tau1_phi_JetRelativeBal_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetRelativeBal_Down",   &tau1_m_JetRelativeBal_Down,   "tau1_m_JetRelativeBal_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetRelativeBal_Down",  &tau2_pt_JetRelativeBal_Down,  "tau2_pt_JetRelativeBal_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetRelativeBal_Down", &tau2_eta_JetRelativeBal_Down, "tau2_eta_JetRelativeBal_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetRelativeBal_Down", &tau2_phi_JetRelativeBal_Down, "tau2_phi_JetRelativeBal_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetRelativeBal_Down",   &tau2_m_JetRelativeBal_Down,   "tau2_m_JetRelativeBal_Down/F"));
-      // up  JetRelativeSample
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetRelativeSample_Up",  &tau1_pt_JetRelativeSample_Up,  "tau1_pt_JetRelativeSample_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetRelativeSample_Up", &tau1_eta_JetRelativeSample_Up, "tau1_eta_JetRelativeSample_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetRelativeSample_Up", &tau1_phi_JetRelativeSample_Up, "tau1_phi_JetRelativeSample_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetRelativeSample_Up",   &tau1_m_JetRelativeSample_Up,   "tau1_m_JetRelativeSample_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetRelativeSample_Up",  &tau2_pt_JetRelativeSample_Up,  "tau2_pt_JetRelativeSample_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetRelativeSample_Up", &tau2_eta_JetRelativeSample_Up, "tau2_eta_JetRelativeSample_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetRelativeSample_Up", &tau2_phi_JetRelativeSample_Up, "tau2_phi_JetRelativeSample_Up/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetRelativeSample_Up",   &tau2_m_JetRelativeSample_Up,   "tau2_m_JetRelativeSample_Up/F"));
-      // down
-      tau4VectorBranches.push_back(t->Branch("tau1_pt_JetRelativeSample_Down",  &tau1_pt_JetRelativeSample_Down,  "tau1_pt_JetRelativeSample_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_eta_JetRelativeSample_Down", &tau1_eta_JetRelativeSample_Down, "tau1_eta_JetRelativeSample_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_phi_JetRelativeSample_Down", &tau1_phi_JetRelativeSample_Down, "tau1_phi_JetRelativeSample_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau1_m_JetRelativeSample_Down",   &tau1_m_JetRelativeSample_Down,   "tau1_m_JetRelativeSample_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_pt_JetRelativeSample_Down",  &tau2_pt_JetRelativeSample_Down,  "tau2_pt_JetRelativeSample_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_eta_JetRelativeSample_Down", &tau2_eta_JetRelativeSample_Down, "tau2_eta_JetRelativeSample_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_phi_JetRelativeSample_Down", &tau2_phi_JetRelativeSample_Down, "tau2_phi_JetRelativeSample_Down/F"));
-      tau4VectorBranches.push_back(t->Branch("tau2_m_JetRelativeSample_Down",   &tau2_m_JetRelativeSample_Down,   "tau2_m_JetRelativeSample_Down/F"));
-      std::cout << "That's a lot of tau 4-vector branches! N = " << tau4VectorBranches.size() << std::endl;
     
       Int_t era;
       unsigned long long evt;
@@ -1502,8 +530,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       int njets =-999.   ;  // number of jets (hadronic jet multiplicity) (int)
 
       // define MET
-      double measuredMETx = 0.;
-      double measuredMETy = 0.;
       float mvamet;
       float mvametphi;
       float pfmet;
@@ -1521,32 +547,16 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float clusteredMetPtDown;
       float clusteredMetPhiUp;
       float clusteredMetPhiDown;
-      double uncMetUpMETx = 0.;
-      double uncMetUpMETy = 0.;
-      double uncMetDownMETx = 0.;
-      double uncMetDownMETy = 0.;
-      double clusteredMetUpMETx = 0.;
-      double clusteredMetUpMETy = 0.;
-      double clusteredMetDownMETx = 0.;
-      double clusteredMetDownMETy = 0.;
 
       // JES Uncertainties
       float met_JetEC2Up, met_JetEC2Down, metphi_JetEC2Up, metphi_JetEC2Down;
-      float JetEC2UpMETx = 0., JetEC2UpMETy = 0., JetEC2DownMETx = 0., JetEC2DownMETy = 0.;
       float met_JetEta0to3Up, met_JetEta0to3Down, metphi_JetEta0to3Up, metphi_JetEta0to3Down;
-      float JetEta0to3UpMETx = 0., JetEta0to3UpMETy = 0., JetEta0to3DownMETx = 0., JetEta0to3DownMETy = 0.;
       float met_JetEta0to5Up, met_JetEta0to5Down, metphi_JetEta0to5Up, metphi_JetEta0to5Down;
-      float JetEta0to5UpMETx = 0., JetEta0to5UpMETy = 0., JetEta0to5DownMETx = 0., JetEta0to5DownMETy = 0.;
       float met_JetEta3to5Up, met_JetEta3to5Down, metphi_JetEta3to5Up, metphi_JetEta3to5Down;
-      float JetEta3to5UpMETx = 0., JetEta3to5UpMETy = 0., JetEta3to5DownMETx = 0., JetEta3to5DownMETy = 0.;
       float met_JetRelativeBalUp, met_JetRelativeBalDown, metphi_JetRelativeBalUp, metphi_JetRelativeBalDown;
-      float JetRelativeBalUpMETx = 0., JetRelativeBalUpMETy = 0., JetRelativeBalDownMETx = 0., JetRelativeBalDownMETy = 0.;
       float met_JetRelativeSampleUp, met_JetRelativeSampleDown, metphi_JetRelativeSampleUp, metphi_JetRelativeSampleDown;
-      float JetRelativeSampleUpMETx = 0., JetRelativeSampleUpMETy = 0., JetRelativeSampleDownMETx = 0., JetRelativeSampleDownMETy = 0.; 
-
-      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down, metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
-      float met_reso_Upx, met_reso_Downx, met_resp_Upx, met_resp_Downx;
-      float met_reso_Upy, met_reso_Downy, met_resp_Upy, met_resp_Downy;
+      float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down;
+      float metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
 
       float eCorrectedEt = 0., eEnergyScaleUp = 0., eEnergyScaleDown = 0., eEnergySigmaUp = 0., eEnergySigmaDown = 0.;
 
@@ -1664,8 +674,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         if (metType == 1) { // 1 = Mva Met
           std::cerr << "Only PF Met is currently supported. You're in for a world full of problems if you continue." << std::endl;
           TMet.SetPtEtaPhiM(mvamet,0,mvametphi,0);
-          measuredMETx = mvamet*TMath::Cos(mvametphi);
-          measuredMETy = mvamet*TMath::Sin(mvametphi);
           
           covMET[0][0] =  mvaCovMatrix00;
           covMET[1][0] =  mvaCovMatrix10;
@@ -1674,162 +682,56 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         } // mva met
         if (metType == -1) { // -1 = PF Met
           TMet.SetPtEtaPhiM(pfmet,0,pfmetphi,0);
-          measuredMETx = pfmet*TMath::Cos(pfmetphi);
-          measuredMETy = pfmet*TMath::Sin(pfmetphi);
+          metcorr_ex = pfmet*TMath::Cos(pfmetphi);
+          metcorr_ey = pfmet*TMath::Sin(pfmetphi);
           // Shifted METs
-          uncMetUpMETx         = uncMetPtUp*TMath::Cos(uncMetPhiUp);
-          uncMetUpMETy         = uncMetPtUp*TMath::Sin(uncMetPhiUp);
-          uncMetDownMETx       = uncMetPtDown*TMath::Cos(uncMetPhiDown);
-          uncMetDownMETy       = uncMetPtDown*TMath::Sin(uncMetPhiDown);
-          clusteredMetUpMETx   = clusteredMetPtUp*TMath::Cos(clusteredMetPhiUp);
-          clusteredMetUpMETy   = clusteredMetPtUp*TMath::Sin(clusteredMetPhiUp);
-          clusteredMetDownMETx = clusteredMetPtDown*TMath::Cos(clusteredMetPhiDown);
-          clusteredMetDownMETy = clusteredMetPtDown*TMath::Sin(clusteredMetPhiDown);
-          JetEC2UpMETx         = met_JetEC2Up*TMath::Cos(metphi_JetEC2Up);
-          JetEC2UpMETy         = met_JetEC2Up*TMath::Sin(metphi_JetEC2Up);
-          JetEC2DownMETx       = met_JetEC2Down*TMath::Cos(metphi_JetEC2Down);
-          JetEC2DownMETy       = met_JetEC2Down*TMath::Sin(metphi_JetEC2Down);
-          JetEta0to3UpMETx         = met_JetEta0to3Up*TMath::Cos(metphi_JetEta0to3Up);
-          JetEta0to3UpMETy         = met_JetEta0to3Up*TMath::Sin(metphi_JetEta0to3Up);
-          JetEta0to3DownMETx       = met_JetEta0to3Down*TMath::Cos(metphi_JetEta0to3Down);
-          JetEta0to3DownMETy       = met_JetEta0to3Down*TMath::Sin(metphi_JetEta0to3Down);
-          JetEta0to5UpMETx         = met_JetEta0to5Up*TMath::Cos(metphi_JetEta0to5Up);
-          JetEta0to5UpMETy         = met_JetEta0to5Up*TMath::Sin(metphi_JetEta0to5Up);
-          JetEta0to5DownMETx       = met_JetEta0to5Down*TMath::Cos(metphi_JetEta0to5Down);
-          JetEta0to5DownMETy       = met_JetEta0to5Down*TMath::Sin(metphi_JetEta0to5Down);
-          JetEta3to5UpMETx         = met_JetEta3to5Up*TMath::Cos(metphi_JetEta3to5Up);
-          JetEta3to5UpMETy         = met_JetEta3to5Up*TMath::Sin(metphi_JetEta3to5Up);
-          JetEta3to5DownMETx       = met_JetEta3to5Down*TMath::Cos(metphi_JetEta3to5Down);
-          JetEta3to5DownMETy       = met_JetEta3to5Down*TMath::Sin(metphi_JetEta3to5Down);
-          JetRelativeBalUpMETx         = met_JetRelativeBalUp*TMath::Cos(metphi_JetRelativeBalUp);
-          JetRelativeBalUpMETy         = met_JetRelativeBalUp*TMath::Sin(metphi_JetRelativeBalUp);
-          JetRelativeBalDownMETx       = met_JetRelativeBalDown*TMath::Cos(metphi_JetRelativeBalDown);
-          JetRelativeBalDownMETy       = met_JetRelativeBalDown*TMath::Sin(metphi_JetRelativeBalDown);
-          JetRelativeSampleUpMETx         = met_JetRelativeSampleUp*TMath::Cos(metphi_JetRelativeSampleUp);
-          JetRelativeSampleUpMETy         = met_JetRelativeSampleUp*TMath::Sin(metphi_JetRelativeSampleUp);
-          JetRelativeSampleDownMETx       = met_JetRelativeSampleDown*TMath::Cos(metphi_JetRelativeSampleDown);
-          JetRelativeSampleDownMETy       = met_JetRelativeSampleDown*TMath::Sin(metphi_JetRelativeSampleDown);
-          met_reso_Upx = met_reso_Up*TMath::Cos(metphi_reso_Up);
-          met_reso_Downx = met_reso_Down*TMath::Cos(metphi_reso_Down);
-          met_reso_Upy = met_reso_Up*TMath::Cos(metphi_reso_Up);
-          met_reso_Downy = met_reso_Down*TMath::Cos(metphi_reso_Down);
+          
+          metcorrUncUp_ex         = uncMetPtUp*TMath::Cos(uncMetPhiUp);
+          metcorrUncUp_ey         = uncMetPtUp*TMath::Sin(uncMetPhiUp);
+          metcorrUncDown_ex       = uncMetPtDown*TMath::Cos(uncMetPhiDown);
+          metcorrUncDown_ey       = uncMetPtDown*TMath::Sin(uncMetPhiDown);
+          metcorrClusteredUp_ex   = clusteredMetPtUp*TMath::Cos(clusteredMetPhiUp);
+          metcorrClusteredUp_ey   = clusteredMetPtUp*TMath::Sin(clusteredMetPhiUp);
+          metcorrClusteredDown_ex = clusteredMetPtDown*TMath::Cos(clusteredMetPhiDown);
+          metcorrClusteredDown_ey = clusteredMetPtDown*TMath::Sin(clusteredMetPhiDown);
+          metcorrJetEC2UpMET_ex         = met_JetEC2Up*TMath::Cos(metphi_JetEC2Up);
+          metcorrJetEC2UpMET_ey         = met_JetEC2Up*TMath::Sin(metphi_JetEC2Up);
+          metcorrJetEC2DownMET_ex       = met_JetEC2Down*TMath::Cos(metphi_JetEC2Down);
+          metcorrJetEC2DownMET_ey       = met_JetEC2Down*TMath::Sin(metphi_JetEC2Down);
+          metcorrJetEta0to3UpMET_ex         = met_JetEta0to3Up*TMath::Cos(metphi_JetEta0to3Up);
+          metcorrJetEta0to3UpMET_ey         = met_JetEta0to3Up*TMath::Sin(metphi_JetEta0to3Up);
+          metcorrJetEta0to3DownMET_ex       = met_JetEta0to3Down*TMath::Cos(metphi_JetEta0to3Down);
+          metcorrJetEta0to3DownMET_ey       = met_JetEta0to3Down*TMath::Sin(metphi_JetEta0to3Down);
+          metcorrJetEta0to5UpMET_ex         = met_JetEta0to5Up*TMath::Cos(metphi_JetEta0to5Up);
+          metcorrJetEta0to5UpMET_ey         = met_JetEta0to5Up*TMath::Sin(metphi_JetEta0to5Up);
+          metcorrJetEta0to5DownMET_ex       = met_JetEta0to5Down*TMath::Cos(metphi_JetEta0to5Down);
+          metcorrJetEta0to5DownMET_ey       = met_JetEta0to5Down*TMath::Sin(metphi_JetEta0to5Down);
+          metcorrJetEta3to5UpMET_ex         = met_JetEta3to5Up*TMath::Cos(metphi_JetEta3to5Up);
+          metcorrJetEta3to5UpMET_ey         = met_JetEta3to5Up*TMath::Sin(metphi_JetEta3to5Up);
+          metcorrJetEta3to5DownMET_ex       = met_JetEta3to5Down*TMath::Cos(metphi_JetEta3to5Down);
+          metcorrJetEta3to5DownMET_ey       = met_JetEta3to5Down*TMath::Sin(metphi_JetEta3to5Down);
+          metcorrJetRelativeBalUpMET_ex         = met_JetRelativeBalUp*TMath::Cos(metphi_JetRelativeBalUp);
+          metcorrJetRelativeBalUpMET_ey         = met_JetRelativeBalUp*TMath::Sin(metphi_JetRelativeBalUp);
+          metcorrJetRelativeBalDownMET_ex       = met_JetRelativeBalDown*TMath::Cos(metphi_JetRelativeBalDown);
+          metcorrJetRelativeBalDownMET_ey       = met_JetRelativeBalDown*TMath::Sin(metphi_JetRelativeBalDown);
+          metcorrJetRelativeSampleUpMET_ex         = met_JetRelativeSampleUp*TMath::Cos(metphi_JetRelativeSampleUp);
+          metcorrJetRelativeSampleUpMET_ey         = met_JetRelativeSampleUp*TMath::Sin(metphi_JetRelativeSampleUp);
+          metcorrJetRelativeSampleDownMET_ex       = met_JetRelativeSampleDown*TMath::Cos(metphi_JetRelativeSampleDown);
+          metcorrJetRelativeSampleDownMET_ey       = met_JetRelativeSampleDown*TMath::Sin(metphi_JetRelativeSampleDown);
+          metcorrRecoilResoUp_ex = met_reso_Up*TMath::Cos(metphi_reso_Up);
+          metcorrRecoilResoUp_ey = met_reso_Down*TMath::Cos(metphi_reso_Down);
+          metcorrRecoilResoDown_ex = met_reso_Up*TMath::Cos(metphi_reso_Up);
+          metcorrRecoilResoDown_ey = met_reso_Down*TMath::Cos(metphi_reso_Down);
+          metcorrRecoilRespUp_ex = met_resp_Up*TMath::Cos(metphi_resp_Up);
+          metcorrRecoilRespUp_ey = met_resp_Down*TMath::Cos(metphi_resp_Down);
+          metcorrRecoilRespDown_ex = met_resp_Up*TMath::Cos(metphi_resp_Up);
+          metcorrRecoilRespDown_ey = met_resp_Down*TMath::Cos(metphi_resp_Down);
 
           covMET[0][0] =  pfCovMatrix00;
           covMET[1][0] =  pfCovMatrix10;
           covMET[0][1] =  pfCovMatrix01;
           covMET[1][1] =  pfCovMatrix11;
         } // pf met
-     
-        metcorr_ex = measuredMETx;
-        metcorr_ey = measuredMETy;
-        metcorrUncUp_ex = uncMetUpMETx;
-        metcorrUncUp_ey = uncMetUpMETy;
-        metcorrUncDown_ex = uncMetDownMETx;
-        metcorrUncDown_ey = uncMetDownMETy;
-        metcorrClusteredUp_ex = clusteredMetUpMETx;
-        metcorrClusteredUp_ey = clusteredMetUpMETy;
-        metcorrClusteredDown_ex = clusteredMetDownMETx;
-        metcorrClusteredDown_ey = clusteredMetDownMETy;
-
-        // JES
-        metcorrJetEC2Up_ex = JetEC2UpMETx;
-        metcorrJetEC2Up_ey = JetEC2UpMETy;
-        metcorrJetEC2Down_ex = JetEC2DownMETx;
-        metcorrJetEC2Down_ey = JetEC2DownMETy;
-        metcorrJetEta0to3Up_ex = JetEta0to3UpMETx;
-        metcorrJetEta0to3Up_ey = JetEta0to3UpMETy;
-        metcorrJetEta0to3Down_ex = JetEta0to3DownMETx;
-        metcorrJetEta0to3Down_ey = JetEta0to3DownMETy;
-        metcorrJetEta0to5Up_ex = JetEta0to5UpMETx;
-        metcorrJetEta0to5Up_ey = JetEta0to5UpMETy;
-        metcorrJetEta0to5Down_ex = JetEta0to5DownMETx;
-        metcorrJetEta0to5Down_ey = JetEta0to5DownMETy;
-        metcorrJetEta3to5Up_ex = JetEta3to5UpMETx;
-        metcorrJetEta3to5Up_ey = JetEta3to5UpMETy;
-        metcorrJetEta3to5Down_ex = JetEta3to5DownMETx;
-        metcorrJetEta3to5Down_ey = JetEta3to5DownMETy;
-        metcorrJetRelativeBalUp_ex = JetRelativeBalUpMETx;
-        metcorrJetRelativeBalUp_ey = JetRelativeBalUpMETy;
-        metcorrJetRelativeBalDown_ex = JetRelativeBalDownMETx;
-        metcorrJetRelativeBalDown_ey = JetRelativeBalDownMETy;
-        metcorrJetRelativeSampleUp_ex = JetRelativeSampleUpMETx;
-        metcorrJetRelativeSampleUp_ey = JetRelativeSampleUpMETy;
-        metcorrJetRelativeSampleDown_ex = JetRelativeSampleDownMETx;
-        metcorrJetRelativeSampleDown_ey = JetRelativeSampleDownMETy;
-	
-        metcorrRecoilResoUp_ex = met_reso_Upx;
-        metcorrRecoilResoUp_ey = met_reso_Upy;
-        metcorrRecoilResoDown_ex = met_reso_Downx;
-        metcorrRecoilResoDown_ey = met_reso_Downy;
-        metcorrRecoilRespUp_ex = met_resp_Upx;
-        metcorrRecoilRespUp_ey = met_resp_Upy;
-        metcorrRecoilRespDown_ex = met_resp_Downx;
-        metcorrRecoilRespDown_ey = met_resp_Downy;
-        
-        metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
-        metcorphi = TMath::ATan2( metcorr_ey, metcorr_ex );
-        std::cout << " - metcor "<<metcor<<" metcorphi "<<metcorphi<<std::endl;
-        
-        // Corrected MET values for saving
-        metcorClusteredDown = TMath::Sqrt( metcorrClusteredDown_ex*metcorrClusteredDown_ex + metcorrClusteredDown_ey*metcorrClusteredDown_ey);
-        metcorphiClusteredDown = TMath::ATan2( metcorrClusteredDown_ey, metcorrClusteredDown_ex );
-        
-        metcorClusteredUp = TMath::Sqrt( metcorrClusteredUp_ex*metcorrClusteredUp_ex + metcorrClusteredUp_ey*metcorrClusteredUp_ey);
-        metcorphiClusteredUp = TMath::ATan2( metcorrClusteredUp_ey, metcorrClusteredUp_ex );
-        
-        metcorUncDown = TMath::Sqrt( metcorrUncDown_ex*metcorrUncDown_ex + metcorrUncDown_ey*metcorrUncDown_ey);
-        metcorphiUncDown = TMath::ATan2( metcorrUncDown_ey, metcorrUncDown_ex );
-        
-        metcorUncUp = TMath::Sqrt( metcorrUncUp_ex*metcorrUncUp_ex + metcorrUncUp_ey*metcorrUncUp_ey);
-        metcorphiUncUp = TMath::ATan2( metcorrUncUp_ey, metcorrUncUp_ex );
-
-        metcorJetEC2Down = TMath::Sqrt( metcorrJetEC2Down_ex*metcorrJetEC2Down_ex + metcorrJetEC2Down_ey*metcorrJetEC2Down_ey);
-        metcorphiJetEC2Down = TMath::ATan2( metcorrJetEC2Down_ey, metcorrJetEC2Down_ex );
-
-        metcorJetEC2Up = TMath::Sqrt( metcorrJetEC2Up_ex*metcorrJetEC2Up_ex + metcorrJetEC2Up_ey*metcorrJetEC2Up_ey);
-        metcorphiJetEC2Up = TMath::ATan2( metcorrJetEC2Up_ey, metcorrJetEC2Up_ex );
-
-        metcorJetEta0to3Down = TMath::Sqrt( metcorrJetEta0to3Down_ex*metcorrJetEta0to3Down_ex + metcorrJetEta0to3Down_ey*metcorrJetEta0to3Down_ey);
-        metcorphiJetEta0to3Down = TMath::ATan2( metcorrJetEta0to3Down_ey, metcorrJetEta0to3Down_ex );
-
-        metcorJetEta0to3Up = TMath::Sqrt( metcorrJetEta0to3Up_ex*metcorrJetEta0to3Up_ex + metcorrJetEta0to3Up_ey*metcorrJetEta0to3Up_ey);
-        metcorphiJetEta0to3Up = TMath::ATan2( metcorrJetEta0to3Up_ey, metcorrJetEta0to3Up_ex );
-
-        metcorJetEta0to5Down = TMath::Sqrt( metcorrJetEta0to5Down_ex*metcorrJetEta0to5Down_ex + metcorrJetEta0to5Down_ey*metcorrJetEta0to5Down_ey);
-        metcorphiJetEta0to5Down = TMath::ATan2( metcorrJetEta0to5Down_ey, metcorrJetEta0to5Down_ex );
-
-        metcorJetEta0to5Up = TMath::Sqrt( metcorrJetEta0to5Up_ex*metcorrJetEta0to5Up_ex + metcorrJetEta0to5Up_ey*metcorrJetEta0to5Up_ey);
-        metcorphiJetEta0to5Up = TMath::ATan2( metcorrJetEta0to5Up_ey, metcorrJetEta0to5Up_ex );
-
-        metcorJetEta3to5Down = TMath::Sqrt( metcorrJetEta3to5Down_ex*metcorrJetEta3to5Down_ex + metcorrJetEta3to5Down_ey*metcorrJetEta3to5Down_ey);
-        metcorphiJetEta3to5Down = TMath::ATan2( metcorrJetEta3to5Down_ey, metcorrJetEta3to5Down_ex );
-
-        metcorJetEta3to5Up = TMath::Sqrt( metcorrJetEta3to5Up_ex*metcorrJetEta3to5Up_ex + metcorrJetEta3to5Up_ey*metcorrJetEta3to5Up_ey);
-        metcorphiJetEta3to5Up = TMath::ATan2( metcorrJetEta3to5Up_ey, metcorrJetEta3to5Up_ex );
-
-        metcorJetRelativeSampleDown = TMath::Sqrt( metcorrJetRelativeSampleDown_ex*metcorrJetRelativeSampleDown_ex + metcorrJetRelativeSampleDown_ey*metcorrJetRelativeSampleDown_ey);
-        metcorphiJetRelativeSampleDown = TMath::ATan2( metcorrJetRelativeSampleDown_ey, metcorrJetRelativeSampleDown_ex );
-
-        metcorJetRelativeSampleUp = TMath::Sqrt( metcorrJetRelativeSampleUp_ex*metcorrJetRelativeSampleUp_ex + metcorrJetRelativeSampleUp_ey*metcorrJetRelativeSampleUp_ey);
-        metcorphiJetRelativeSampleUp = TMath::ATan2( metcorrJetRelativeSampleUp_ey, metcorrJetRelativeSampleUp_ex );
-
-        metcorJetRelativeSampleDown = TMath::Sqrt( metcorrJetRelativeSampleDown_ex*metcorrJetRelativeSampleDown_ex + metcorrJetRelativeSampleDown_ey*metcorrJetRelativeSampleDown_ey);
-        metcorphiJetRelativeSampleDown = TMath::ATan2( metcorrJetRelativeSampleDown_ey, metcorrJetRelativeSampleDown_ex );
-
-        metcorJetRelativeSampleUp = TMath::Sqrt( metcorrJetRelativeSampleUp_ex*metcorrJetRelativeSampleUp_ex + metcorrJetRelativeSampleUp_ey*metcorrJetRelativeSampleUp_ey);
-        metcorphiJetRelativeSampleUp = TMath::ATan2( metcorrJetRelativeSampleUp_ey, metcorrJetRelativeSampleUp_ex );
-
-        metcorRecoilResoUp = TMath::Sqrt( metcorrRecoilResoUp_ex*metcorrRecoilResoUp_ex + metcorrRecoilResoUp_ey*metcorrRecoilResoUp_ey);
-        metcorphiRecoilResoUp = TMath::ATan2( metcorrRecoilResoUp_ey, metcorrRecoilResoUp_ex );
-
-        metcorRecoilResoDown = TMath::Sqrt( metcorrRecoilResoDown_ex*metcorrRecoilResoDown_ex + metcorrRecoilResoDown_ey*metcorrRecoilResoDown_ey);
-        metcorphiRecoilResoDown = TMath::ATan2( metcorrRecoilResoDown_ey, metcorrRecoilResoDown_ex );
-
-        metcorRecoilRespUp = TMath::Sqrt( metcorrRecoilRespUp_ex*metcorrRecoilRespUp_ex + metcorrRecoilRespUp_ey*metcorrRecoilRespUp_ey);
-        metcorphiRecoilRespUp = TMath::ATan2( metcorrRecoilRespUp_ey, metcorrRecoilRespUp_ex );
-
-        metcorRecoilRespDown = TMath::Sqrt( metcorrRecoilRespDown_ex*metcorrRecoilRespDown_ex + metcorrRecoilRespDown_ey*metcorrRecoilRespDown_ey);
-        metcorphiRecoilRespDown = TMath::ATan2( metcorrRecoilRespDown_ey, metcorrRecoilRespDown_ex );
 
 
         if (channel == "mt" || channel == "et") {
@@ -1839,89 +741,69 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
               classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2,  mass2, decayMode2)
           };
 
-          std::cout << "era: " << era << "evt: " << evt << " run: " << run << " lumi: " << lumi << " pt1 " << pt1
-                    << " mass1 " << mass1 << " pt2: " << pt2 << " mass2: " << mass2 << std::endl;
-
           runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0,
                svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           // MET systematics
-          runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, svFitMass_UncMet_Up, svFitPt_UncMet_Up, svFitEta_UncMet_Up,
-              svFitPhi_UncMet_Up, svFitMET_UncMet_Up, svFitTransverseMass_UncMet_Up, tau1_UncMet_Up, tau2_UncMet_Up);
+          runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, svFitMass_UncMet_Up, svFitPt_UncMet_Up,
+              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, svFitMass_UncMet_Down, svFitPt_UncMet_Down,
-              svFitEta_UncMet_Down, svFitPhi_UncMet_Down, svFitMET_UncMet_Down, svFitTransverseMass_UncMet_Down, tau1_UncMet_Down,
-              tau2_UncMet_Down);
+              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, svFitMass_ClusteredMet_Up,
-              svFitPt_ClusteredMet_Up, svFitEta_ClusteredMet_Up, svFitPhi_ClusteredMet_Up, svFitMET_ClusteredMet_Up,
-              svFitTransverseMass_ClusteredMet_Up, tau1_ClusteredMet_Up, tau2_ClusteredMet_Up);
+              svFitPt_ClusteredMet_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, svFitMass_ClusteredMet_Down,
-              svFitPt_ClusteredMet_Down, svFitEta_ClusteredMet_Down, svFitPhi_ClusteredMet_Down, svFitMET_ClusteredMet_Down,
-              svFitTransverseMass_ClusteredMet_Down, tau1_ClusteredMet_Down, tau2_ClusteredMet_Down);
+              svFitPt_ClusteredMet_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEC2Up_ex, metcorrJetEC2Up_ey, covMET, 0, svFitMass_JetEC2_Up, svFitPt_JetEC2_Up,
-              svFitEta_JetEC2_Up, svFitPhi_JetEC2_Up, svFitMET_JetEC2_Up, svFitTransverseMass_JetEC2_Up, tau1_JetEC2_Up, tau2_JetEC2_Up);
+          runSVFit(measuredTauLeptons, metcorrJetEC2UpMET_ex, metcorrJetEC2UpMET_ey, covMET, 0, svFitMass_JetEC2_Up, svFitPt_JetEC2_Up,
+              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEC2Down_ex, metcorrJetEC2Down_ey, covMET, 0, svFitMass_JetEC2_Down, svFitPt_JetEC2_Down,
-              svFitEta_JetEC2_Down, svFitPhi_JetEC2_Down, svFitMET_JetEC2_Down, svFitTransverseMass_JetEC2_Down, tau1_JetEC2_Down, tau2_JetEC2_Down);
+          runSVFit(measuredTauLeptons, metcorrJetEC2DownMET_ex, metcorrJetEC2DownMET_ey, covMET, 0, svFitMass_JetEC2_Down, svFitPt_JetEC2_Down,
+              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to3Up_ex, metcorrJetEta0to3Up_ey, covMET, 0, svFitMass_JetEta0to3_Up, svFitPt_JetEta0to3_Up,
-              svFitEta_JetEta0to3_Up, svFitPhi_JetEta0to3_Up, svFitMET_JetEta0to3_Up, svFitTransverseMass_JetEta0to3_Up, tau1_JetEta0to3_Up,
-              tau2_JetEta0to3_Up);
+          runSVFit(measuredTauLeptons, metcorrJetEta0to3UpMET_ex, metcorrJetEta0to3UpMET_ey, covMET, 0, svFitMass_JetEta0to3_Up, svFitPt_JetEta0to3_Up,
+              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to3Down_ex, metcorrJetEta0to3Down_ey, covMET, 0, svFitMass_JetEta0to3_Down,
-              svFitPt_JetEta0to3_Down, svFitEta_JetEta0to3_Down, svFitPhi_JetEta0to3_Down, svFitMET_JetEta0to3_Down,
-              svFitTransverseMass_JetEta0to3_Down, tau1_JetEta0to3_Down, tau2_JetEta0to3_Down);
+          runSVFit(measuredTauLeptons, metcorrJetEta0to3DownMET_ex, metcorrJetEta0to3DownMET_ey, covMET, 0, svFitMass_JetEta0to3_Down,
+              svFitPt_JetEta0to3_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to5Up_ex, metcorrJetEta0to5Up_ey, covMET, 0, svFitMass_JetEta0to5_Up,
-              svFitPt_JetEta0to5_Up, svFitEta_JetEta0to5_Up, svFitPhi_JetEta0to5_Up, svFitMET_JetEta0to5_Up, svFitTransverseMass_JetEta0to5_Up,
-              tau1_JetEta0to5_Up, tau2_JetEta0to5_Up);
+          runSVFit(measuredTauLeptons, metcorrJetEta0to5UpMET_ex, metcorrJetEta0to5UpMET_ey, covMET, 0, svFitMass_JetEta0to5_Up,
+              svFitPt_JetEta0to5_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta0to5Down_ex, metcorrJetEta0to5Down_ey, covMET, 0, svFitMass_JetEta0to5_Down,
-              svFitPt_JetEta0to5_Down, svFitEta_JetEta0to5_Down, svFitPhi_JetEta0to5_Down, svFitMET_JetEta0to5_Down,
-              svFitTransverseMass_JetEta0to5_Down, tau1_JetEta0to5_Down, tau2_JetEta0to5_Down);
+          runSVFit(measuredTauLeptons, metcorrJetEta0to5DownMET_ex, metcorrJetEta0to5DownMET_ey, covMET, 0, svFitMass_JetEta0to5_Down,
+              svFitPt_JetEta0to5_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta3to5Up_ex, metcorrJetEta3to5Up_ey, covMET, 0, svFitMass_JetEta3to5_Up, svFitPt_JetEta3to5_Up,
-              svFitEta_JetEta3to5_Up, svFitPhi_JetEta3to5_Up, svFitMET_JetEta3to5_Up, svFitTransverseMass_JetEta3to5_Up, tau1_JetEta3to5_Up,
-              tau2_JetEta3to5_Up);
+          runSVFit(measuredTauLeptons, metcorrJetEta3to5UpMET_ex, metcorrJetEta3to5UpMET_ey, covMET, 0, svFitMass_JetEta3to5_Up, svFitPt_JetEta3to5_Up,
+              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetEta3to5Down_ex, metcorrJetEta3to5Down_ey, covMET, 0, svFitMass_JetEta3to5_Down,
-              svFitPt_JetEta3to5_Down, svFitEta_JetEta3to5_Down, svFitPhi_JetEta3to5_Down, svFitMET_JetEta3to5_Down,
-              svFitTransverseMass_JetEta3to5_Down, tau1_JetEta3to5_Down, tau2_JetEta3to5_Down);
+          runSVFit(measuredTauLeptons, metcorrJetEta3to5DownMET_ex, metcorrJetEta3to5DownMET_ey, covMET, 0, svFitMass_JetEta3to5_Down,
+              svFitPt_JetEta3to5_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeBalUp_ex, metcorrJetRelativeBalUp_ey, covMET, 0, svFitMass_JetRelativeBal_Up,
-              svFitPt_JetRelativeBal_Up, svFitEta_JetRelativeBal_Up, svFitPhi_JetRelativeBal_Up, svFitMET_JetRelativeBal_Up,
-              svFitTransverseMass_JetRelativeBal_Up, tau1_JetRelativeBal_Up, tau2_JetRelativeBal_Up);
+          runSVFit(measuredTauLeptons, metcorrJetRelativeBalUpMET_ex, metcorrJetRelativeBalUpMET_ey, covMET, 0, svFitMass_JetRelativeBal_Up,
+              svFitPt_JetRelativeBal_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeBalDown_ex, metcorrJetRelativeBalDown_ey, covMET, 0, svFitMass_JetRelativeBal_Down,
-              svFitPt_JetRelativeBal_Down, svFitEta_JetRelativeBal_Down, svFitPhi_JetRelativeBal_Down, svFitMET_JetRelativeBal_Down,
-              svFitTransverseMass_JetRelativeBal_Down, tau1_JetRelativeBal_Down, tau2_JetRelativeBal_Down);
+          runSVFit(measuredTauLeptons, metcorrJetRelativeBalDownMET_ex, metcorrJetRelativeBalDownMET_ey, covMET, 0, svFitMass_JetRelativeBal_Down,
+              svFitPt_JetRelativeBal_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleUp_ex, metcorrJetRelativeSampleUp_ey, covMET, 0, svFitMass_JetRelativeSample_Up,
-              svFitPt_JetRelativeSample_Up, svFitEta_JetRelativeSample_Up, svFitPhi_JetRelativeSample_Up, svFitMET_JetRelativeSample_Up,
-              svFitTransverseMass_JetRelativeSample_Up, tau1_JetRelativeSample_Up, tau2_JetRelativeSample_Up);
+          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleUpMET_ex, metcorrJetRelativeSampleUpMET_ey, covMET, 0, svFitMass_JetRelativeSample_Up,
+              svFitPt_JetRelativeSample_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleDown_ex, metcorrJetRelativeSampleDown_ey, covMET, 0, svFitMass_JetRelativeSample_Down,
-              svFitPt_JetRelativeSample_Down, svFitEta_JetRelativeSample_Down, svFitPhi_JetRelativeSample_Down, svFitMET_JetRelativeSample_Down,
-              svFitTransverseMass_JetRelativeSample_Down, tau1_JetRelativeSample_Down, tau2_JetRelativeSample_Down);
+          runSVFit(measuredTauLeptons, metcorrJetRelativeSampleDownMET_ex, metcorrJetRelativeSampleDownMET_ey, covMET, 0, svFitMass_JetRelativeSample_Down,
+              svFitPt_JetRelativeSample_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrRecoilResoUp_ex, metcorrRecoilResoUp_ey, covMET, 0, svFitMass_RecoilReso_Up,
-              svFitPt_RecoilReso_Up, svFitEta_RecoilReso_Up, svFitPhi_RecoilReso_Up, svFitMET_RecoilReso_Up,
-              svFitTransverseMass_RecoilReso_Up, tau1_RecoilReso_Up, tau2_RecoilReso_Up);
+              svFitPt_RecoilReso_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrRecoilResoDown_ex, metcorrRecoilResoDown_ey, covMET, 0, svFitMass_RecoilReso_Down,
-              svFitPt_RecoilReso_Down, svFitEta_RecoilReso_Down, svFitPhi_RecoilReso_Down, svFitMET_RecoilReso_Down,
-              svFitTransverseMass_RecoilReso_Down, tau1_RecoilReso_Down, tau2_RecoilReso_Down);
+              svFitPt_RecoilReso_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrRecoilRespUp_ex, metcorrRecoilRespUp_ey, covMET, 0, svFitMass_RecoilResp_Up,
-              svFitPt_RecoilResp_Up, svFitEta_RecoilResp_Up, svFitPhi_RecoilResp_Up, svFitMET_RecoilResp_Up,
-              svFitTransverseMass_RecoilResp_Up, tau1_RecoilResp_Up, tau2_RecoilResp_Up);
+              svFitPt_RecoilResp_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrRecoilRespDown_ex, metcorrRecoilRespDown_ey, covMET, 0, svFitMass_RecoilResp_Down,
-              svFitPt_RecoilResp_Down, svFitEta_RecoilResp_Down, svFitPhi_RecoilResp_Down, svFitMET_RecoilResp_Down,
-              svFitTransverseMass_RecoilResp_Down, tau1_RecoilResp_Down, tau2_RecoilResp_Down);
+              svFitPt_RecoilResp_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           if (doES) {
             // corrections only need to be done once
@@ -1946,32 +828,28 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
               runSVFit(measuredTauScaleUp, metcorr_ex, metcorr_ey, covMET, 0,
-               svFitMass_EEScale_Up, svFitPt_EEScale_Up, svFitEta_EEScale_Up, svFitPhi_EEScale_Up, svFitMET_EEScale_Up,
-               svFitTransverseMass_EEScale_Up, tau1, tau2);
+               svFitMass_EEScale_Up, svFitPt_EEScale_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
               std::vector<classic_svFit::MeasuredTauLepton> measuredTauScaleDn{
-                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType1, scale_dn.Pt(), scale_dn.Eta(), scale_dn.Phi(), scale_dn.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
               runSVFit(measuredTauScaleDn, metcorr_ex, metcorr_ey, covMET, 0,
-               svFitMass_EEScale_Down, svFitPt_EEScale_Down, svFitEta_EEScale_Down, svFitPhi_EEScale_Down, svFitMET_EEScale_Down,
-               svFitTransverseMass_EEScale_Down, tau1, tau2);
+               svFitMass_EEScale_Down, svFitPt_EEScale_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
               std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaUp{
-                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType1, sigma_up.Pt(), sigma_up.Eta(), sigma_up.Phi(), sigma_up.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
               runSVFit(measuredTauSigmaUp, metcorr_ex, metcorr_ey, covMET, 0,
-               svFitMass_EESigma_Up, svFitPt_EESigma_Up, svFitEta_EESigma_Up, svFitPhi_EESigma_Up, svFitMET_EESigma_Up,
-               svFitTransverseMass_EESigma_Up, tau1, tau2);
+               svFitMass_EESigma_Up, svFitPt_EESigma_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
               std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaDn{
-                classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
+                classic_svFit::MeasuredTauLepton(decayType1, sigma_dn.Pt(), sigma_dn.Eta(), sigma_dn.Phi(), sigma_dn.M()),
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
               runSVFit(measuredTauSigmaDn, metcorr_ex, metcorr_ey, covMET, 0,
-               svFitMass_EESigma_Down, svFitPt_EESigma_Down, svFitEta_EESigma_Down, svFitPhi_EESigma_Down, svFitMET_EESigma_Down,
-               svFitTransverseMass_EESigma_Down, tau1, tau2);
+               svFitMass_EESigma_Down, svFitPt_EESigma_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else if (channel == "mt") {
               TLorentzVector orig_mu;
               orig_mu.SetPtEtaPhiM(pt1, eta1, phi1, mass1);
@@ -2005,108 +883,58 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
               if (orig_mu.Eta() > -2.4 && orig_mu.Eta() < -2.1) {
                 runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin1_Up, svFitPt_MESbin1_Up, svFitEta_MESbin1_Up, svFitPhi_MESbin1_Up, svFitMET_MESbin1_Up,
-                  svFitTransverseMass_MESbin1_Up, tau1, tau2);
+                  svFitMass_MESbin1_Up, svFitPt_MESbin1_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
                 runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin1_Down, svFitPt_MESbin1_Down, svFitEta_MESbin1_Down, svFitPhi_MESbin1_Down, svFitMET_MESbin1_Down,
-                  svFitTransverseMass_MESbin1_Down, tau1, tau2);
+                  svFitMass_MESbin1_Down, svFitPt_MESbin1_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
               } else {
                 svFitMass_MESbin1_Up = svFitMass;
                 svFitPt_MESbin1_Up = svFitPt;
-                svFitEta_MESbin1_Up = svFitEta;
-                svFitPhi_MESbin1_Up = svFitPhi;
-                svFitMET_MESbin1_Up = svFitMET;
-                svFitTransverseMass_MESbin1_Up = svFitTransverseMass;
                 svFitMass_MESbin1_Down = svFitMass;
                 svFitPt_MESbin1_Down = svFitPt;
-                svFitEta_MESbin1_Down = svFitEta;
-                svFitPhi_MESbin1_Down = svFitPhi;
-                svFitMET_MESbin1_Down = svFitMET;
-                svFitTransverseMass_MESbin1_Down = svFitTransverseMass;
               }
               if (orig_mu.Eta() > -2.1 && orig_mu.Eta() < -1.2) {
                 runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin2_Up, svFitPt_MESbin2_Up, svFitEta_MESbin2_Up, svFitPhi_MESbin2_Up, svFitMET_MESbin2_Up,
-                  svFitTransverseMass_MESbin2_Up, tau1, tau2);
+                  svFitMass_MESbin2_Up, svFitPt_MESbin2_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
                 runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin2_Down, svFitPt_MESbin2_Down, svFitEta_MESbin2_Down, svFitPhi_MESbin2_Down, svFitMET_MESbin2_Down,
-                  svFitTransverseMass_MESbin2_Down, tau1, tau2);
+                  svFitMass_MESbin2_Down, svFitPt_MESbin2_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
               } else {
                 svFitMass_MESbin2_Up = svFitMass;
                 svFitPt_MESbin2_Up = svFitPt;
-                svFitEta_MESbin2_Up = svFitEta;
-                svFitPhi_MESbin2_Up = svFitPhi;
-                svFitMET_MESbin2_Up = svFitMET;
-                svFitTransverseMass_MESbin2_Up = svFitTransverseMass;
                 svFitMass_MESbin2_Down = svFitMass;
                 svFitPt_MESbin2_Down = svFitPt;
-                svFitEta_MESbin2_Down = svFitEta;
-                svFitPhi_MESbin2_Down = svFitPhi;
-                svFitMET_MESbin2_Down = svFitMET;
-                svFitTransverseMass_MESbin2_Down = svFitTransverseMass;
               }
               if (orig_mu.Eta() > -1.2 && orig_mu.Eta() < 1.2) {
                 runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin3_Up, svFitPt_MESbin3_Up, svFitEta_MESbin3_Up, svFitPhi_MESbin3_Up, svFitMET_MESbin3_Up,
-                  svFitTransverseMass_MESbin3_Up, tau1, tau2);
+                  svFitMass_MESbin3_Up, svFitPt_MESbin3_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
                 runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin3_Down, svFitPt_MESbin3_Down, svFitEta_MESbin3_Down, svFitPhi_MESbin3_Down, svFitMET_MESbin3_Down,
-                  svFitTransverseMass_MESbin3_Down, tau1, tau2);
+                  svFitMass_MESbin3_Down, svFitPt_MESbin3_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
               } else {
                 svFitMass_MESbin3_Up = svFitMass;
                 svFitPt_MESbin3_Up = svFitPt;
-                svFitEta_MESbin3_Up = svFitEta;
-                svFitPhi_MESbin3_Up = svFitPhi;
-                svFitMET_MESbin3_Up = svFitMET;
-                svFitTransverseMass_MESbin3_Up = svFitTransverseMass;
                 svFitMass_MESbin3_Down = svFitMass;
                 svFitPt_MESbin3_Down = svFitPt;
-                svFitEta_MESbin3_Down = svFitEta;
-                svFitPhi_MESbin3_Down = svFitPhi;
-                svFitMET_MESbin3_Down = svFitMET;
-                svFitTransverseMass_MESbin3_Down = svFitTransverseMass;
               }
               if (orig_mu.Eta() > 1.2 && orig_mu.Eta() < 2.1) {
                 runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin4_Up, svFitPt_MESbin4_Up, svFitEta_MESbin4_Up, svFitPhi_MESbin4_Up, svFitMET_MESbin4_Up,
-                  svFitTransverseMass_MESbin4_Up, tau1, tau2);
+                  svFitMass_MESbin4_Up, svFitPt_MESbin4_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
                 runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin4_Down, svFitPt_MESbin4_Down, svFitEta_MESbin4_Down, svFitPhi_MESbin4_Down, svFitMET_MESbin4_Down,
-                  svFitTransverseMass_MESbin4_Down, tau1, tau2);
+                  svFitMass_MESbin4_Down, svFitPt_MESbin4_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
               } else {
                 svFitMass_MESbin4_Up = svFitMass;
                 svFitPt_MESbin4_Up = svFitPt;
-                svFitEta_MESbin4_Up = svFitEta;
-                svFitPhi_MESbin4_Up = svFitPhi;
-                svFitMET_MESbin4_Up = svFitMET;
-                svFitTransverseMass_MESbin4_Up = svFitTransverseMass;
                 svFitMass_MESbin4_Down = svFitMass;
                 svFitPt_MESbin4_Down = svFitPt;
-                svFitEta_MESbin4_Down = svFitEta;
-                svFitPhi_MESbin4_Down = svFitPhi;
-                svFitMET_MESbin4_Down = svFitMET;
-                svFitTransverseMass_MESbin4_Down = svFitTransverseMass;
               }
               if (orig_mu.Eta() > 2.1 && orig_mu.Eta() < 2.4) {
                 runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin5_Up, svFitPt_MESbin5_Up, svFitEta_MESbin5_Up, svFitPhi_MESbin5_Up, svFitMET_MESbin5_Up,
-                  svFitTransverseMass_MESbin5_Up, tau1, tau2);
+                  svFitMass_MESbin5_Up, svFitPt_MESbin5_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
                 runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin5_Down, svFitPt_MESbin5_Down, svFitEta_MESbin5_Down, svFitPhi_MESbin5_Down, svFitMET_MESbin5_Down,
-                  svFitTransverseMass_MESbin5_Down, tau1, tau2);
+                  svFitMass_MESbin5_Down, svFitPt_MESbin5_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
               } else {
                 svFitMass_MESbin5_Up = svFitMass;
                 svFitPt_MESbin5_Up = svFitPt;
-                svFitEta_MESbin5_Up = svFitEta;
-                svFitPhi_MESbin5_Up = svFitPhi;
-                svFitMET_MESbin5_Up = svFitMET;
-                svFitTransverseMass_MESbin5_Up = svFitTransverseMass;
                 svFitMass_MESbin5_Down = svFitMass;
                 svFitPt_MESbin5_Down = svFitPt;
-                svFitEta_MESbin5_Down = svFitEta;
-                svFitPhi_MESbin5_Down = svFitPhi;
-                svFitMET_MESbin5_Down = svFitMET;
-                svFitTransverseMass_MESbin5_Down = svFitTransverseMass;
               }
             }
 
@@ -2139,93 +967,69 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             // all tau shift up
             if (gen_match_2 < 6) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_Up, svFitPt_Up,
-                    svFitEta_Up, svFitPhi_Up, svFitMET_Up, svFitTransverseMass_Up, tau1_Up, tau2_Up);
+                  svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_Up = svFitMass;
               svFitPt_Up = svFitPt;
-              svFitEta_Up = svFitEta;
-              svFitPhi_Up = svFitPhi;
-              svFitMET_Up = svFitMET;
-              svFitTransverseMass_Up = svFitTransverseMass;
-              tau1_Up = tau1;
-              tau2_Up = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // tau DM0 shifted up
             if (gen_match_2 == 5 && decayMode2 == 0) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM0_Up, svFitPt_DM0_Up,
-                    svFitEta_DM0_Up, svFitPhi_DM0_Up, svFitMET_DM0_Up, svFitTransverseMass_DM0_Up, tau1_DM0_Up, tau2_DM0_Up);
+                  svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
             } else {
               svFitMass_DM0_Up = svFitMass;
               svFitPt_DM0_Up = svFitPt;
-              svFitEta_DM0_Up = svFitEta;
-              svFitPhi_DM0_Up = svFitPhi;
-              svFitMET_DM0_Up = svFitMET;
-              svFitTransverseMass_DM0_Up = svFitTransverseMass;
-              tau1_DM0_Up = tau1;
-              tau2_DM0_Up = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // tau DM1 shifted up
             if (gen_match_2 == 5 && decayMode2 == 1) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM1_Up, svFitPt_DM1_Up,
-                    svFitEta_DM1_Up, svFitPhi_DM1_Up, svFitMET_DM1_Up, svFitTransverseMass_DM1_Up, tau1_DM1_Up, tau2_DM1_Up);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_DM1_Up = svFitMass;
               svFitPt_DM1_Up = svFitPt;
-              svFitEta_DM1_Up = svFitEta;
-              svFitPhi_DM1_Up = svFitPhi;
-              svFitMET_DM1_Up = svFitMET;
-              svFitTransverseMass_DM1_Up = svFitTransverseMass;
-              tau1_DM1_Up = tau1;
-              tau2_DM1_Up = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // tau DM10 shifted up
             if (gen_match_2 == 5 && decayMode2 == 10) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM10_Up, svFitPt_DM10_Up,
-                    svFitEta_DM10_Up, svFitPhi_DM10_Up, svFitMET_DM10_Up, svFitTransverseMass_DM10_Up, tau1_DM10_Up, tau2_DM10_Up);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_DM10_Up = svFitMass;
               svFitPt_DM10_Up = svFitPt;
-              svFitEta_DM10_Up = svFitEta;
-              svFitPhi_DM10_Up = svFitPhi;
-              svFitMET_DM10_Up = svFitMET;
-              svFitTransverseMass_DM10_Up = svFitTransverseMass;
-              tau1_DM10_Up = tau1;
-              tau2_DM10_Up = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // lep->tau DM0 shifted up
             if (gen_match_2 < 5 && decayMode2 == 0) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_LES_DM0_Up, svFitPt_LES_DM0_Up,
-                    svFitEta_LES_DM0_Up, svFitPhi_LES_DM0_Up, svFitMET_LES_DM0_Up, svFitTransverseMass_LES_DM0_Up, tau1_LES_DM0_Up, tau2_LES_DM0_Up);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
             } else {
               svFitMass_LES_DM0_Up = svFitMass;
               svFitPt_LES_DM0_Up = svFitPt;
-              svFitEta_LES_DM0_Up = svFitEta;
-              svFitPhi_LES_DM0_Up = svFitPhi;
-              svFitMET_LES_DM0_Up = svFitMET;
-              svFitTransverseMass_LES_DM0_Up = svFitTransverseMass;
-              tau1_LES_DM0_Up = tau1;
-              tau2_LES_DM0_Up = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // lep->tau DM1 shifted up
             if (gen_match_2 < 5 && decayMode2 == 1) {
               runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_LES_DM1_Up, svFitPt_LES_DM1_Up,
-                    svFitEta_LES_DM1_Up, svFitPhi_LES_DM1_Up, svFitMET_LES_DM1_Up, svFitTransverseMass_LES_DM1_Up, tau1_LES_DM1_Up, tau2_LES_DM1_Up);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_LES_DM1_Up = svFitMass;
               svFitPt_LES_DM1_Up = svFitPt;
-              svFitEta_LES_DM1_Up = svFitEta;
-              svFitPhi_LES_DM1_Up = svFitPhi;
-              svFitMET_LES_DM1_Up = svFitMET;
-              svFitTransverseMass_LES_DM1_Up = svFitTransverseMass;
-              tau1_LES_DM1_Up = tau1;
-              tau2_LES_DM1_Up = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             ///////////////////////////////
@@ -2235,1092 +1039,186 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             // all tau shift down
             if (gen_match_2 < 6) {
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_Down, svFitPt_Down,
-                    svFitEta_Down, svFitPhi_Down, svFitMET_Down, svFitTransverseMass_Down, tau1_Down, tau2_Down);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_Down = svFitMass;
               svFitPt_Down = svFitPt;
-              svFitEta_Down = svFitEta;
-              svFitPhi_Down = svFitPhi;
-              svFitMET_Down = svFitMET;
-              svFitTransverseMass_Down = svFitTransverseMass;
-              tau1_Down = tau1;
-              tau2_Down = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // tau DM0 shifted down
             if (gen_match_2 == 5 && decayMode2 == 0) {
-              std::cout << "DM0 shift Down" << std::endl;
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM0_Down, svFitPt_DM0_Down,
-                    svFitEta_DM0_Down, svFitPhi_DM0_Down, svFitMET_DM0_Down, svFitTransverseMass_DM0_Down, tau1_DM0_Down, tau2_DM0_Down);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_DM0_Down = svFitMass;
               svFitPt_DM0_Down = svFitPt;
-              svFitEta_DM0_Down = svFitEta;
-              svFitPhi_DM0_Down = svFitPhi;
-              svFitMET_DM0_Down = svFitMET;
-              svFitTransverseMass_DM0_Down = svFitTransverseMass;
-              tau1_DM0_Down = tau1;
-              tau2_DM0_Down = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // tau DM1 shifted down
             if (gen_match_2 == 5 && decayMode2 == 1) {
-              std::cout << "DM1 shift down" << std::endl;
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM1_Down, svFitPt_DM1_Down,
-                    svFitEta_DM1_Down, svFitPhi_DM1_Down, svFitMET_DM1_Down, svFitTransverseMass_DM1_Down, tau1_DM1_Down, tau2_DM1_Down);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_DM1_Down = svFitMass;
               svFitPt_DM1_Down = svFitPt;
-              svFitEta_DM1_Down = svFitEta;
-              svFitPhi_DM1_Down = svFitPhi;
-              svFitMET_DM1_Down = svFitMET;
-              svFitTransverseMass_DM1_Down = svFitTransverseMass;
-              tau1_DM1_Down = tau1;
-              tau2_DM1_Down = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // tau DM10 shifted down
             if (gen_match_2 == 5 && decayMode2 == 10) {
-              std::cout << "DM10 shift down" << std::endl;
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM10_Down, svFitPt_DM10_Down,
-                    svFitEta_DM10_Down, svFitPhi_DM10_Down, svFitMET_DM10_Down, svFitTransverseMass_DM10_Down, tau1_DM10_Down, tau2_DM10_Down);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_DM10_Down = svFitMass;
               svFitPt_DM10_Down = svFitPt;
-              svFitEta_DM10_Down = svFitEta;
-              svFitPhi_DM10_Down = svFitPhi;
-              svFitMET_DM10_Down = svFitMET;
-              svFitTransverseMass_DM10_Down = svFitTransverseMass;
-              tau1_DM10_Down = tau1;
-              tau2_DM10_Down = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // lep->tau DM0 shifted down
             if (gen_match_2 < 5 && decayMode2 == 0) {
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_LES_DM0_Down, svFitPt_LES_DM0_Down,
-                    svFitEta_LES_DM0_Down, svFitPhi_LES_DM0_Down, svFitMET_LES_DM0_Down, svFitTransverseMass_LES_DM0_Down, tau1_LES_DM0_Down, tau2_LES_DM0_Down);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_LES_DM0_Down = svFitMass;
               svFitPt_LES_DM0_Down = svFitPt;
-              svFitEta_LES_DM0_Down = svFitEta;
-              svFitPhi_LES_DM0_Down = svFitPhi;
-              svFitMET_LES_DM0_Down = svFitMET;
-              svFitTransverseMass_LES_DM0_Down = svFitTransverseMass;
-              tau1_LES_DM0_Down = tau1;
-              tau2_LES_DM0_Down = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
 
             // lep->tau DM1 shifted down
             if (gen_match_2 < 5 && decayMode2 == 1) {
               runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_LES_DM1_Down, svFitPt_LES_DM1_Down,
-                    svFitEta_LES_DM1_Down, svFitPhi_LES_DM1_Down, svFitMET_LES_DM1_Down, svFitTransverseMass_LES_DM1_Down, tau1_LES_DM1_Down, tau2_LES_DM1_Down);
+                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             } else {
               svFitMass_LES_DM1_Down = svFitMass;
               svFitPt_LES_DM1_Down = svFitPt;
-              svFitEta_LES_DM1_Down = svFitEta;
-              svFitPhi_LES_DM1_Down = svFitPhi;
-              svFitMET_LES_DM1_Down = svFitMET;
-              svFitTransverseMass_LES_DM1_Down = svFitTransverseMass;
-              tau1_LES_DM1_Down = tau1;
-              tau2_LES_DM1_Down = tau2;
+              tau1 = tau1;
+              tau2 = tau2;
             }
           }  // end doES
-        }  // eTau / muTau
-     
-     else if(channel=="em"){
-       // define lepton four vectors
-       std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptons;
-       measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1, eta1,  phi1, mass1));
-       measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2, mass2));
-       
-       std::cout<< "evt: "<<evt<<" run: "<<run<<" lumi: "<<lumi<< " pt1 " << pt1 << " mass1 " << mass1 << " pt2: "<< pt2<< " mass2: "<< mass2 <<std::endl;        
-       runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0, svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-       std::cout<<"finished running non-EES SVFit in EMu"<<std::endl;
-  
-// Added by Abdollah
-          // MET systematics
-          std::cout << "MET Unclustered Energy Up   ---  ";
-          runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, svFitMass_UncMet_Up, svFitPt_UncMet_Up, svFitEta_UncMet_Up, 
-              svFitPhi_UncMet_Up, svFitMET_UncMet_Up, svFitTransverseMass_UncMet_Up, tau1_UncMet_Up, tau2_UncMet_Up);
+        }  // eTau / muTau     
+    else {
+      svFitMass = -100;
+      svFitPt = -100;
+    }
 
-          std::cout << "MET Unclustered Energy Down ---  ";
-          runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, svFitMass_UncMet_Down, svFitPt_UncMet_Down, svFitEta_UncMet_Down, 
-              svFitPhi_UncMet_Down, svFitMET_UncMet_Down, svFitTransverseMass_UncMet_Down, tau1_UncMet_Down, tau2_UncMet_Down);
+    tau1_pt  = tau1.Pt();
+    tau1_eta = tau1.Eta();
+    tau1_phi = tau1.Phi();
+    tau1_m   = tau1.M();
+    tau2_pt  = tau2.Pt();
+    tau2_eta = tau2.Eta();
+    tau2_phi = tau2.Phi();
+    tau2_m   = tau2.M();
 
-          std::cout << "MET Clustered Energy Up     ---  ";
-          runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, svFitMass_ClusteredMet_Up, svFitPt_ClusteredMet_Up, 
-              svFitEta_ClusteredMet_Up, svFitPhi_ClusteredMet_Up, svFitMET_ClusteredMet_Up, svFitTransverseMass_ClusteredMet_Up, tau1_ClusteredMet_Up, tau2_ClusteredMet_Up);
-
-          std::cout << "MET Clustered Energy Down   ---  ";
-          runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, svFitMass_ClusteredMet_Down, svFitPt_ClusteredMet_Down, 
-              svFitEta_ClusteredMet_Down, svFitPhi_ClusteredMet_Down, svFitMET_ClusteredMet_Down, svFitTransverseMass_ClusteredMet_Down, tau1_ClusteredMet_Down, tau2_ClusteredMet_Down);
-
-          std::cout<< "Shifted MET Summary:\n\tmetcorr_ex " << metcorr_ex << " --- metcorrUncUp_ex " << metcorrUncUp_ex << " metcorrUncDown_ex " << metcorrUncDown_ex
-              << " metcorrClusteredUp_ex " << metcorrClusteredUp_ex << " metcorrClusteredDown_ex " << metcorrClusteredDown_ex << std::endl;
-          std::cout<< "\tmetcorr_ey " << metcorr_ey << " --- metcorrUncUp_ey " << metcorrUncUp_ey << " metcorrUncDown_ey " << metcorrUncDown_ey
-              << " metcorrClusteredUp_ey " << metcorrClusteredUp_ey << " metcorrClusteredDown_ey " << metcorrClusteredDown_ey << std::endl;
-
-
-          // new met to store 
-          metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
-          metcorphi = TMath::ATan2( metcorr_ey, metcorr_ex );
-          metcorClusteredDown = TMath::Sqrt( metcorrClusteredDown_ex*metcorrClusteredDown_ex + metcorrClusteredDown_ey*metcorrClusteredDown_ey);
-          metcorphiClusteredDown = TMath::ATan2( metcorrClusteredDown_ey, metcorrClusteredDown_ex );
-          metcorClusteredUp = TMath::Sqrt( metcorrClusteredUp_ex*metcorrClusteredUp_ex + metcorrClusteredUp_ey*metcorrClusteredUp_ey);
-          metcorphiClusteredUp = TMath::ATan2( metcorrClusteredUp_ey, metcorrClusteredUp_ex );
-          metcorUncDown = TMath::Sqrt( metcorrUncDown_ex*metcorrUncDown_ex + metcorrUncDown_ey*metcorrUncDown_ey);
-          metcorphiUncDown = TMath::ATan2( metcorrUncDown_ey, metcorrUncDown_ex );
-          metcorUncUp = TMath::Sqrt( metcorrUncUp_ex*metcorrUncUp_ex + metcorrUncUp_ey*metcorrUncUp_ey);
-          metcorphiUncUp = TMath::ATan2( metcorrUncUp_ey, metcorrUncUp_ex );
-
-
-
-
-
-     if(doES) {
-         
-         // Only shift Electrons
-         // 1% shift in barrel and 2.5% shift in endcap
-         // applied to electrons in emu channel
-         float etaBarrelEndcap  = 1.479;
-         float ES_Up_scale;
-         if (abs(eta1) < etaBarrelEndcap) ES_Up_scale = 1.01;
-         else ES_Up_scale = 1.025;
-         double pt1_Up = pt1 * ES_Up_scale;
-         std::cout << "E eta: " << eta1 << " ees SF: " << ES_Up_scale << std::endl;
-         double metcorr_ex_Up, metcorr_ey_Up;
-         double dx1_Up, dy1_Up;
-         dx1_Up = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Up_scale ) - 1.);
-         dy1_Up = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Up_scale ) - 1.);
-         metcorr_ex_Up = metcorr_ex + dx1_Up;
-         metcorr_ey_Up = metcorr_ey + dy1_Up;
-         std::cout << "px1 " << pt1 * TMath::Cos( phi1 ) << "  met px1 cor " << dx1_Up <<std::endl;
-         std::cout << "py1 " << pt1 * TMath::Sin( phi1 ) << "  met py1 cor " << dy1_Up <<std::endl;
-         std::cout << "pt1 " << pt1 << "  pt1_Up " << pt1_Up <<std::endl;
-         std::cout << "metcor_ex " << metcorr_ex << " ees: " << metcorr_ex_Up << std::endl;
-         std::cout << "metcor_ey " << metcorr_ey << " ees: " << metcorr_ey_Up << std::endl;
-         
-         std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1));
-         measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2, mass2));
-         
-         std::cout<< "evt: "<<evt<<" run: "<<run<<" lumi: "<<lumi<< " pt1 " << pt1_Up << " mass1 " << mass1 << " pt2: "<< pt2 << " mass2: "<< mass2 <<std::endl;        
-         runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_Up, svFitPt_Up, svFitEta_Up, svFitPhi_Up, svFitMET_Up, svFitTransverseMass_Up, tau1_Up, tau2_Up);
-         std::cout<<"finished runningSVFit in EMu EES Up"<<std::endl;
-         
-         
-         // EES Down
-         float ES_Down_scale;
-         if (abs(eta1) < etaBarrelEndcap) ES_Down_scale = 0.99;
-         else ES_Down_scale = 0.975;
-         std::cout << "E eta: " << eta1 << " ees SF: " << ES_Down_scale << std::endl;
-         double pt1_Down;
-         pt1_Down = pt1 * ES_Down_scale;
-         double metcorr_ex_Down, metcorr_ey_Down;
-         double dx1_Down, dy1_Down;
-         dx1_Down = pt1 * TMath::Cos( phi1 ) * (( 1. / ES_Down_scale ) - 1.);
-         dy1_Down = pt1 * TMath::Sin( phi1 ) * (( 1. / ES_Down_scale ) - 1.);
-         metcorr_ex_Down = metcorr_ex + dx1_Down;
-         metcorr_ey_Down = metcorr_ey + dy1_Down;
-         std::cout << "px1 " << pt1 * TMath::Cos( phi1 ) << "  met px1 cor " << dx1_Down <<std::endl;
-         std::cout << "py1 " << pt1 * TMath::Sin( phi1 ) << "  met py1 cor " << dy1_Down <<std::endl;
-         std::cout << "metcor_ex " << metcorr_ex << " ees: " << metcorr_ex_Down << std::endl;
-         std::cout << "metcor_ey " << metcorr_ey << " ees: " << metcorr_ey_Down << std::endl;
-         
-         std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1));
-         measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2,  mass2));
-         
-         runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_Down, svFitPt_Down, svFitEta_Down, svFitPhi_Down, svFitMET_Down, svFitTransverseMass_Down, tau1_Down, tau2_Down);
-         
-         
-       } // end doES
-     } // eMu
-     
-     
-     
-     else if(channel=="tt"){
-       // define lepton four vectors
-       std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptons;
-       // Add Tau of higest Pt first
-       if (pt1 > pt2) {
-         measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1, eta1,  phi1, mass1, decayMode));
-         measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2,  mass2, decayMode2));
-       }
-       else {
-         measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType2,  pt2, eta2, phi2,  mass2, decayMode2));
-         measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1, eta1,  phi1, mass1, decayMode));
-       }
-       
-       std::cout<< "evt: "<<evt<<" run: "<<run<<" lumi: "<<lumi<< " pt1 " << pt1 << " mass1 " << mass1 << " pt2: "<< pt2<< " mass2: "<< mass2 <<std::endl;        
-       runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0, 
-		svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-       std::cout<<"finished running non-TES SVFit in TT"<<std::endl;
-       
-       
-       //*****************************************************
-       // MET SYSTEMATICS
-       // Taus Pt have been corrected (TEC)
-       // Still need TEC propagated to shifted METs
-       //*****************************************************
-       
-       std::cout << "MET Unclustered Energy Up   ---  ";
-       runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, 
-		svFitMass_UncMet_Up, svFitPt_UncMet_Up, svFitEta_UncMet_Up, svFitPhi_UncMet_Up, svFitMET_UncMet_Up, svFitTransverseMass_UncMet_Up, tau1_UncMet_Up, tau2_UncMet_Up);
-       std::cout << "MET Unclustered Energy Down ---  ";
-       runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, 
-		svFitMass_UncMet_Down, svFitPt_UncMet_Down, svFitEta_UncMet_Down, svFitPhi_UncMet_Down, svFitMET_UncMet_Down, svFitTransverseMass_UncMet_Down, tau1_UncMet_Down, tau2_UncMet_Down);
-       std::cout << "JES JetEC2 Energy Up   ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEC2Up_ex, metcorrJetEC2Up_ey, covMET, 0, 
-		svFitMass_JetEC2_Up, svFitPt_JetEC2_Up, svFitEta_JetEC2_Up, svFitPhi_JetEC2_Up, svFitMET_JetEC2_Up, svFitTransverseMass_JetEC2_Up, tau1_JetEC2_Up, tau2_JetEC2_Up);
-       std::cout << "JES JetEC2 Energy Down ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEC2Down_ex, metcorrJetEC2Down_ey, covMET, 0, 
-		svFitMass_JetEC2_Down, svFitPt_JetEC2_Down, svFitEta_JetEC2_Down, svFitPhi_JetEC2_Down, svFitMET_JetEC2_Down, svFitTransverseMass_JetEC2_Down, tau1_JetEC2_Down, tau2_JetEC2_Down);
-       std::cout << "JES JetEta0to3 Energy Up   ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEta0to3Up_ex, metcorrJetEta0to3Up_ey, covMET, 0, 
-		svFitMass_JetEta0to3_Up, svFitPt_JetEta0to3_Up, svFitEta_JetEta0to3_Up, svFitPhi_JetEta0to3_Up, svFitMET_JetEta0to3_Up, svFitTransverseMass_JetEta0to3_Up, tau1_JetEta0to3_Up, tau2_JetEta0to3_Up);
-       std::cout << "JES JetEta0to3 Energy Down ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEta0to3Down_ex, metcorrJetEta0to3Down_ey, covMET, 0, 
-		svFitMass_JetEta0to3_Down, svFitPt_JetEta0to3_Down, svFitEta_JetEta0to3_Down, svFitPhi_JetEta0to3_Down, svFitMET_JetEta0to3_Down, svFitTransverseMass_JetEta0to3_Down, tau1_JetEta0to3_Down, tau2_JetEta0to3_Down);
-       std::cout << "JES JetEta0to5 Energy Up   ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEta0to5Up_ex, metcorrJetEta0to5Up_ey, covMET, 0, 
-		svFitMass_JetEta0to5_Up, svFitPt_JetEta0to5_Up, svFitEta_JetEta0to5_Up, svFitPhi_JetEta0to5_Up, svFitMET_JetEta0to5_Up, svFitTransverseMass_JetEta0to5_Up, tau1_JetEta0to5_Up, tau2_JetEta0to5_Up);
-       std::cout << "JES JetEta0to5 Energy Down ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEta0to5Down_ex, metcorrJetEta0to5Down_ey, covMET, 0, 
-		svFitMass_JetEta0to5_Down, svFitPt_JetEta0to5_Down, svFitEta_JetEta0to5_Down, svFitPhi_JetEta0to5_Down, svFitMET_JetEta0to5_Down, svFitTransverseMass_JetEta0to5_Down, tau1_JetEta0to5_Down, tau2_JetEta0to5_Down);
-       std::cout << "JES JetEta3to5 Energy Up   ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEta3to5Up_ex, metcorrJetEta3to5Up_ey, covMET, 0, 
-		svFitMass_JetEta3to5_Up, svFitPt_JetEta3to5_Up, svFitEta_JetEta3to5_Up, svFitPhi_JetEta3to5_Up, svFitMET_JetEta3to5_Up, svFitTransverseMass_JetEta3to5_Up, tau1_JetEta3to5_Up, tau2_JetEta3to5_Up);
-       std::cout << "JES JetEta3to5 Energy Down ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetEta3to5Down_ex, metcorrJetEta3to5Down_ey, covMET, 0, 
-		svFitMass_JetEta3to5_Down, svFitPt_JetEta3to5_Down, svFitEta_JetEta3to5_Down, svFitPhi_JetEta3to5_Down, svFitMET_JetEta3to5_Down, svFitTransverseMass_JetEta3to5_Down, tau1_JetEta3to5_Down, tau2_JetEta3to5_Down);
-       std::cout << "JES JetRelativeBal Energy Up   ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetRelativeBalUp_ex, metcorrJetRelativeBalUp_ey, covMET, 0, 
-		svFitMass_JetRelativeBal_Up, svFitPt_JetRelativeBal_Up, svFitEta_JetRelativeBal_Up, svFitPhi_JetRelativeBal_Up, svFitMET_JetRelativeBal_Up, svFitTransverseMass_JetRelativeBal_Up, tau1_JetRelativeBal_Up, tau2_JetRelativeBal_Up);
-       std::cout << "JES JetRelativeBal Energy Down ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetRelativeBalDown_ex, metcorrJetRelativeBalDown_ey, covMET, 0, 
-		svFitMass_JetRelativeBal_Down, svFitPt_JetRelativeBal_Down, svFitEta_JetRelativeBal_Down, svFitPhi_JetRelativeBal_Down, svFitMET_JetRelativeBal_Down, svFitTransverseMass_JetRelativeBal_Down, tau1_JetRelativeBal_Down, tau2_JetRelativeBal_Down);
-       std::cout << "JES JetRelativeSample Energy Up   ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetRelativeSampleUp_ex, metcorrJetRelativeSampleUp_ey, covMET, 0, 
-		svFitMass_JetRelativeSample_Up, svFitPt_JetRelativeSample_Up, svFitEta_JetRelativeSample_Up, svFitPhi_JetRelativeSample_Up, svFitMET_JetRelativeSample_Up, svFitTransverseMass_JetRelativeSample_Up, tau1_JetRelativeSample_Up, tau2_JetRelativeSample_Up);
-       std::cout << "JES JetRelativeSample Energy Down ---  ";
-       runSVFit(measuredTauLeptons, metcorrJetRelativeSampleDown_ex, metcorrJetRelativeSampleDown_ey, covMET, 0, 
-		svFitMass_JetRelativeSample_Down, svFitPt_JetRelativeSample_Down, svFitEta_JetRelativeSample_Down, svFitPhi_JetRelativeSample_Down, svFitMET_JetRelativeSample_Down, svFitTransverseMass_JetRelativeSample_Down, tau1_JetRelativeSample_Down, tau2_JetRelativeSample_Down);
-
-
-       /*
-       std::cout << "MET Clustered Energy Up     ---  ";
-       runSVFit(measuredTauLeptons, metcorrClusteredUp_ex, metcorrClusteredUp_ey, covMET, 0, 
-		svFitMass_ClusteredMet_Up, svFitPt_ClusteredMet_Up, svFitEta_ClusteredMet_Up, svFitPhi_ClusteredMet_Up, svFitMET_ClusteredMet_Up, svFitTransverseMass_ClusteredMet_Up, tau1_ClusteredMet_Up, tau2_ClusteredMet_Up);
-       std::cout << "MET Clustered Energy Down   ---  ";
-       runSVFit(measuredTauLeptons, metcorrClusteredDown_ex, metcorrClusteredDown_ey, covMET, 0, 
-		svFitMass_ClusteredMet_Down, svFitPt_ClusteredMet_Down, svFitEta_ClusteredMet_Down, svFitPhi_ClusteredMet_Down, svFitMET_ClusteredMet_Down, svFitTransverseMass_ClusteredMet_Down, tau1_ClusteredMet_Down, tau2_ClusteredMet_Down);
-       std::cout<< "Shifted MET Summary:\nmetcorr_ex " << metcorr_ex << "\n --- metcorrUncUp_ex " << metcorrUncUp_ex << " metcorrUncDown_ex " << metcorrUncDown_ex
-            << " metcorrClusteredUp_ex " << metcorrClusteredUp_ex << " metcorrClusteredDown_ex " << metcorrClusteredDown_ex << std::endl;
-       std::cout<< "metcorr_ey " << metcorr_ey << "\n --- metcorrUncUp_ey " << metcorrUncUp_ey << " metcorrUncDown_ey " << metcorrUncDown_ey
-            << " metcorrClusteredUp_ey " << metcorrClusteredUp_ey << " metcorrClusteredDown_ey " << metcorrClusteredDown_ey << std::endl;
-       */
-       
-       // Corrected MET values for saving
-       /*
-       metcor = TMath::Sqrt( metcorr_ex*metcorr_ex + metcorr_ey*metcorr_ey);
-       metcorphi = TMath::ATan2( metcorr_ey, metcorr_ex );
-       metcorClusteredDown = TMath::Sqrt( metcorrClusteredDown_ex*metcorrClusteredDown_ex + metcorrClusteredDown_ey*metcorrClusteredDown_ey);
-       metcorphiClusteredDown = TMath::ATan2( metcorrClusteredDown_ey, metcorrClusteredDown_ex );
-       metcorClusteredUp = TMath::Sqrt( metcorrClusteredUp_ex*metcorrClusteredUp_ex + metcorrClusteredUp_ey*metcorrClusteredUp_ey);
-       metcorphiClusteredUp = TMath::ATan2( metcorrClusteredUp_ey, metcorrClusteredUp_ex );
-       metcorUncDown = TMath::Sqrt( metcorrUncDown_ex*metcorrUncDown_ex + metcorrUncDown_ey*metcorrUncDown_ey);
-       metcorphiUncDown = TMath::ATan2( metcorrUncDown_ey, metcorrUncDown_ex );
-       metcorUncUp = TMath::Sqrt( metcorrUncUp_ex*metcorrUncUp_ex + metcorrUncUp_ey*metcorrUncUp_ey);
-       metcorphiUncUp = TMath::ATan2( metcorrUncUp_ey, metcorrUncUp_ex );
-       */
-
-       if(doES) {
-	 bool isDM0_1 = false, isDM1_1 = false, isDM10_1 = false, isDM0_2 = false, isDM1_2 = false, isDM10_2 = false;
-	 if (gen_match_1==5) {
-	   if (decayMode==0) isDM0_1 =true;
-	   else if (decayMode==1) isDM1_1 =true;
-	   else if (decayMode==10) isDM10_1 =true;
-	 }
-	 if (gen_match_2==5) {
-	   if (decayMode2==0) isDM0_2 =true;
-	   else if (decayMode2==1) isDM1_2 =true;
-	   else if (decayMode2==10) isDM10_2 =true;
-	 }
-
-	 //***********************************//
-	 //****  Tau DM0 shifted up/down  ****//
-	 //***********************************//
-	 if (isDM0_1 || isDM0_2) {
-	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-	   double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
-	   pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1, +1);
-	   pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, +1);
-	   pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1,-1);
-	   pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, -1);
-	   
-	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
-	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
-	   
-	   double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
-	   metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
-					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					   +1, +1);
-	   metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
-					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					   -1, +1);
-	   metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
-					     pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-					     pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					     +1, -1);
-	   metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
-					     pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-					     pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-					     -1, -1);
-	   
-	   runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
-		    svFitMass_DM0_Up, svFitPt_DM0_Up, svFitEta_DM0_Up, svFitPhi_DM0_Up, svFitMET_DM0_Up, svFitTransverseMass_DM0_Up, tau1_DM0_Up, tau2_DM0_Up);
-	   
-	   runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
-		    svFitMass_DM0_Down, svFitPt_DM0_Down, svFitEta_DM0_Down, svFitPhi_DM0_Down, svFitMET_DM0_Down, svFitTransverseMass_DM0_Down, tau1_DM0_Down, tau2_DM0_Down);
-	 }
-	 else {
-	   svFitMass_DM0_Up=svFitMass;
-           svFitPt_DM0_Up=svFitPt;
-           svFitEta_DM0_Up=svFitEta;
-           svFitPhi_DM0_Up=svFitPhi;
-           svFitMET_DM0_Up=svFitMET;
-           svFitTransverseMass_DM0_Up=svFitTransverseMass;
-           tau1_DM0_Up = tau1;
-           tau2_DM0_Down = tau2;
-
-           svFitMass_DM0_Down=svFitMass;
-           svFitPt_DM0_Down=svFitPt;
-           svFitEta_DM0_Down=svFitEta;
-           svFitPhi_DM0_Down=svFitPhi;
-           svFitMET_DM0_Down=svFitMET;
-           svFitTransverseMass_DM0_Down=svFitTransverseMass;
-           tau1_DM0_Down = tau1;
-           tau2_DM0_Down = tau2;
-	 }
-
-
-
-	 //***********************************//
-	 //****  Tau DM1 shifted up/down  ****//
-	 //***********************************//
-	 if (isDM1_1 || isDM1_2) {
-	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-	   double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
-	   pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM1_1, +1);
-	   pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM1_2, +1);
-	   pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM1_1, -1);
-	   pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM1_2, -1);
-	   
-	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
-	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
-	   
-	   double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
-	   metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
-					   pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
-					   pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
-					   +1, +1);
-	   metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
-					   pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
-					   pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
-					   -1, +1);
-	   metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
-					     pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
-					     pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
-					     +1, -1);
-	   metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
-					     pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
-					     pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
-					     -1, -1);
-	   
-	   runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
-		    svFitMass_DM1_Up, svFitPt_DM1_Up, svFitEta_DM1_Up, svFitPhi_DM1_Up, svFitMET_DM1_Up, svFitTransverseMass_DM1_Up, tau1_DM1_Up, tau2_DM1_Up);
-	   
-	   runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
-		    svFitMass_DM1_Down, svFitPt_DM1_Down, svFitEta_DM1_Down, svFitPhi_DM1_Down, svFitMET_DM1_Down, svFitTransverseMass_DM1_Down, tau1_DM1_Down, tau2_DM1_Down);
-	 }
-	 else {
-	   svFitMass_DM1_Up=svFitMass;
-           svFitPt_DM1_Up=svFitPt;
-           svFitEta_DM1_Up=svFitEta;
-           svFitPhi_DM1_Up=svFitPhi;
-           svFitMET_DM1_Up=svFitMET;
-           svFitTransverseMass_DM1_Up=svFitTransverseMass;
-           tau1_DM1_Up = tau1;
-           tau2_DM1_Down = tau2;
-
-           svFitMass_DM1_Down=svFitMass;
-           svFitPt_DM1_Down=svFitPt;
-           svFitEta_DM1_Down=svFitEta;
-           svFitPhi_DM1_Down=svFitPhi;
-           svFitMET_DM1_Down=svFitMET;
-           svFitTransverseMass_DM1_Down=svFitTransverseMass;
-           tau1_DM1_Down = tau1;
-           tau2_DM1_Down = tau2;
-	 }
-
-
-
-
-	 //***********************************//
-	 //****  Tau DM10 shifted up/down  ****//
-	 //***********************************//
-	 if (isDM10_1 || isDM10_2) {
-	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUp;
-	   std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDown;
-	   double pt1_Up, pt2_Up, pt1_Down, pt2_Down;
-	   pt1_Up = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM10_1, +1);
-	   pt2_Up = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM10_2, +1);
-	   pt1_Down = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM10_1, -1);
-	   pt2_Down = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM10_2, -1);
-	   
-	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Up, eta1,  phi1, mass1, decayMode));
-	   measuredTauLeptonsUp.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Up, eta2, phi2,  mass2, decayMode2));	   
-	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType1, pt1_Down, eta1,  phi1, mass1, decayMode));
-	   measuredTauLeptonsDown.push_back(classic_svFit::MeasuredTauLepton(decayType2, pt2_Down, eta2, phi2,  mass2, decayMode2));
-	   
-	   double metcorr_ex_Up, metcorr_ey_Up, metcorr_ex_Down, metcorr_ey_Down;
-	   metcorr_ex_Up = metcorr_shifted(metcorr_ex, 
-					   pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
-					   pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
-					   +1, +1);
-	   metcorr_ey_Up = metcorr_shifted(metcorr_ey, 
-					   pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
-					   pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
-					   -1, +1);
-	   metcorr_ex_Down = metcorr_shifted(metcorr_ex, 
-					     pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
-					     pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
-					     +1, -1);
-	   metcorr_ey_Down = metcorr_shifted(metcorr_ey, 
-					     pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
-					     pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
-					     -1, -1);
-	   
-	   runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, 
-		    svFitMass_DM10_Up, svFitPt_DM10_Up, svFitEta_DM10_Up, svFitPhi_DM10_Up, svFitMET_DM10_Up, svFitTransverseMass_DM10_Up, tau1_DM10_Up, tau2_DM10_Up);
-	   
-	   runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, 
-		    svFitMass_DM10_Down, svFitPt_DM10_Down, svFitEta_DM10_Down, svFitPhi_DM10_Down, svFitMET_DM10_Down, svFitTransverseMass_DM10_Down, tau1_DM10_Down, tau2_DM10_Down);
-	 }
-	 else {
-	   svFitMass_DM10_Up=svFitMass;
-           svFitPt_DM10_Up=svFitPt;
-           svFitEta_DM10_Up=svFitEta;
-           svFitPhi_DM10_Up=svFitPhi;
-           svFitMET_DM10_Up=svFitMET;
-           svFitTransverseMass_DM10_Up=svFitTransverseMass;
-           tau1_DM10_Up = tau1;
-           tau2_DM10_Down = tau2;
-
-           svFitMass_DM10_Down=svFitMass;
-           svFitPt_DM10_Down=svFitPt;
-           svFitEta_DM10_Down=svFitEta;
-           svFitPhi_DM10_Down=svFitPhi;
-           svFitMET_DM10_Down=svFitMET;
-           svFitTransverseMass_DM10_Down=svFitTransverseMass;
-           tau1_DM10_Down = tau1;
-           tau2_DM10_Down = tau2;
-	 }
-
-       }// Do ES (TT)
-       
-     } // Double Hadronic (TT)
-     
-     else {
-       svFitMass = -100;
-       svFitPt = -100;
-       svFitEta = -100;
-       svFitPhi = -100;
-       svFitMET = -100;
-       svFitTransverseMass = -100;
-       tau1.SetPtEtaPhiM(0,0,0,0);
-       tau2.SetPtEtaPhiM(0,0,0,0); 
-     }
-     // fill the tau 4-vector parameters for branch-filling
-     tau1_pt  = tau1.Pt();
-     tau1_eta = tau1.Eta();
-     tau1_phi = tau1.Phi();
-     tau1_m   = tau1.M();
-     tau2_pt  = tau2.Pt();
-     tau2_eta = tau2.Eta();
-     tau2_phi = tau2.Phi();
-     tau2_m   = tau2.M();
-     // up
-     tau1_pt_Up  = tau1_Up.Pt();
-     tau1_eta_Up = tau1_Up.Eta();
-     tau1_phi_Up = tau1_Up.Phi();
-     tau1_m_Up   = tau1_Up.M();
-     tau2_pt_Up  = tau2_Up.Pt();
-     tau2_eta_Up = tau2_Up.Eta();
-     tau2_phi_Up = tau2_Up.Phi();
-     tau2_m_Up   = tau2_Up.M();
-     // down
-     tau1_pt_Down  = tau1_Down.Pt();
-     tau1_eta_Down = tau1_Down.Eta();
-     tau1_phi_Down = tau1_Down.Phi();
-     tau1_m_Down   = tau1_Down.M();
-     tau2_pt_Down  = tau2_Down.Pt();
-     tau2_eta_Down = tau2_Down.Eta();
-     tau2_phi_Down = tau2_Down.Phi();
-     tau2_m_Down   = tau2_Down.M();
-     // DM0 up
-     tau1_pt_DM0_Up  = tau1_DM0_Up.Pt();
-     tau1_eta_DM0_Up = tau1_DM0_Up.Eta();
-     tau1_phi_DM0_Up = tau1_DM0_Up.Phi();
-     tau1_m_DM0_Up   = tau1_DM0_Up.M();
-     tau2_pt_DM0_Up  = tau2_DM0_Up.Pt();
-     tau2_eta_DM0_Up = tau2_DM0_Up.Eta();
-     tau2_phi_DM0_Up = tau2_DM0_Up.Phi();
-     tau2_m_DM0_Up   = tau2_DM0_Up.M();
-     // down
-     tau1_pt_DM0_Down  = tau1_DM0_Down.Pt();
-     tau1_eta_DM0_Down = tau1_DM0_Down.Eta();
-     tau1_phi_DM0_Down = tau1_DM0_Down.Phi();
-     tau1_m_DM0_Down   = tau1_DM0_Down.M();
-     tau2_pt_DM0_Down  = tau2_DM0_Down.Pt();
-     tau2_eta_DM0_Down = tau2_DM0_Down.Eta();
-     tau2_phi_DM0_Down = tau2_DM0_Down.Phi();
-     tau2_m_DM0_Down   = tau2_DM0_Down.M();
-     // DM1 up
-     tau1_pt_DM1_Up  = tau1_DM1_Up.Pt();
-     tau1_eta_DM1_Up = tau1_DM1_Up.Eta();
-     tau1_phi_DM1_Up = tau1_DM1_Up.Phi();
-     tau1_m_DM1_Up   = tau1_DM1_Up.M();
-     tau2_pt_DM1_Up  = tau2_DM1_Up.Pt();
-     tau2_eta_DM1_Up = tau2_DM1_Up.Eta();
-     tau2_phi_DM1_Up = tau2_DM1_Up.Phi();
-     tau2_m_DM1_Up   = tau2_DM1_Up.M();
-     // down
-     tau1_pt_DM1_Down  = tau1_DM1_Down.Pt();
-     tau1_eta_DM1_Down = tau1_DM1_Down.Eta();
-     tau1_phi_DM1_Down = tau1_DM1_Down.Phi();
-     tau1_m_DM1_Down   = tau1_DM1_Down.M();
-     tau2_pt_DM1_Down  = tau2_DM1_Down.Pt();
-     tau2_eta_DM1_Down = tau2_DM1_Down.Eta();
-     tau2_phi_DM1_Down = tau2_DM1_Down.Phi();
-     tau2_m_DM1_Down   = tau2_DM1_Down.M();
-     // DM10 up
-     tau1_pt_DM10_Up  = tau1_DM10_Up.Pt();
-     tau1_eta_DM10_Up = tau1_DM10_Up.Eta();
-     tau1_phi_DM10_Up = tau1_DM10_Up.Phi();
-     tau1_m_DM10_Up   = tau1_DM10_Up.M();
-     tau2_pt_DM10_Up  = tau2_DM10_Up.Pt();
-     tau2_eta_DM10_Up = tau2_DM10_Up.Eta();
-     tau2_phi_DM10_Up = tau2_DM10_Up.Phi();
-     tau2_m_DM10_Up   = tau2_DM10_Up.M();
-     // down
-     tau1_pt_DM10_Down  = tau1_DM10_Down.Pt();
-     tau1_eta_DM10_Down = tau1_DM10_Down.Eta();
-     tau1_phi_DM10_Down = tau1_DM10_Down.Phi();
-     tau1_m_DM10_Down   = tau1_DM10_Down.M();
-     tau2_pt_DM10_Down  = tau2_DM10_Down.Pt();
-     tau2_eta_DM10_Down = tau2_DM10_Down.Eta();
-     tau2_phi_DM10_Down = tau2_DM10_Down.Phi();
-     tau2_m_DM10_Down   = tau2_DM10_Down.M();
-     // UncMet up
-     tau1_pt_UncMet_Up  = tau1_UncMet_Up.Pt();
-     tau1_eta_UncMet_Up = tau1_UncMet_Up.Eta();
-     tau1_phi_UncMet_Up = tau1_UncMet_Up.Phi();
-     tau1_m_UncMet_Up   = tau1_UncMet_Up.M();
-     tau2_pt_UncMet_Up  = tau2_UncMet_Up.Pt();
-     tau2_eta_UncMet_Up = tau2_UncMet_Up.Eta();
-     tau2_phi_UncMet_Up = tau2_UncMet_Up.Phi();
-     tau2_m_UncMet_Up   = tau2_UncMet_Up.M();
-     // down
-     tau1_pt_UncMet_Down  = tau1_UncMet_Down.Pt();
-     tau1_eta_UncMet_Down = tau1_UncMet_Down.Eta();
-     tau1_phi_UncMet_Down = tau1_UncMet_Down.Phi();
-     tau1_m_UncMet_Down   = tau1_UncMet_Down.M();
-     tau2_pt_UncMet_Down  = tau2_UncMet_Down.Pt();
-     tau2_eta_UncMet_Down = tau2_UncMet_Down.Eta();
-     tau2_phi_UncMet_Down = tau2_UncMet_Down.Phi();
-     tau2_m_UncMet_Down   = tau2_UncMet_Down.M();
-     // UnclusteredMet up
-     tau1_pt_ClusteredMet_Up  = tau1_ClusteredMet_Up.Pt();
-     tau1_eta_ClusteredMet_Up = tau1_ClusteredMet_Up.Eta();
-     tau1_phi_ClusteredMet_Up = tau1_ClusteredMet_Up.Phi();
-     tau1_m_ClusteredMet_Up   = tau1_ClusteredMet_Up.M();
-     tau2_pt_ClusteredMet_Up  = tau2_ClusteredMet_Up.Pt();
-     tau2_eta_ClusteredMet_Up = tau2_ClusteredMet_Up.Eta();
-     tau2_phi_ClusteredMet_Up = tau2_ClusteredMet_Up.Phi();
-     tau2_m_ClusteredMet_Up   = tau2_ClusteredMet_Up.M();
-     // down
-     tau1_pt_ClusteredMet_Down  = tau1_ClusteredMet_Down.Pt();
-     tau1_eta_ClusteredMet_Down = tau1_ClusteredMet_Down.Eta();
-     tau1_phi_ClusteredMet_Down = tau1_ClusteredMet_Down.Phi();
-     tau1_m_ClusteredMet_Down   = tau1_ClusteredMet_Down.M();
-     tau2_pt_ClusteredMet_Down  = tau2_ClusteredMet_Down.Pt();
-     tau2_eta_ClusteredMet_Down = tau2_ClusteredMet_Down.Eta();
-     tau2_phi_ClusteredMet_Down = tau2_ClusteredMet_Down.Phi();
-     tau2_m_ClusteredMet_Down   = tau2_ClusteredMet_Down.M();
-
-     // _JetEC2_ up
-     tau1_pt_JetEC2_Up  = tau1_JetEC2_Up.Pt();
-     tau1_eta_JetEC2_Up = tau1_JetEC2_Up.Eta();
-     tau1_phi_JetEC2_Up = tau1_JetEC2_Up.Phi();
-     tau1_m_JetEC2_Up   = tau1_JetEC2_Up.M();
-     tau2_pt_JetEC2_Up  = tau2_JetEC2_Up.Pt();
-     tau2_eta_JetEC2_Up = tau2_JetEC2_Up.Eta();
-     tau2_phi_JetEC2_Up = tau2_JetEC2_Up.Phi();
-     tau2_m_JetEC2_Up   = tau2_JetEC2_Up.M();
-     // down
-     tau1_pt_JetEC2_Down  = tau1_JetEC2_Down.Pt();
-     tau1_eta_JetEC2_Down = tau1_JetEC2_Down.Eta();
-     tau1_phi_JetEC2_Down = tau1_JetEC2_Down.Phi();
-     tau1_m_JetEC2_Down   = tau1_JetEC2_Down.M();
-     tau2_pt_JetEC2_Down  = tau2_JetEC2_Down.Pt();
-     tau2_eta_JetEC2_Down = tau2_JetEC2_Down.Eta();
-     tau2_phi_JetEC2_Down = tau2_JetEC2_Down.Phi();
-     tau2_m_JetEC2_Down   = tau2_JetEC2_Down.M();
-
-     // _JetEta0to3_ up
-     tau1_pt_JetEta0to3_Up  = tau1_JetEta0to3_Up.Pt();
-     tau1_eta_JetEta0to3_Up = tau1_JetEta0to3_Up.Eta();
-     tau1_phi_JetEta0to3_Up = tau1_JetEta0to3_Up.Phi();
-     tau1_m_JetEta0to3_Up   = tau1_JetEta0to3_Up.M();
-     tau2_pt_JetEta0to3_Up  = tau2_JetEta0to3_Up.Pt();
-     tau2_eta_JetEta0to3_Up = tau2_JetEta0to3_Up.Eta();
-     tau2_phi_JetEta0to3_Up = tau2_JetEta0to3_Up.Phi();
-     tau2_m_JetEta0to3_Up   = tau2_JetEta0to3_Up.M();
-     // down
-     tau1_pt_JetEta0to3_Down  = tau1_JetEta0to3_Down.Pt();
-     tau1_eta_JetEta0to3_Down = tau1_JetEta0to3_Down.Eta();
-     tau1_phi_JetEta0to3_Down = tau1_JetEta0to3_Down.Phi();
-     tau1_m_JetEta0to3_Down   = tau1_JetEta0to3_Down.M();
-     tau2_pt_JetEta0to3_Down  = tau2_JetEta0to3_Down.Pt();
-     tau2_eta_JetEta0to3_Down = tau2_JetEta0to3_Down.Eta();
-     tau2_phi_JetEta0to3_Down = tau2_JetEta0to3_Down.Phi();
-     tau2_m_JetEta0to3_Down   = tau2_JetEta0to3_Down.M();
-
-     // _JetEta0to5_ up
-     tau1_pt_JetEta0to5_Up  = tau1_JetEta0to5_Up.Pt();
-     tau1_eta_JetEta0to5_Up = tau1_JetEta0to5_Up.Eta();
-     tau1_phi_JetEta0to5_Up = tau1_JetEta0to5_Up.Phi();
-     tau1_m_JetEta0to5_Up   = tau1_JetEta0to5_Up.M();
-     tau2_pt_JetEta0to5_Up  = tau2_JetEta0to5_Up.Pt();
-     tau2_eta_JetEta0to5_Up = tau2_JetEta0to5_Up.Eta();
-     tau2_phi_JetEta0to5_Up = tau2_JetEta0to5_Up.Phi();
-     tau2_m_JetEta0to5_Up   = tau2_JetEta0to5_Up.M();
-     // down
-     tau1_pt_JetEta0to5_Down  = tau1_JetEta0to5_Down.Pt();
-     tau1_eta_JetEta0to5_Down = tau1_JetEta0to5_Down.Eta();
-     tau1_phi_JetEta0to5_Down = tau1_JetEta0to5_Down.Phi();
-     tau1_m_JetEta0to5_Down   = tau1_JetEta0to5_Down.M();
-     tau2_pt_JetEta0to5_Down  = tau2_JetEta0to5_Down.Pt();
-     tau2_eta_JetEta0to5_Down = tau2_JetEta0to5_Down.Eta();
-     tau2_phi_JetEta0to5_Down = tau2_JetEta0to5_Down.Phi();
-     tau2_m_JetEta0to5_Down   = tau2_JetEta0to5_Down.M();
-
-     // _JetEta3to5_ up
-     tau1_pt_JetEta3to5_Up  = tau1_JetEta3to5_Up.Pt();
-     tau1_eta_JetEta3to5_Up = tau1_JetEta3to5_Up.Eta();
-     tau1_phi_JetEta3to5_Up = tau1_JetEta3to5_Up.Phi();
-     tau1_m_JetEta3to5_Up   = tau1_JetEta3to5_Up.M();
-     tau2_pt_JetEta3to5_Up  = tau2_JetEta3to5_Up.Pt();
-     tau2_eta_JetEta3to5_Up = tau2_JetEta3to5_Up.Eta();
-     tau2_phi_JetEta3to5_Up = tau2_JetEta3to5_Up.Phi();
-     tau2_m_JetEta3to5_Up   = tau2_JetEta3to5_Up.M();
-     // down
-     tau1_pt_JetEta3to5_Down  = tau1_JetEta3to5_Down.Pt();
-     tau1_eta_JetEta3to5_Down = tau1_JetEta3to5_Down.Eta();
-     tau1_phi_JetEta3to5_Down = tau1_JetEta3to5_Down.Phi();
-     tau1_m_JetEta3to5_Down   = tau1_JetEta3to5_Down.M();
-     tau2_pt_JetEta3to5_Down  = tau2_JetEta3to5_Down.Pt();
-     tau2_eta_JetEta3to5_Down = tau2_JetEta3to5_Down.Eta();
-     tau2_phi_JetEta3to5_Down = tau2_JetEta3to5_Down.Phi();
-     tau2_m_JetEta3to5_Down   = tau2_JetEta3to5_Down.M();
-
-     // _JetRelativeBal_ up
-     tau1_pt_JetRelativeBal_Up  = tau1_JetRelativeBal_Up.Pt();
-     tau1_eta_JetRelativeBal_Up = tau1_JetRelativeBal_Up.Eta();
-     tau1_phi_JetRelativeBal_Up = tau1_JetRelativeBal_Up.Phi();
-     tau1_m_JetRelativeBal_Up   = tau1_JetRelativeBal_Up.M();
-     tau2_pt_JetRelativeBal_Up  = tau2_JetRelativeBal_Up.Pt();
-     tau2_eta_JetRelativeBal_Up = tau2_JetRelativeBal_Up.Eta();
-     tau2_phi_JetRelativeBal_Up = tau2_JetRelativeBal_Up.Phi();
-     tau2_m_JetRelativeBal_Up   = tau2_JetRelativeBal_Up.M();
-     // down
-     tau1_pt_JetRelativeBal_Down  = tau1_JetRelativeBal_Down.Pt();
-     tau1_eta_JetRelativeBal_Down = tau1_JetRelativeBal_Down.Eta();
-     tau1_phi_JetRelativeBal_Down = tau1_JetRelativeBal_Down.Phi();
-     tau1_m_JetRelativeBal_Down   = tau1_JetRelativeBal_Down.M();
-     tau2_pt_JetRelativeBal_Down  = tau2_JetRelativeBal_Down.Pt();
-     tau2_eta_JetRelativeBal_Down = tau2_JetRelativeBal_Down.Eta();
-     tau2_phi_JetRelativeBal_Down = tau2_JetRelativeBal_Down.Phi();
-     tau2_m_JetRelativeBal_Down   = tau2_JetRelativeBal_Down.M();
-
-     // _JetRelativeSample_ up
-     tau1_pt_JetRelativeSample_Up  = tau1_JetRelativeSample_Up.Pt();
-     tau1_eta_JetRelativeSample_Up = tau1_JetRelativeSample_Up.Eta();
-     tau1_phi_JetRelativeSample_Up = tau1_JetRelativeSample_Up.Phi();
-     tau1_m_JetRelativeSample_Up   = tau1_JetRelativeSample_Up.M();
-     tau2_pt_JetRelativeSample_Up  = tau2_JetRelativeSample_Up.Pt();
-     tau2_eta_JetRelativeSample_Up = tau2_JetRelativeSample_Up.Eta();
-     tau2_phi_JetRelativeSample_Up = tau2_JetRelativeSample_Up.Phi();
-     tau2_m_JetRelativeSample_Up   = tau2_JetRelativeSample_Up.M();
-     // down
-     tau1_pt_JetRelativeSample_Down  = tau1_JetRelativeSample_Down.Pt();
-     tau1_eta_JetRelativeSample_Down = tau1_JetRelativeSample_Down.Eta();
-     tau1_phi_JetRelativeSample_Down = tau1_JetRelativeSample_Down.Phi();
-     tau1_m_JetRelativeSample_Down   = tau1_JetRelativeSample_Down.M();
-     tau2_pt_JetRelativeSample_Down  = tau2_JetRelativeSample_Down.Pt();
-     tau2_eta_JetRelativeSample_Down = tau2_JetRelativeSample_Down.Eta();
-     tau2_phi_JetRelativeSample_Down = tau2_JetRelativeSample_Down.Phi();
-     tau2_m_JetRelativeSample_Down   = tau2_JetRelativeSample_Down.M();
-     
-     
-     std::cout << "\n\n" << std::endl;
-     //std::cout << "\n\nex: " << metcorr_ex << "   ey: " << metcorr_ey <<  " phi: " << metcorphi<<"\n"<<std::endl; 
-     newBranch1->Fill();
-     newBranch2->Fill();
-     newBranch3->Fill();
-     newBranch4->Fill();
-     newBranch5->Fill();
-     newBranch6->Fill();
-     newBranch7->Fill();
-     newBranch8->Fill();
-     newBranch9->Fill();
-     newBranch10->Fill();
-     
-     newBranch11->Fill();
-     newBranch12->Fill();
-     newBranch13->Fill();
-     newBranch14->Fill();
-     newBranch15->Fill();
-     newBranch16->Fill();
-     newBranch17->Fill();
-     newBranch18->Fill();
-     newBranch19->Fill();
-     newBranch20->Fill();
-     newBranch21->Fill();
-     newBranch22->Fill();
-     
-     newBranch23->Fill();
-     newBranch24->Fill();
-     newBranch25->Fill();
-     newBranch26->Fill();
-     newBranch27->Fill();
-     newBranch28->Fill();
-     newBranch29->Fill();
-     newBranch30->Fill();
-     newBranch31->Fill();
-     newBranch32->Fill();
-     newBranch33->Fill();
-     newBranch34->Fill();
-     
-     newBranch35->Fill();
-     newBranch36->Fill();
-     newBranch37->Fill();
-     newBranch38->Fill();
-     newBranch39->Fill();
-     newBranch40->Fill();
-     newBranch41->Fill();
-     newBranch42->Fill();
-     newBranch43->Fill();
-     newBranch44->Fill();
-     newBranch45->Fill();
-     newBranch46->Fill();
-     
-     newBranch47->Fill();
-     newBranch48->Fill();
-     newBranch49->Fill();
-     newBranch50->Fill();
-     newBranch51->Fill();
-     newBranch52->Fill();
-     newBranch53->Fill();
-     newBranch54->Fill();
-     newBranch55->Fill();
-     newBranch56->Fill();
-     newBranch57->Fill();
-     newBranch58->Fill();
-     
-     newBranch59->Fill();
-     newBranch60->Fill();
-     newBranch61->Fill();
-     newBranch62->Fill();
-     newBranch63->Fill();
-     newBranch64->Fill();
-     newBranch65->Fill();
-     newBranch66->Fill();
-     newBranch67->Fill();
-     newBranch68->Fill();
-     newBranch69->Fill();
-     newBranch70->Fill();
-     
-     newBranch71->Fill();
-     newBranch72->Fill();
-     newBranch73->Fill();
-     newBranch74->Fill();
-     newBranch75->Fill();
-     newBranch76->Fill();
-     newBranch77->Fill();
-     newBranch78->Fill();
-     newBranch79->Fill();
-     newBranch80->Fill();
-     newBranch81->Fill();
-     newBranch82->Fill();
-     
-     newBranch83->Fill();
-     newBranch84->Fill();
-     newBranch85->Fill();
-     newBranch86->Fill();
-     newBranch87->Fill();
-     newBranch88->Fill();
-     newBranch89->Fill();
-     newBranch90->Fill();
-     newBranch91->Fill();
-     newBranch92->Fill();
-     newBranch93->Fill();
-     newBranch94->Fill();
-     newBranch95->Fill();
-     newBranch96->Fill();
-     newBranch97->Fill();
-     newBranch98->Fill();
-     newBranch99->Fill();
-     newBranch100->Fill();
-     newBranch101->Fill();
-     newBranch102->Fill();
-     newBranch103->Fill();
-     newBranch104->Fill();
-     newBranch105->Fill();
-     newBranch106->Fill();
-     newBranch107->Fill();
-     newBranch108->Fill();
-     newBranch109->Fill();
-     newBranch110->Fill();
-     newBranch111->Fill();
-     newBranch112->Fill();
-     newBranch113->Fill();
-     newBranch114->Fill();
-     newBranch115->Fill();
-     newBranch116->Fill();
-     newBranch117->Fill();
-     newBranch118->Fill();
-     newBranch119->Fill();
-     newBranch120->Fill();
-     newBranch121->Fill();
-     newBranch122->Fill();
-     newBranch123->Fill();
-     newBranch124->Fill();
-     newBranch125->Fill();
-     newBranch126->Fill();
-     newBranch127->Fill();
-     newBranch128->Fill();
-     newBranch129->Fill();
-     newBranch130->Fill();
-     newBranch131->Fill();
-     newBranch132->Fill();
-     newBranch133->Fill();
-     newBranch134->Fill();
-     newBranch135->Fill();
-     newBranch136->Fill();
-     newBranch137->Fill();
-     newBranch138->Fill();
-     newBranch139->Fill();
-     newBranch140->Fill();
-     newBranch141->Fill();
-     newBranch142->Fill();
-     newBranch143->Fill();
-     newBranch144->Fill();
-     newBranch145->Fill();
-     newBranch146->Fill();
-     newBranch147->Fill();
-     newBranch148->Fill();
-     newBranch149->Fill();
-     newBranch150->Fill();
-     newBranch151->Fill();
-     newBranch152->Fill();
-     newBranch153->Fill();
-     newBranch154->Fill();
-     newBranch155->Fill();
-     newBranch156->Fill();
-     newBranch157->Fill();
-     newBranch158->Fill();
-     newBranch159->Fill();
-     newBranch160->Fill();
-     newBranch161->Fill();
-     newBranch162->Fill();
-     newBranch163->Fill();
-     newBranch164->Fill();
-     newBranch165->Fill();
-     newBranch166->Fill();
-     newBranch167->Fill();
-     newBranch168->Fill();
-     newBranch169->Fill();
-     newBranch170->Fill();
-     newBranch171->Fill();
-     newBranch172->Fill();
-     newBranch173->Fill();
-     newBranch174->Fill();
-     newBranch175->Fill();
-     newBranch176->Fill();
-     newBranch177->Fill();
-     newBranch178->Fill();
-     newBranch179->Fill();
-     newBranch180->Fill();
-     newBranch181->Fill();
-     newBranch182->Fill();
-     newBranch183->Fill();
-     newBranch184->Fill();
-     newBranch185->Fill();
-     newBranch186->Fill();
-
-    branchEEScaleUp1->Fill();
-    branchEEScaleUp2->Fill();
-    branchEEScaleUp3->Fill();
-    branchEEScaleUp4->Fill();
-    branchEEScaleUp5->Fill();
-    branchEEScaleUp6->Fill();
-    branchEEScaleDn1->Fill();
-    branchEEScaleDn2->Fill();
-    branchEEScaleDn3->Fill();
-    branchEEScaleDn4->Fill();
-    branchEEScaleDn5->Fill();
-    branchEEScaleDn6->Fill();
-    branchEESigmaUp1->Fill();
-    branchEESigmaUp2->Fill();
-    branchEESigmaUp3->Fill();
-    branchEESigmaUp4->Fill();
-    branchEESigmaUp5->Fill();
-    branchEESigmaUp6->Fill();
-    branchEESigmaDn1->Fill();
-    branchEESigmaDn2->Fill();
-    branchEESigmaDn3->Fill();
-    branchEESigmaDn4->Fill();
-    branchEESigmaDn5->Fill();
-    branchEESigmaDn6->Fill();
-    branchMESbin1Up1->Fill();
-    branchMESbin1Up2->Fill();
-    branchMESbin1Up3->Fill();
-    branchMESbin1Up4->Fill();
-    branchMESbin1Up5->Fill();
-    branchMESbin1Up6->Fill();
-    branchMESbin1Dn1->Fill();
-    branchMESbin1Dn2->Fill();
-    branchMESbin1Dn3->Fill();
-    branchMESbin1Dn4->Fill();
-    branchMESbin1Dn5->Fill();
-    branchMESbin1Dn6->Fill();
-
-    branchMESbin2Up1->Fill();
-    branchMESbin2Up2->Fill();
-    branchMESbin2Up3->Fill();
-    branchMESbin2Up4->Fill();
-    branchMESbin2Up5->Fill();
-    branchMESbin2Up6->Fill();
-    branchMESbin2Dn1->Fill();
-    branchMESbin2Dn2->Fill();
-    branchMESbin2Dn3->Fill();
-    branchMESbin2Dn4->Fill();
-    branchMESbin2Dn5->Fill();
-    branchMESbin2Dn6->Fill();
-
-    branchMESbin3Up1->Fill();
-    branchMESbin3Up2->Fill();
-    branchMESbin3Up3->Fill();
-    branchMESbin3Up4->Fill();
-    branchMESbin3Up5->Fill();
-    branchMESbin3Up6->Fill();
-    branchMESbin3Dn1->Fill();
-    branchMESbin3Dn2->Fill();
-    branchMESbin3Dn3->Fill();
-    branchMESbin3Dn4->Fill();
-    branchMESbin3Dn5->Fill();
-    branchMESbin3Dn6->Fill();
-
-    branchMESbin4Up1->Fill();
-    branchMESbin4Up2->Fill();
-    branchMESbin4Up3->Fill();
-    branchMESbin4Up4->Fill();
-    branchMESbin4Up5->Fill();
-    branchMESbin4Up6->Fill();
-    branchMESbin4Dn1->Fill();
-    branchMESbin4Dn2->Fill();
-    branchMESbin4Dn3->Fill();
-    branchMESbin4Dn4->Fill();
-    branchMESbin4Dn5->Fill();
-    branchMESbin4Dn6->Fill();
-
-    branchMESbin5Up1->Fill();
-    branchMESbin5Up2->Fill();
-    branchMESbin5Up3->Fill();
-    branchMESbin5Up4->Fill();
-    branchMESbin5Up5->Fill();
-    branchMESbin5Up6->Fill();
-    branchMESbin5Dn1->Fill();
-    branchMESbin5Dn2->Fill();
-    branchMESbin5Dn3->Fill();
-    branchMESbin5Dn4->Fill();
-    branchMESbin5Dn5->Fill();
-    branchMESbin5Dn6->Fill();
-
-    newResoBranch143->Fill();
-    newResoBranch144->Fill();
-    newResoBranch145->Fill();
-    newResoBranch146->Fill();
-    newResoBranch147->Fill();
-    newResoBranch148->Fill();
-    newResoBranch149->Fill();
-    newResoBranch150->Fill();
-    newResoBranch151->Fill();
-    newResoBranch152->Fill();
-    newResoBranch153->Fill();
-    newResoBranch154->Fill();
-
-    newRespBranch143->Fill();
-    newRespBranch144->Fill();
-    newRespBranch145->Fill();
-    newRespBranch146->Fill();
-    newRespBranch147->Fill();
-    newRespBranch148->Fill();
-    newRespBranch149->Fill();
-    newRespBranch150->Fill();
-    newRespBranch151->Fill();
-    newRespBranch152->Fill();
-    newRespBranch153->Fill();
-    newRespBranch154->Fill();
-
-    newLESBranch23->Fill();
-    newLESBranch24->Fill();
-    newLESBranch25->Fill();
-    newLESBranch26->Fill();
-    newLESBranch27->Fill();
-    newLESBranch28->Fill();
-    newLESBranch29->Fill();
-    newLESBranch30->Fill();
-    newLESBranch31->Fill();
-    newLESBranch32->Fill();
-    newLESBranch33->Fill();
-    newLESBranch34->Fill();
-    newLESBranch35->Fill();
-    newLESBranch36->Fill();
-    newLESBranch37->Fill();
-    newLESBranch38->Fill();
-    newLESBranch39->Fill();
-    newLESBranch40->Fill();
-    newLESBranch41->Fill();
-    newLESBranch42->Fill();
-    newLESBranch43->Fill();
-    newLESBranch44->Fill();
-    newLESBranch45->Fill();
-    newLESBranch46->Fill();
-
-     for(unsigned int i = 0; i != tau4VectorBranches.size(); ++i)
-       (tau4VectorBranches[i])->Fill();
+    tauBranch1->Fill();
+    tauBranch2->Fill();
+    tauBranch3->Fill();
+    tauBranch4->Fill();
+    tauBranch5->Fill();
+    tauBranch6->Fill();
+    tauBranch7->Fill();
+    tauBranch8->Fill();
+    newBranch1->Fill();
+    newBranch2->Fill();
+    newDMBranch1->Fill();
+    newDMBranch2->Fill();
+    newDMBranch3->Fill();
+    newDMBranch4->Fill();
+    newDM0Branch1->Fill();
+    newDM0Branch2->Fill();
+    newDM0Branch3->Fill();
+    newDM0Branch4->Fill();
+    newEEScaleBranch1->Fill();
+    newEEScaleBranch2->Fill();
+    newEEScaleBranch3->Fill();
+    newEEScaleBranch4->Fill();
+    newEESigmaBranch1->Fill();
+    newEESigmaBranch2->Fill();
+    newEESigmaBranch3->Fill();
+    newEESigmaBranch4->Fill();
+    newMESbin1Branch1->Fill();
+    newMESbin1Branch2->Fill();
+    newMESbin1Branch3->Fill();
+    newMESbin1Branch4->Fill();
+    newMESbin2Branch1->Fill();
+    newMESbin2Branch2->Fill();
+    newMESbin2Branch3->Fill();
+    newMESbin2Branch4->Fill();
+    newMESbin3Branch1->Fill();
+    newMESbin3Branch2->Fill();
+    newMESbin3Branch3->Fill();
+    newMESbin3Branch4->Fill();
+    newMESbin4Branch1->Fill();
+    newMESbin4Branch2->Fill();
+    newMESbin4Branch3->Fill();
+    newMESbin4Branch4->Fill();
+    newMESbin5Branch1->Fill();
+    newMESbin5Branch2->Fill();
+    newMESbin5Branch3->Fill();
+    newMESbin5Branch4->Fill();
+    newDM1Branch1->Fill();
+    newDM1Branch2->Fill();
+    newDM1Branch3->Fill();
+    newDM1Branch4->Fill();
+    newDM10Branch1->Fill();
+    newDM10Branch2->Fill();
+    newDM10Branch3->Fill();
+    newDM10Branch4->Fill();
+    newLESDM0Branch1->Fill();
+    newLESDM0Branch2->Fill();
+    newLESDM0Branch3->Fill();
+    newLESDM0Branch4->Fill();
+    newLESDM1Branch1->Fill();
+    newLESDM1Branch2->Fill();
+    newLESDM1Branch3->Fill();
+    newLESDM1Branch4->Fill();
+    newUncMetBranch1->Fill();
+    newUncMetBranch2->Fill();
+    newUncMetBranch3->Fill();
+    newUncMetBranch4->Fill();
+    newClusteredMetBranch1->Fill();
+    newClusteredMetBranch2->Fill();
+    newClusteredMetBranch3->Fill();
+    newClusteredMetBranch4->Fill();
+    newJetEC2Branch1->Fill();
+    newJetEC2Branch2->Fill();
+    newJetEC2Branch3->Fill();
+    newJetEC2Branch4->Fill();
+    newJetEta0to3Branch1->Fill();
+    newJetEta0to3Branch2->Fill();
+    newJetEta0to3Branch3->Fill();
+    newJetEta0to3Branch4->Fill();
+    newJetEta0to5Branch1->Fill();
+    newJetEta0to5Branch2->Fill();
+    newJetEta0to5Branch3->Fill();
+    newJetEta0to5Branch4->Fill();
+    newJetEta3to5Branch1->Fill();
+    newJetEta3to5Branch2->Fill();
+    newJetEta3to5Branch3->Fill();
+    newJetEta3to5Branch4->Fill();
+    newJetRelativeBalBranch1->Fill();
+    newJetRelativeBalBranch2->Fill();
+    newJetRelativeBalBranch3->Fill();
+    newJetRelativeBalBranch4->Fill();
+    newJetRelativeSampleBranch1->Fill();
+    newJetRelativeSampleBranch2->Fill();
+    newJetRelativeSampleBranch3->Fill();
+    newJetRelativeSampleBranch4->Fill();
+    newRecoilResoBranch1->Fill();
+    newRecoilResoBranch2->Fill();
+    newRecoilResoBranch3->Fill();
+    newRecoilResoBranch4->Fill();
+    newRecoilRespBranch1->Fill();
+    newRecoilRespBranch2->Fill();
+    newRecoilRespBranch3->Fill();
+    newRecoilRespBranch4->Fill();
      
       }
       dir->cd();
