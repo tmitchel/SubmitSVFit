@@ -231,10 +231,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorrHFUp_ex = -10;
       float metcorrHFyearDown_ex = -10;
       float metcorrHFyearUp_ex = -10;
-      float metcorrRelativeBalDown_ex = -10;
-      float metcorrRelativeBalUp_ex = -10;
-      float metcorrRelativeSampleDown_ex = -10;
-      float metcorrRelativeSampleUp_ex = -10;
+      float metcorrRelBalDown_ex = -10;
+      float metcorrRelBalUp_ex = -10;
+      float metcorrRelSamDown_ex = -10;
+      float metcorrRelSamUp_ex = -10;
       float metcorrResDown_ex = -10;
       float metcorrResUp_ex = -10;
       float metcorrUncDown_ex = -10;
@@ -260,10 +260,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorrHFUp_ey = -10;
       float metcorrHFyearDown_ey = -10;
       float metcorrHFyearUp_ey = -10;
-      float metcorrRelativeBalDown_ey = -10;
-      float metcorrRelativeBalUp_ey = -10;
-      float metcorrRelativeSampleDown_ey = -10;
-      float metcorrRelativeSampleUp_ey = -10;
+      float metcorrRelBalDown_ey = -10;
+      float metcorrRelBalUp_ey = -10;
+      float metcorrRelSamDown_ey = -10;
+      float metcorrRelSamUp_ey = -10;
       float metcorrResDown_ey = -10;
       float metcorrResUp_ey = -10;
       float metcorrUncDown_ey = -10;
@@ -365,15 +365,15 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitMass_HFyear_Up = -10;
       float svFitPt_HFyear_Up = -10;
 
-      float svFitMass_RelativeBal_Down = -10;
-      float svFitPt_RelativeBal_Down = -10;
-      float svFitMass_RelativeBal_Up = -10;
-      float svFitPt_RelativeBal_Up = -10;
+      float svFitMass_RelBal_Down = -10;
+      float svFitPt_RelBal_Down = -10;
+      float svFitMass_RelBal_Up = -10;
+      float svFitPt_RelBal_Up = -10;
 
-      float svFitMass_RelativeSample_Down = -10;
-      float svFitPt_RelativeSample_Down = -10;
-      float svFitMass_RelativeSample_Up = -10;
-      float svFitPt_RelativeSample_Up = -10;
+      float svFitMass_RelSam_Down = -10;
+      float svFitPt_RelSam_Down = -10;
+      float svFitMass_RelSam_Up = -10;
+      float svFitPt_RelSam_Up = -10;
 
       float svFitMass_Res_Down = -10;
       float svFitPt_Res_Down = -10;
@@ -505,15 +505,15 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *newBranchsvFitMass_HFyear_Up = t->Branch("m_sv_HFyear_Up", &svFitMass_HFyear_Up, "m_sv_HFyear_Up/F");
       TBranch *newBranchsvFitPt_HFyear_Up = t->Branch("pt_sv_HFyear_Up", &svFitPt_HFyear_Up, "pt_sv_HFyear_Up/F");
 
-      TBranch *newBranchsvFitMass_RelativeBal_Down = t->Branch("m_sv_RelativeBal_Down", &svFitMass_RelativeBal_Down, "m_sv_RelativeBal_Down/F");
-      TBranch *newBranchsvFitPt_RelativeBal_Down = t->Branch("pt_sv_RelativeBal_Down", &svFitPt_RelativeBal_Down, "pt_sv_RelativeBal_Down/F");
-      TBranch *newBranchsvFitMass_RelativeBal_Up = t->Branch("m_sv_RelativeBal_Up", &svFitMass_RelativeBal_Up, "m_sv_RelativeBal_Up/F");
-      TBranch *newBranchsvFitPt_RelativeBal_Up = t->Branch("pt_sv_RelativeBal_Up", &svFitPt_RelativeBal_Up, "pt_sv_RelativeBal_Up/F");
+      TBranch *newBranchsvFitMass_RelBal_Down = t->Branch("m_sv_RelBal_Down", &svFitMass_RelBal_Down, "m_sv_RelBal_Down/F");
+      TBranch *newBranchsvFitPt_RelBal_Down = t->Branch("pt_sv_RelBal_Down", &svFitPt_RelBal_Down, "pt_sv_RelBal_Down/F");
+      TBranch *newBranchsvFitMass_RelBal_Up = t->Branch("m_sv_RelBal_Up", &svFitMass_RelBal_Up, "m_sv_RelBal_Up/F");
+      TBranch *newBranchsvFitPt_RelBal_Up = t->Branch("pt_sv_RelBal_Up", &svFitPt_RelBal_Up, "pt_sv_RelBal_Up/F");
 
-      TBranch *newBranchsvFitMass_RelativeSample_Down = t->Branch("m_sv_RelativeSample_Down", &svFitMass_RelativeSample_Down, "m_sv_RelativeSample_Down/F");
-      TBranch *newBranchsvFitPt_RelativeSample_Down = t->Branch("pt_sv_RelativeSample_Down", &svFitPt_RelativeSample_Down, "pt_sv_RelativeSample_Down/F");
-      TBranch *newBranchsvFitMass_RelativeSample_Up = t->Branch("m_sv_RelativeSample_Up", &svFitMass_RelativeSample_Up, "m_sv_RelativeSample_Up/F");
-      TBranch *newBranchsvFitPt_RelativeSample_Up = t->Branch("pt_sv_RelativeSample_Up", &svFitPt_RelativeSample_Up, "pt_sv_RelativeSample_Up/F");
+      TBranch *newBranchsvFitMass_RelSam_Down = t->Branch("m_sv_RelSam_Down", &svFitMass_RelSam_Down, "m_sv_RelSam_Down/F");
+      TBranch *newBranchsvFitPt_RelSam_Down = t->Branch("pt_sv_RelSam_Down", &svFitPt_RelSam_Down, "pt_sv_RelSam_Down/F");
+      TBranch *newBranchsvFitMass_RelSam_Up = t->Branch("m_sv_RelSam_Up", &svFitMass_RelSam_Up, "m_sv_RelSam_Up/F");
+      TBranch *newBranchsvFitPt_RelSam_Up = t->Branch("pt_sv_RelSam_Up", &svFitPt_RelSam_Up, "pt_sv_RelSam_Up/F");
 
       TBranch *newBranchsvFitMass_Res_Down = t->Branch("m_sv_Res_Down", &svFitMass_Res_Down, "m_sv_Res_Down/F");
       TBranch *newBranchsvFitPt_Res_Down = t->Branch("pt_sv_Res_Down", &svFitPt_Res_Down, "pt_sv_Res_Down/F");
@@ -750,10 +750,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           metcorrHFUp_ex = met_HFUp*TMath::Cos(metphi_HFUp);
           metcorrHFyearDown_ex = met_HFyearDown*TMath::Cos(metphi_HFyearDown);
           metcorrHFyearUp_ex = met_HFyearUp*TMath::Cos(metphi_HFyearUp);
-          metcorrRelativeBalDown_ex = met_RelativeBalDown*TMath::Cos(metphi_RelativeBalDown);
-          metcorrRelativeBalUp_ex = met_RelativeBalUp*TMath::Cos(metphi_RelativeBalUp);
-          metcorrRelativeSampleDown_ex = met_RelativeSampleDown*TMath::Cos(metphi_RelativeSampleDown);
-          metcorrRelativeSampleUp_ex = met_RelativeSampleUp*TMath::Cos(metphi_RelativeSampleUp);
+          metcorrRelBalDown_ex = met_RelBalDown*TMath::Cos(metphi_RelBalDown);
+          metcorrRelBalUp_ex = met_RelBalUp*TMath::Cos(metphi_RelBalUp);
+          metcorrRelSamDown_ex = met_RelSamDown*TMath::Cos(metphi_RelSamDown);
+          metcorrRelSamUp_ex = met_RelSamUp*TMath::Cos(metphi_RelSamUp);
           metcorrResDown_ex = met_ResDown*TMath::Cos(metphi_ResDown);
           metcorrResUp_ex = met_ResUp*TMath::Cos(metphi_ResUp);
           metcorrUncMetDown_ex = met_UESDown*TMath::Cos(metphi_UESDown);
@@ -779,10 +779,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           metcorrHFUp_ey = met_HFUp*TMath::Sin(metphi_HFUp);
           metcorrHFyearDown_ey = met_HFyearDown*TMath::Sin(metphi_HFyearDown);
           metcorrHFyearUp_ey = met_HFyearUp*TMath::Sin(metphi_HFyearUp);
-          metcorrRelativeBalDown_ey = met_RelativeBalDown*TMath::Sin(metphi_RelativeBalDown);
-          metcorrRelativeBalUp_ey = met_RelativeBalUp*TMath::Sin(metphi_RelativeBalUp);
-          metcorrRelativeSampleDown_ey = met_RelativeSampleDown*TMath::Sin(metphi_RelativeSampleDown);
-          metcorrRelativeSampleUp_ey = met_RelativeSampleUp*TMath::Sin(metphi_RelativeSampleUp);
+          metcorrRelBalDown_ey = met_RelBalDown*TMath::Sin(metphi_RelBalDown);
+          metcorrRelBalUp_ey = met_RelBalUp*TMath::Sin(metphi_RelBalUp);
+          metcorrRelSamDown_ey = met_RelSamDown*TMath::Sin(metphi_RelSamDown);
+          metcorrRelSamUp_ey = met_RelSamUp*TMath::Sin(metphi_RelSamUp);
           metcorrResDown_ey = met_ResDown*TMath::Sin(metphi_ResDown);
           metcorrResUp_ey = met_ResUp*TMath::Sin(metphi_ResUp);
           metcorrUncMetDown_ey = met_UESDown*TMath::Sin(metphi_UESDown);
@@ -1238,14 +1238,14 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     newBranchsvFitPt_HFyear_Down->Fill();
     newBranchsvFitMass_HFyear_Up->Fill();
     newBranchsvFitPt_HFyear_Up->Fill();
-    newBranchsvFitMass_RelativeBal_Down->Fill();
-    newBranchsvFitPt_RelativeBal_Down->Fill();
-    newBranchsvFitMass_RelativeBal_Up->Fill();
-    newBranchsvFitPt_RelativeBal_Up->Fill();
-    newBranchsvFitMass_RelativeSample_Down->Fill();
-    newBranchsvFitPt_RelativeSample_Down->Fill();
-    newBranchsvFitMass_RelativeSample_Up->Fill();
-    newBranchsvFitPt_RelativeSample_Up->Fill();
+    newBranchsvFitMass_RelBal_Down->Fill();
+    newBranchsvFitPt_RelBal_Down->Fill();
+    newBranchsvFitMass_RelBal_Up->Fill();
+    newBranchsvFitPt_RelBal_Up->Fill();
+    newBranchsvFitMass_RelSam_Down->Fill();
+    newBranchsvFitPt_RelSam_Down->Fill();
+    newBranchsvFitMass_RelSam_Up->Fill();
+    newBranchsvFitPt_RelSam_Up->Fill();
     newBranchsvFitMass_Res_Down->Fill();
     newBranchsvFitPt_Res_Down->Fill();
     newBranchsvFitMass_Res_Up->Fill();
