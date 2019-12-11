@@ -237,8 +237,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorrRelSamUp_ex = -10;
       float metcorrResDown_ex = -10;
       float metcorrResUp_ex = -10;
-      float metcorrUncDown_ex = -10;
-      float metcorrUncUp_ex = -10;
+      float metcorrUESDown_ex = -10;
+      float metcorrUESUp_ex = -10;
 
       float metcorrJERDown_ey = -10;
       float metcorrJERUp_ey = -10;
@@ -266,8 +266,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float metcorrRelSamUp_ey = -10;
       float metcorrResDown_ey = -10;
       float metcorrResUp_ey = -10;
-      float metcorrUncDown_ey = -10;
-      float metcorrUncUp_ey = -10;
+      float metcorrUESDown_ey = -10;
+      float metcorrUESUp_ey = -10;
 
 
       TBranch *newBranch1 = t->Branch("m_sv", &svFitMass, "m_sv/F");
