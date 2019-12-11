@@ -574,12 +574,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       // define MET covariance
       TMatrixD covMET(2, 2);
 
-      // MET Uncertainties
-      float UESPtUp;
-      float UESPtDown;
-      float UESPhiUp;
-      float UESPhiDown;
-
       // JES Uncertainties
       float met_reso_Up, met_reso_Down, met_resp_Up, met_resp_Down;
       float metphi_reso_Up, metphi_reso_Down, metphi_resp_Up, metphi_resp_Down;
@@ -815,10 +809,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           // MET systematics
-          runSVFit(measuredTauLeptons, metcorrUncUp_ex, metcorrUncUp_ey, covMET, 0, svFitMass_UES_Up, svFitPt_UES_Up,
+          runSVFit(measuredTauLeptons, metcorrUESUp_ex, metcorrUESUp_ey, covMET, 0, svFitMass_UES_Up, svFitPt_UES_Up,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrUncDown_ex, metcorrUncDown_ey, covMET, 0, svFitMass_UES_Down, svFitPt_UES_Down,
+          runSVFit(measuredTauLeptons, metcorrUESDown_ex, metcorrUESDown_ey, covMET, 0, svFitMass_UES_Down, svFitPt_UES_Down,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
           runSVFit(measuredTauLeptons, metcorrJERUp_ex, metcorrJERUp_ey, covMET, 0, svFitMass_JER_Up, svFitPt_JER_Up,
