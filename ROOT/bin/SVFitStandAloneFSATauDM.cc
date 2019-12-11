@@ -282,11 +282,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *newBranch2 = t->Branch("pt_sv", &svFitPt, "pt_sv/F");
       
       // If doing ES shifts, we need extra ouput branches
-      //
-      float svFitMass_Up = -10;
-      float svFitPt_Up = -10;
-      float svFitMass_Down = -10;
-      float svFitPt_Down = -10;
       
       float svFitMass_DM0_Up = -10;
       float svFitPt_DM0_Up = -10;
@@ -323,30 +318,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitMass_EESigma_Down = -10;
       float svFitPt_EESigma_Down = -10;
 
-      float svFitMass_MESbin1_Up = -10;
-      float svFitPt_MESbin1_Up = -10;
-      float svFitMass_MESbin1_Down = -10;
-      float svFitPt_MESbin1_Down = -10;
-
-      float svFitMass_MESbin2_Up = -10;
-      float svFitPt_MESbin2_Up = -10;
-      float svFitMass_MESbin2_Down = -10;
-      float svFitPt_MESbin2_Down = -10;
-
-      float svFitMass_MESbin3_Up = -10;
-      float svFitPt_MESbin3_Up = -10;
-      float svFitMass_MESbin3_Down = -10;
-      float svFitPt_MESbin3_Down = -10;
-
-      float svFitMass_MESbin4_Up = -10;
-      float svFitPt_MESbin4_Up = -10;
-      float svFitMass_MESbin4_Down = -10;
-      float svFitPt_MESbin4_Down = -10;
-
-      float svFitMass_MESbin5_Up = -10;
-      float svFitPt_MESbin5_Up = -10;
-      float svFitMass_MESbin5_Down = -10;
-      float svFitPt_MESbin5_Down = -10;
+      float svFitMass_MES_Up = -10;
+      float svFitPt_MES_Up = -10;
+      float svFitMass_MES_Down = -10;
+      float svFitPt_MES_Down = -10;
 
       float svFitMass_JER_Down = -10;
       float svFitPt_JER_Down = -10;
@@ -383,11 +358,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitMass_JetEC2year_Up = -10;
       float svFitPt_JetEC2year_Up = -10;
 
-      float svFitMass_JetEn_Down = -10;
-      float svFitPt_JetEn_Down = -10;
-      float svFitMass_JetEn_Up = -10;
-      float svFitPt_JetEn_Up = -10;
-
       float svFitMass_JetFlavorQCD_Down = -10;
       float svFitPt_JetFlavorQCD_Down = -10;
       float svFitMass_JetFlavorQCD_Up = -10;
@@ -417,11 +387,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float svFitPt_JetRes_Down = -10;
       float svFitMass_JetRes_Up = -10;
       float svFitPt_JetRes_Up = -10;
-
-      float svFitMass_JetTotal_Down = -10;
-      float svFitPt_JetTotal_Down = -10;
-      float svFitMass_JetTotal_Up = -10;
-      float svFitPt_JetTotal_Up = -10;
 
       float svFitMass_UncMet_Down = -10;
       float svFitPt_UncMet_Down = -10;
@@ -458,12 +423,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *tauBranch7 = t->Branch("tau2_phi", &tau2_phi, "tau2_phi/F");
       TBranch *tauBranch8 = t->Branch("tau2_m", &tau2_m, "tau2_m/F");
 
-
-      TBranch *newDMBranch1 = t->Branch("m_sv_Up", &svFitMass_Up, "m_sv_Up/F");
-      TBranch *newDMBranch2 = t->Branch("pt_sv_Up", &svFitPt_Up, "pt_sv_Up/F");
-      TBranch *newDMBranch3 = t->Branch("m_sv_Down", &svFitMass_Down, "m_sv_Down/F");
-      TBranch *newDMBranch4 = t->Branch("pt_sv_Down", &svFitPt_Down, "pt_sv_Down/F");
-
       TBranch *newDM0Branch1 = t->Branch("m_sv_DM0_Up", &svFitMass_DM0_Up, "m_sv_DM0_Up/F");
       TBranch *newDM0Branch2 = t->Branch("pt_sv_DM0_Up", &svFitPt_DM0_Up, "pt_sv_DM0_Up/F");
       TBranch *newDM0Branch3 = t->Branch("m_sv_DM0_Down", &svFitMass_DM0_Down, "m_sv_DM0_Down/F");
@@ -479,30 +438,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *newEESigmaBranch3 = t->Branch("m_sv_EESigma_Down", &svFitMass_EESigma_Down, "m_sv_EESigma_Down/F");
       TBranch *newEESigmaBranch4 = t->Branch("pt_sv_EESigma_Down", &svFitPt_EESigma_Down, "pt_sv_EESigma_Down/F");
 
-      TBranch *newMESbin1Branch1 = t->Branch("m_sv_MESbin1_Up", &svFitMass_MESbin1_Up, "m_sv_MESbin1_Up/F");
-      TBranch *newMESbin1Branch2 = t->Branch("pt_sv_MESbin1_Up", &svFitPt_MESbin1_Up, "pt_sv_MESbin1_Up/F");
-      TBranch *newMESbin1Branch3 = t->Branch("m_sv_MESbin1_Down", &svFitMass_MESbin1_Down, "m_sv_MESbin1_Down/F");
-      TBranch *newMESbin1Branch4 = t->Branch("pt_sv_MESbin1_Down", &svFitPt_MESbin1_Down, "pt_sv_MESbin1_Down/F");
-
-      TBranch *newMESbin2Branch1 = t->Branch("m_sv_MESbin2_Up", &svFitMass_MESbin2_Up, "m_sv_MESbin2_Up/F");
-      TBranch *newMESbin2Branch2 = t->Branch("pt_sv_MESbin2_Up", &svFitPt_MESbin2_Up, "pt_sv_MESbin2_Up/F");
-      TBranch *newMESbin2Branch3 = t->Branch("m_sv_MESbin2_Down", &svFitMass_MESbin2_Down, "m_sv_MESbin2_Down/F");
-      TBranch *newMESbin2Branch4 = t->Branch("pt_sv_MESbin2_Down", &svFitPt_MESbin2_Down, "pt_sv_MESbin2_Down/F");
-
-      TBranch *newMESbin3Branch1 = t->Branch("m_sv_MESbin3_Up", &svFitMass_MESbin3_Up, "m_sv_MESbin3_Up/F");
-      TBranch *newMESbin3Branch2 = t->Branch("pt_sv_MESbin3_Up", &svFitPt_MESbin3_Up, "pt_sv_MESbin3_Up/F");
-      TBranch *newMESbin3Branch3 = t->Branch("m_sv_MESbin3_Down", &svFitMass_MESbin3_Down, "m_sv_MESbin3_Down/F");
-      TBranch *newMESbin3Branch4 = t->Branch("pt_sv_MESbin3_Down", &svFitPt_MESbin3_Down, "pt_sv_MESbin3_Down/F");
-
-      TBranch *newMESbin4Branch1 = t->Branch("m_sv_MESbin4_Up", &svFitMass_MESbin4_Up, "m_sv_MESbin4_Up/F");
-      TBranch *newMESbin4Branch2 = t->Branch("pt_sv_MESbin4_Up", &svFitPt_MESbin4_Up, "pt_sv_MESbin4_Up/F");
-      TBranch *newMESbin4Branch3 = t->Branch("m_sv_MESbin4_Down", &svFitMass_MESbin4_Down, "m_sv_MESbin4_Down/F");
-      TBranch *newMESbin4Branch4 = t->Branch("pt_sv_MESbin4_Down", &svFitPt_MESbin4_Down, "pt_sv_MESbin4_Down/F");
-
-      TBranch *newMESbin5Branch1 = t->Branch("m_sv_MESbin5_Up", &svFitMass_MESbin5_Up, "m_sv_MESbin5_Up/F");
-      TBranch *newMESbin5Branch2 = t->Branch("pt_sv_MESbin5_Up", &svFitPt_MESbin5_Up, "pt_sv_MESbin5_Up/F");
-      TBranch *newMESbin5Branch3 = t->Branch("m_sv_MESbin5_Down", &svFitMass_MESbin5_Down, "m_sv_MESbin5_Down/F");
-      TBranch *newMESbin5Branch4 = t->Branch("pt_sv_MESbin5_Down", &svFitPt_MESbin5_Down, "pt_sv_MESbin5_Down/F");
+      TBranch *newMESBranch1 = t->Branch("m_sv_MES_Up", &svFitMass_MES_Up, "m_sv_MES_Up/F");
+      TBranch *newMESBranch2 = t->Branch("pt_sv_MES_Up", &svFitPt_MES_Up, "pt_sv_MES_Up/F");
+      TBranch *newMESBranch3 = t->Branch("m_sv_MES_Down", &svFitMass_MES_Down, "m_sv_MES_Down/F");
+      TBranch *newMESBranch4 = t->Branch("pt_sv_MES_Down", &svFitPt_MES_Down, "pt_sv_MES_Down/F");
 
       TBranch *newDM1Branch1 = t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F");
       TBranch *newDM1Branch2 = t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F");
@@ -524,72 +463,80 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       TBranch *newLESDM1Branch3 = t->Branch("m_sv_LES_DM1_Down", &svFitMass_LES_DM1_Down, "m_sv_LES_DM1_Down/F");
       TBranch *newLESDM1Branch4 = t->Branch("pt_sv_LES_DM1_Down", &svFitPt_LES_DM1_Down, "pt_sv_LES_DM1_Down/F");
 
-
       TBranch *newBranchsvFitMass_JER_Down = t->Branch("m_sv_JER_Down", &svFitMass_JER_Down, "m_sv_JER_Down/F");
       TBranch *newBranchsvFitPt_JER_Down = t->Branch("pt_sv_JER_Down", &svFitPt_JER_Down, "pt_sv_JER_Down/F");
       TBranch *newBranchsvFitMass_JER_Up = t->Branch("m_sv_JER_Up", &svFitMass_JER_Up, "m_sv_JER_Up/F");
       TBranch *newBranchsvFitPt_JER_Up = t->Branch("pt_sv_JER_Up", &svFitPt_JER_Up, "pt_sv_JER_Up/F");
+
       TBranch *newBranchsvFitMass_JetAbsolute_Down = t->Branch("m_sv_JetAbsolute_Down", &svFitMass_JetAbsolute_Down, "m_sv_JetAbsolute_Down/F");
       TBranch *newBranchsvFitPt_JetAbsolute_Down = t->Branch("pt_sv_JetAbsolute_Down", &svFitPt_JetAbsolute_Down, "pt_sv_JetAbsolute_Down/F");
       TBranch *newBranchsvFitMass_JetAbsolute_Up = t->Branch("m_sv_JetAbsolute_Up", &svFitMass_JetAbsolute_Up, "m_sv_JetAbsolute_Up/F");
       TBranch *newBranchsvFitPt_JetAbsolute_Up = t->Branch("pt_sv_JetAbsolute_Up", &svFitPt_JetAbsolute_Up, "pt_sv_JetAbsolute_Up/F");
+
       TBranch *newBranchsvFitMass_JetAbsoluteyear_Down = t->Branch("m_sv_JetAbsoluteyear_Down", &svFitMass_JetAbsoluteyear_Down, "m_sv_JetAbsoluteyear_Down/F");
       TBranch *newBranchsvFitPt_JetAbsoluteyear_Down = t->Branch("pt_sv_JetAbsoluteyear_Down", &svFitPt_JetAbsoluteyear_Down, "pt_sv_JetAbsoluteyear_Down/F");
       TBranch *newBranchsvFitMass_JetAbsoluteyear_Up = t->Branch("m_sv_JetAbsoluteyear_Up", &svFitMass_JetAbsoluteyear_Up, "m_sv_JetAbsoluteyear_Up/F");
       TBranch *newBranchsvFitPt_JetAbsoluteyear_Up = t->Branch("pt_sv_JetAbsoluteyear_Up", &svFitPt_JetAbsoluteyear_Up, "pt_sv_JetAbsoluteyear_Up/F");
+
       TBranch *newBranchsvFitMass_JetBBEC1_Down = t->Branch("m_sv_JetBBEC1_Down", &svFitMass_JetBBEC1_Down, "m_sv_JetBBEC1_Down/F");
       TBranch *newBranchsvFitPt_JetBBEC1_Down = t->Branch("pt_sv_JetBBEC1_Down", &svFitPt_JetBBEC1_Down, "pt_sv_JetBBEC1_Down/F");
       TBranch *newBranchsvFitMass_JetBBEC1_Up = t->Branch("m_sv_JetBBEC1_Up", &svFitMass_JetBBEC1_Up, "m_sv_JetBBEC1_Up/F");
       TBranch *newBranchsvFitPt_JetBBEC1_Up = t->Branch("pt_sv_JetBBEC1_Up", &svFitPt_JetBBEC1_Up, "pt_sv_JetBBEC1_Up/F");
+
       TBranch *newBranchsvFitMass_JetBBEC1year_Down = t->Branch("m_sv_JetBBEC1year_Down", &svFitMass_JetBBEC1year_Down, "m_sv_JetBBEC1year_Down/F");
       TBranch *newBranchsvFitPt_JetBBEC1year_Down = t->Branch("pt_sv_JetBBEC1year_Down", &svFitPt_JetBBEC1year_Down, "pt_sv_JetBBEC1year_Down/F");
       TBranch *newBranchsvFitMass_JetBBEC1year_Up = t->Branch("m_sv_JetBBEC1year_Up", &svFitMass_JetBBEC1year_Up, "m_sv_JetBBEC1year_Up/F");
       TBranch *newBranchsvFitPt_JetBBEC1year_Up = t->Branch("pt_sv_JetBBEC1year_Up", &svFitPt_JetBBEC1year_Up, "pt_sv_JetBBEC1year_Up/F");
+
       TBranch *newBranchsvFitMass_JetEC2_Down = t->Branch("m_sv_JetEC2_Down", &svFitMass_JetEC2_Down, "m_sv_JetEC2_Down/F");
       TBranch *newBranchsvFitPt_JetEC2_Down = t->Branch("pt_sv_JetEC2_Down", &svFitPt_JetEC2_Down, "pt_sv_JetEC2_Down/F");
       TBranch *newBranchsvFitMass_JetEC2_Up = t->Branch("m_sv_JetEC2_Up", &svFitMass_JetEC2_Up, "m_sv_JetEC2_Up/F");
       TBranch *newBranchsvFitPt_JetEC2_Up = t->Branch("pt_sv_JetEC2_Up", &svFitPt_JetEC2_Up, "pt_sv_JetEC2_Up/F");
+
       TBranch *newBranchsvFitMass_JetEC2year_Down = t->Branch("m_sv_JetEC2year_Down", &svFitMass_JetEC2year_Down, "m_sv_JetEC2year_Down/F");
       TBranch *newBranchsvFitPt_JetEC2year_Down = t->Branch("pt_sv_JetEC2year_Down", &svFitPt_JetEC2year_Down, "pt_sv_JetEC2year_Down/F");
       TBranch *newBranchsvFitMass_JetEC2year_Up = t->Branch("m_sv_JetEC2year_Up", &svFitMass_JetEC2year_Up, "m_sv_JetEC2year_Up/F");
       TBranch *newBranchsvFitPt_JetEC2year_Up = t->Branch("pt_sv_JetEC2year_Up", &svFitPt_JetEC2year_Up, "pt_sv_JetEC2year_Up/F");
+
       TBranch *newBranchsvFitMass_JetEn_Down = t->Branch("m_sv_JetEn_Down", &svFitMass_JetEn_Down, "m_sv_JetEn_Down/F");
       TBranch *newBranchsvFitPt_JetEn_Down = t->Branch("pt_sv_JetEn_Down", &svFitPt_JetEn_Down, "pt_sv_JetEn_Down/F");
       TBranch *newBranchsvFitMass_JetEn_Up = t->Branch("m_sv_JetEn_Up", &svFitMass_JetEn_Up, "m_sv_JetEn_Up/F");
       TBranch *newBranchsvFitPt_JetEn_Up = t->Branch("pt_sv_JetEn_Up", &svFitPt_JetEn_Up, "pt_sv_JetEn_Up/F");
+
       TBranch *newBranchsvFitMass_JetFlavorQCD_Down = t->Branch("m_sv_JetFlavorQCD_Down", &svFitMass_JetFlavorQCD_Down, "m_sv_JetFlavorQCD_Down/F");
       TBranch *newBranchsvFitPt_JetFlavorQCD_Down = t->Branch("pt_sv_JetFlavorQCD_Down", &svFitPt_JetFlavorQCD_Down, "pt_sv_JetFlavorQCD_Down/F");
       TBranch *newBranchsvFitMass_JetFlavorQCD_Up = t->Branch("m_sv_JetFlavorQCD_Up", &svFitMass_JetFlavorQCD_Up, "m_sv_JetFlavorQCD_Up/F");
       TBranch *newBranchsvFitPt_JetFlavorQCD_Up = t->Branch("pt_sv_JetFlavorQCD_Up", &svFitPt_JetFlavorQCD_Up, "pt_sv_JetFlavorQCD_Up/F");
+
       TBranch *newBranchsvFitMass_JetHF_Down = t->Branch("m_sv_JetHF_Down", &svFitMass_JetHF_Down, "m_sv_JetHF_Down/F");
       TBranch *newBranchsvFitPt_JetHF_Down = t->Branch("pt_sv_JetHF_Down", &svFitPt_JetHF_Down, "pt_sv_JetHF_Down/F");
       TBranch *newBranchsvFitMass_JetHF_Up = t->Branch("m_sv_JetHF_Up", &svFitMass_JetHF_Up, "m_sv_JetHF_Up/F");
       TBranch *newBranchsvFitPt_JetHF_Up = t->Branch("pt_sv_JetHF_Up", &svFitPt_JetHF_Up, "pt_sv_JetHF_Up/F");
+
       TBranch *newBranchsvFitMass_JetHFyear_Down = t->Branch("m_sv_JetHFyear_Down", &svFitMass_JetHFyear_Down, "m_sv_JetHFyear_Down/F");
       TBranch *newBranchsvFitPt_JetHFyear_Down = t->Branch("pt_sv_JetHFyear_Down", &svFitPt_JetHFyear_Down, "pt_sv_JetHFyear_Down/F");
       TBranch *newBranchsvFitMass_JetHFyear_Up = t->Branch("m_sv_JetHFyear_Up", &svFitMass_JetHFyear_Up, "m_sv_JetHFyear_Up/F");
       TBranch *newBranchsvFitPt_JetHFyear_Up = t->Branch("pt_sv_JetHFyear_Up", &svFitPt_JetHFyear_Up, "pt_sv_JetHFyear_Up/F");
+
       TBranch *newBranchsvFitMass_JetRelativeBal_Down = t->Branch("m_sv_JetRelativeBal_Down", &svFitMass_JetRelativeBal_Down, "m_sv_JetRelativeBal_Down/F");
       TBranch *newBranchsvFitPt_JetRelativeBal_Down = t->Branch("pt_sv_JetRelativeBal_Down", &svFitPt_JetRelativeBal_Down, "pt_sv_JetRelativeBal_Down/F");
       TBranch *newBranchsvFitMass_JetRelativeBal_Up = t->Branch("m_sv_JetRelativeBal_Up", &svFitMass_JetRelativeBal_Up, "m_sv_JetRelativeBal_Up/F");
       TBranch *newBranchsvFitPt_JetRelativeBal_Up = t->Branch("pt_sv_JetRelativeBal_Up", &svFitPt_JetRelativeBal_Up, "pt_sv_JetRelativeBal_Up/F");
+
       TBranch *newBranchsvFitMass_JetRelativeSample_Down = t->Branch("m_sv_JetRelativeSample_Down", &svFitMass_JetRelativeSample_Down, "m_sv_JetRelativeSample_Down/F");
       TBranch *newBranchsvFitPt_JetRelativeSample_Down = t->Branch("pt_sv_JetRelativeSample_Down", &svFitPt_JetRelativeSample_Down, "pt_sv_JetRelativeSample_Down/F");
       TBranch *newBranchsvFitMass_JetRelativeSample_Up = t->Branch("m_sv_JetRelativeSample_Up", &svFitMass_JetRelativeSample_Up, "m_sv_JetRelativeSample_Up/F");
       TBranch *newBranchsvFitPt_JetRelativeSample_Up = t->Branch("pt_sv_JetRelativeSample_Up", &svFitPt_JetRelativeSample_Up, "pt_sv_JetRelativeSample_Up/F");
+
       TBranch *newBranchsvFitMass_JetRes_Down = t->Branch("m_sv_JetRes_Down", &svFitMass_JetRes_Down, "m_sv_JetRes_Down/F");
       TBranch *newBranchsvFitPt_JetRes_Down = t->Branch("pt_sv_JetRes_Down", &svFitPt_JetRes_Down, "pt_sv_JetRes_Down/F");
       TBranch *newBranchsvFitMass_JetRes_Up = t->Branch("m_sv_JetRes_Up", &svFitMass_JetRes_Up, "m_sv_JetRes_Up/F");
       TBranch *newBranchsvFitPt_JetRes_Up = t->Branch("pt_sv_JetRes_Up", &svFitPt_JetRes_Up, "pt_sv_JetRes_Up/F");
-      TBranch *newBranchsvFitMass_JetTotal_Down = t->Branch("m_sv_JetTotal_Down", &svFitMass_JetTotal_Down, "m_sv_JetTotal_Down/F");
-      TBranch *newBranchsvFitPt_JetTotal_Down = t->Branch("pt_sv_JetTotal_Down", &svFitPt_JetTotal_Down, "pt_sv_JetTotal_Down/F");
-      TBranch *newBranchsvFitMass_JetTotal_Up = t->Branch("m_sv_JetTotal_Up", &svFitMass_JetTotal_Up, "m_sv_JetTotal_Up/F");
-      TBranch *newBranchsvFitPt_JetTotal_Up = t->Branch("pt_sv_JetTotal_Up", &svFitPt_JetTotal_Up, "pt_sv_JetTotal_Up/F");
+
       TBranch *newBranchsvFitMass_UncMet_Down = t->Branch("m_sv_UncMet_Down", &svFitMass_UncMet_Down, "m_sv_UncMet_Down/F");
       TBranch *newBranchsvFitPt_UncMet_Down = t->Branch("pt_sv_UncMet_Down", &svFitPt_UncMet_Down, "pt_sv_UncMet_Down/F");
       TBranch *newBranchsvFitMass_UncMet_Up = t->Branch("m_sv_UncMet_Up", &svFitMass_UncMet_Up, "m_sv_UncMet_Up/F");
       TBranch *newBranchsvFitPt_UncMet_Up = t->Branch("pt_sv_UncMet_Up", &svFitPt_UncMet_Up, "pt_sv_UncMet_Up/F");
-
 
       TBranch *newRecoilResoBranch1 = t->Branch("m_sv_RecoilReso_Up", &svFitMass_RecoilReso_Up, "m_sv_RecoilReso_Up/F");
       TBranch *newRecoilResoBranch2 = t->Branch("pt_sv_RecoilReso_Up", &svFitPt_RecoilReso_Up, "pt_sv_RecoilReso_Up/F");
@@ -709,14 +656,12 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("met_BBEC1yearUp", &met_BBEC1yearUp);
       t->SetBranchAddress("met_EC2Up", &met_EC2Up);
       t->SetBranchAddress("met_EC2yearUp", &met_EC2yearUp);
-      t->SetBranchAddress("met_EnUp", &met_EnUp);
       t->SetBranchAddress("met_FlavorQCDUp", &met_FlavorQCDUp);
       t->SetBranchAddress("met_HFUp", &met_HFUp);
       t->SetBranchAddress("met_HFyearUp", &met_HFyearUp);
       t->SetBranchAddress("met_RelBalUp", &met_RelBalUp);
       t->SetBranchAddress("met_RelSamUp", &met_RelSamUp);
       t->SetBranchAddress("met_ResUp", &met_ResUp);
-      t->SetBranchAddress("met_TotalUp", &met_TotalUp);
       t->SetBranchAddress("met_UESUp", &met_UESUp);
       t->SetBranchAddress("met_JERDown", &met_JERDown);
       t->SetBranchAddress("met_AbsoluteDown", &met_AbsoluteDown);
@@ -725,14 +670,12 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("met_BBEC1yearDown", &met_BBEC1yearDown);
       t->SetBranchAddress("met_EC2Down", &met_EC2Down);
       t->SetBranchAddress("met_EC2yearDown", &met_EC2yearDown);
-      t->SetBranchAddress("met_EnDown", &met_EnDown);
       t->SetBranchAddress("met_FlavorQCDDown", &met_FlavorQCDDown);
       t->SetBranchAddress("met_HFDown", &met_HFDown);
       t->SetBranchAddress("met_HFyearDown", &met_HFyearDown);
       t->SetBranchAddress("met_RelBalDown", &met_RelBalDown);
       t->SetBranchAddress("met_RelSamDown", &met_RelSamDown);
       t->SetBranchAddress("met_ResDown", &met_ResDown);
-      t->SetBranchAddress("met_TotalDown", &met_TotalDown);
       t->SetBranchAddress("met_UESDown", &met_UESDown);
       t->SetBranchAddress("metphi_JERUp", &metphi_JERUp);
       t->SetBranchAddress("metphi_AbsoluteUp", &metphi_AbsoluteUp);
@@ -741,14 +684,12 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("metphi_BBEC1yearUp", &metphi_BBEC1yearUp);
       t->SetBranchAddress("metphi_EC2Up", &metphi_EC2Up);
       t->SetBranchAddress("metphi_EC2yearUp", &metphi_EC2yearUp);
-      t->SetBranchAddress("metphi_EnUp", &metphi_EnUp);
       t->SetBranchAddress("metphi_FlavorQCDUp", &metphi_FlavorQCDUp);
       t->SetBranchAddress("metphi_HFUp", &metphi_HFUp);
       t->SetBranchAddress("metphi_HFyearUp", &metphi_HFyearUp);
       t->SetBranchAddress("metphi_RelBalUp", &metphi_RelBalUp);
       t->SetBranchAddress("metphi_RelSamUp", &metphi_RelSamUp);
       t->SetBranchAddress("metphi_ResUp", &metphi_ResUp);
-      t->SetBranchAddress("metphi_TotalUp", &metphi_TotalUp);
       t->SetBranchAddress("metphi_UESUp", &metphi_UESUp);
       t->SetBranchAddress("metphi_JERDown", &metphi_JERDown);
       t->SetBranchAddress("metphi_AbsoluteDown", &metphi_AbsoluteDown);
@@ -757,14 +698,12 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("metphi_BBEC1yearDown", &metphi_BBEC1yearDown);
       t->SetBranchAddress("metphi_EC2Down", &metphi_EC2Down);
       t->SetBranchAddress("metphi_EC2yearDown", &metphi_EC2yearDown);
-      t->SetBranchAddress("metphi_EnDown", &metphi_EnDown);
       t->SetBranchAddress("metphi_FlavorQCDDown", &metphi_FlavorQCDDown);
       t->SetBranchAddress("metphi_HFDown", &metphi_HFDown);
       t->SetBranchAddress("metphi_HFyearDown", &metphi_HFyearDown);
       t->SetBranchAddress("metphi_RelBalDown", &metphi_RelBalDown);
       t->SetBranchAddress("metphi_RelSamDown", &metphi_RelSamDown);
       t->SetBranchAddress("metphi_ResDown", &metphi_ResDown);
-      t->SetBranchAddress("metphi_TotalDown", &metphi_TotalDown);
       t->SetBranchAddress("metphi_UESDown", &metphi_UESDown);
 
       t->SetBranchAddress("met_reso_Up", &met_reso_Up);
@@ -818,8 +757,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           metcorrJetEC2Up_ex = met_JetEC2Up*TMath::Cos(metphi_JetEC2Up);
           metcorrJetEC2yearDown_ex = met_JetEC2yearDown*TMath::Cos(metphi_JetEC2yearDown);
           metcorrJetEC2yearUp_ex = met_JetEC2yearUp*TMath::Cos(metphi_JetEC2yearUp);
-          metcorrJetEnDown_ex = met_JetEnDown*TMath::Cos(metphi_JetEnDown);
-          metcorrJetEnUp_ex = met_JetEnUp*TMath::Cos(metphi_JetEnUp);
           metcorrJetFlavorQCDDown_ex = met_JetFlavorQCDDown*TMath::Cos(metphi_JetFlavorQCDDown);
           metcorrJetFlavorQCDUp_ex = met_JetFlavorQCDUp*TMath::Cos(metphi_JetFlavorQCDUp);
           metcorrJetHFDown_ex = met_JetHFDown*TMath::Cos(metphi_JetHFDown);
@@ -832,8 +769,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           metcorrJetRelativeSampleUp_ex = met_JetRelativeSampleUp*TMath::Cos(metphi_JetRelativeSampleUp);
           metcorrJetResDown_ex = met_JetResDown*TMath::Cos(metphi_JetResDown);
           metcorrJetResUp_ex = met_JetResUp*TMath::Cos(metphi_JetResUp);
-          metcorrJetTotalDown_ex = met_JetTotalDown*TMath::Cos(metphi_JetTotalDown);
-          metcorrJetTotalUp_ex = met_JetTotalUp*TMath::Cos(metphi_JetTotalUp);
           metcorrUncMetDown_ex = met_UncMetDown*TMath::Cos(metphi_UncMetDown);
           metcorrUncMetUp_ex = met_UncMetUp*TMath::Cos(metphi_UncMetUp);
 
@@ -851,8 +786,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           metcorrJetEC2Up_ey = met_JetEC2Up*TMath::Sin(metphi_JetEC2Up);
           metcorrJetEC2yearDown_ey = met_JetEC2yearDown*TMath::Sin(metphi_JetEC2yearDown);
           metcorrJetEC2yearUp_ey = met_JetEC2yearUp*TMath::Sin(metphi_JetEC2yearUp);
-          metcorrJetEnDown_ey = met_JetEnDown*TMath::Sin(metphi_JetEnDown);
-          metcorrJetEnUp_ey = met_JetEnUp*TMath::Sin(metphi_JetEnUp);
           metcorrJetFlavorQCDDown_ey = met_JetFlavorQCDDown*TMath::Sin(metphi_JetFlavorQCDDown);
           metcorrJetFlavorQCDUp_ey = met_JetFlavorQCDUp*TMath::Sin(metphi_JetFlavorQCDUp);
           metcorrJetHFDown_ey = met_JetHFDown*TMath::Sin(metphi_JetHFDown);
@@ -865,8 +798,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           metcorrJetRelativeSampleUp_ey = met_JetRelativeSampleUp*TMath::Sin(metphi_JetRelativeSampleUp);
           metcorrJetResDown_ey = met_JetResDown*TMath::Sin(metphi_JetResDown);
           metcorrJetResUp_ey = met_JetResUp*TMath::Sin(metphi_JetResUp);
-          metcorrJetTotalDown_ey = met_JetTotalDown*TMath::Sin(metphi_JetTotalDown);
-          metcorrJetTotalUp_ey = met_JetTotalUp*TMath::Sin(metphi_JetTotalUp);
           metcorrUncMetDown_ey = met_UncMetDown*TMath::Sin(metphi_UncMetDown);
           metcorrUncMetUp_ey = met_UncMetUp*TMath::Sin(metphi_UncMetUp);
 
@@ -945,12 +876,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           runSVFit(measuredTauLeptons, metcorrEC2yearDown_ex, metcorrEC2yearDown_ey, covMET, 0, svFitMass_EC2year_Down, svFitPt_EC2year_Down,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
-          runSVFit(measuredTauLeptons, metcorrEnUp_ex, metcorrEnUp_ey, covMET, 0, svFitMass_En_Up, svFitPt_En_Up,
-              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-          runSVFit(measuredTauLeptons, metcorrEnDown_ex, metcorrEnDown_ey, covMET, 0, svFitMass_En_Down, svFitPt_En_Down,
-              svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
           runSVFit(measuredTauLeptons, metcorrEnyearUp_ex, metcorrEnyearUp_ey, covMET, 0, svFitMass_Enyear_Up, svFitPt_Enyear_Up,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
 
@@ -992,8 +917,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
           runSVFit(measuredTauLeptons, metcorrResDown_ex, metcorrResDown_ey, covMET, 0, svFitMass_Res_Down, svFitPt_Res_Down,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-
 
           runSVFit(measuredTauLeptons, metcorrRecoilResoUp_ex, metcorrRecoilResoUp_ey, covMET, 0, svFitMass_RecoilReso_Up,
               svFitPt_RecoilReso_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
@@ -1083,61 +1006,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)
               };
 
-              if (orig_mu.Eta() > -2.4 && orig_mu.Eta() < -2.1) {
-                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin1_Up, svFitPt_MESbin1_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin1_Down, svFitPt_MESbin1_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-              } else {
-                svFitMass_MESbin1_Up = svFitMass;
-                svFitPt_MESbin1_Up = svFitPt;
-                svFitMass_MESbin1_Down = svFitMass;
-                svFitPt_MESbin1_Down = svFitPt;
-              }
-              if (orig_mu.Eta() > -2.1 && orig_mu.Eta() < -1.2) {
-                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin2_Up, svFitPt_MESbin2_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin2_Down, svFitPt_MESbin2_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-              } else {
-                svFitMass_MESbin2_Up = svFitMass;
-                svFitPt_MESbin2_Up = svFitPt;
-                svFitMass_MESbin2_Down = svFitMass;
-                svFitPt_MESbin2_Down = svFitPt;
-              }
-              if (orig_mu.Eta() > -1.2 && orig_mu.Eta() < 1.2) {
-                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin3_Up, svFitPt_MESbin3_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin3_Down, svFitPt_MESbin3_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-              } else {
-                svFitMass_MESbin3_Up = svFitMass;
-                svFitPt_MESbin3_Up = svFitPt;
-                svFitMass_MESbin3_Down = svFitMass;
-                svFitPt_MESbin3_Down = svFitPt;
-              }
-              if (orig_mu.Eta() > 1.2 && orig_mu.Eta() < 2.1) {
-                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin4_Up, svFitPt_MESbin4_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin4_Down, svFitPt_MESbin4_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-              } else {
-                svFitMass_MESbin4_Up = svFitMass;
-                svFitPt_MESbin4_Up = svFitPt;
-                svFitMass_MESbin4_Down = svFitMass;
-                svFitPt_MESbin4_Down = svFitPt;
-              }
-              if (orig_mu.Eta() > 2.1 && orig_mu.Eta() < 2.4) {
-                runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin5_Up, svFitPt_MESbin5_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-                runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
-                  svFitMass_MESbin5_Down, svFitPt_MESbin5_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-              } else {
-                svFitMass_MESbin5_Up = svFitMass;
-                svFitPt_MESbin5_Up = svFitPt;
-                svFitMass_MESbin5_Down = svFitMass;
-                svFitPt_MESbin5_Down = svFitPt;
-              }
+              runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0,
+                svFitMass_MES_Up, svFitPt_MES_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+              runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0,
+                svFitMass_MES_Down, svFitPt_MES_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
             }
 
             double pt_Up(pt2 * ES_Up), pt_Down(pt2 * ES_Down);  // shift tau pT by energy scale
@@ -1165,17 +1037,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             /////////////////////////////
             // All upward shifts below //
             /////////////////////////////
-
-            // all tau shift up
-            if (gen_match_2 < 6) {
-              runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_Up, svFitPt_Up,
-                  svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-            } else {
-              svFitMass_Up = svFitMass;
-              svFitPt_Up = svFitPt;
-              tau1 = tau1;
-              tau2 = tau2;
-            }
 
             // tau DM0 shifted up
             if (gen_match_2 == 5 && decayMode2 == 0) {
@@ -1237,17 +1098,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             ///////////////////////////////
             // All downward shifts below //
             ///////////////////////////////
-
-            // all tau shift down
-            if (gen_match_2 < 6) {
-              runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_Down, svFitPt_Down,
-                    svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-            } else {
-              svFitMass_Down = svFitMass;
-              svFitPt_Down = svFitPt;
-              tau1 = tau1;
-              tau2 = tau2;
-            }
 
             // tau DM0 shifted down
             if (gen_match_2 == 5 && decayMode2 == 0) {
@@ -1329,10 +1179,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     tauBranch8->Fill();
     newBranch1->Fill();
     newBranch2->Fill();
-    newDMBranch1->Fill();
-    newDMBranch2->Fill();
-    newDMBranch3->Fill();
-    newDMBranch4->Fill();
     newDM0Branch1->Fill();
     newDM0Branch2->Fill();
     newDM0Branch3->Fill();
@@ -1345,26 +1191,10 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     newEESigmaBranch2->Fill();
     newEESigmaBranch3->Fill();
     newEESigmaBranch4->Fill();
-    newMESbin1Branch1->Fill();
-    newMESbin1Branch2->Fill();
-    newMESbin1Branch3->Fill();
-    newMESbin1Branch4->Fill();
-    newMESbin2Branch1->Fill();
-    newMESbin2Branch2->Fill();
-    newMESbin2Branch3->Fill();
-    newMESbin2Branch4->Fill();
-    newMESbin3Branch1->Fill();
-    newMESbin3Branch2->Fill();
-    newMESbin3Branch3->Fill();
-    newMESbin3Branch4->Fill();
-    newMESbin4Branch1->Fill();
-    newMESbin4Branch2->Fill();
-    newMESbin4Branch3->Fill();
-    newMESbin4Branch4->Fill();
-    newMESbin5Branch1->Fill();
-    newMESbin5Branch2->Fill();
-    newMESbin5Branch3->Fill();
-    newMESbin5Branch4->Fill();
+    newMESBranch1->Fill();
+    newMESBranch2->Fill();
+    newMESBranch3->Fill();
+    newMESBranch4->Fill();
     newDM1Branch1->Fill();
     newDM1Branch2->Fill();
     newDM1Branch3->Fill();
@@ -1409,10 +1239,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     newBranchsvFitPt_JetEC2year_Down->Fill();
     newBranchsvFitMass_JetEC2year_Up->Fill();
     newBranchsvFitPt_JetEC2year_Up->Fill();
-    newBranchsvFitMass_JetEn_Down->Fill();
-    newBranchsvFitPt_JetEn_Down->Fill();
-    newBranchsvFitMass_JetEn_Up->Fill();
-    newBranchsvFitPt_JetEn_Up->Fill();
     newBranchsvFitMass_JetFlavorQCD_Down->Fill();
     newBranchsvFitPt_JetFlavorQCD_Down->Fill();
     newBranchsvFitMass_JetFlavorQCD_Up->Fill();
@@ -1437,10 +1263,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     newBranchsvFitPt_JetRes_Down->Fill();
     newBranchsvFitMass_JetRes_Up->Fill();
     newBranchsvFitPt_JetRes_Up->Fill();
-    newBranchsvFitMass_JetTotal_Down->Fill();
-    newBranchsvFitPt_JetTotal_Down->Fill();
-    newBranchsvFitMass_JetTotal_Up->Fill();
-    newBranchsvFitPt_JetTotal_Up->Fill();
     newBranchsvFitMass_UncMet_Down->Fill();
     newBranchsvFitPt_UncMet_Down->Fill();
     newBranchsvFitMass_UncMet_Up->Fill();
