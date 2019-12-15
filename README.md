@@ -1,9 +1,10 @@
 # SubmitSVFit
 ```
-cmsrel CMSSW_9_4_4 
-cd CMSSW_9_4_4/src/
+export SCRAM_ARCH=slc7_amd64_gcc630
+scram pro -n ProjectName CMSSW CMSSW_9_4_4
+cd ProjectName/src/
 cmsenv
-git clone -b CMSSW_9_4_4_classic_svFit_v0 ssh://git@gitlab.cern.ch:7999/KState-HEP-HTT/SubmitSVFit.git
+git clone -b dev_shapeUpdate ssh://git@gitlab.cern.ch:7999/KState-HEP-HTT/SubmitSVFit.git
 cd SubmitSVFit
 source recipe.sh
 emacs -nw TauAnalysis/ClassicSVfit/src/ClassicSVfit.cc
@@ -21,7 +22,7 @@ the code to suit your needs). This is already taken care of if you are using ROO
 
 To run in interactive mode for example:
 ```
-SVFitStandAloneFSATauDM inputFile=coolInputFile.root newFile=tmpOut.root doES=1 metType=-1
+SVFitStandAloneFSATauDM_Flex inputFile=/hdfs/store/user/doyeong/SMHTT_CONDOR/tautau/myskims/2018/Dec11_STXS/ES1_W0/VBFHToTauTau_M125_13TeV_powheg_pythia8_-102X_upgrade2018_realistic_v15_ext1-v1/VBFHToTauTau_M125_13TeV_powheg_pythia8_-102X_upgrade2018_realistic_v15_ext1-v1_53.root newFile=/scratch/doyeong/tmpOut.root doES=1 doRecoil=1
 ```
 
  - inputFile = obvious
@@ -29,14 +30,9 @@ SVFitStandAloneFSATauDM inputFile=coolInputFile.root newFile=tmpOut.root doES=1 
  - doES = apply energy scale adjustments providing nominal, shift UP and shift DOWN values of svFit
    - 0 = default, no shift
    - 1 = apply shifts
- - isWJets = this shifts the number of jets used in recoil corrections, it is critical for
-WJets samples because we clear our jets to preven overlapping with out leptons, but
-with WJets one of the leptons is a jet
-   - 0 = non-WJets samples
-   - 1 = WJets sample
- - metType = MVA MET vs. PF MET
-   - 1 = Mva Met
-   - -1 = PF Met
+ - doRecoil
+ - doMET
+ - print
 
 To submit jobs to condor:
 ```
