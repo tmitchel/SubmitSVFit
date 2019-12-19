@@ -14,8 +14,10 @@
 
 <bin   name="SVFitStandAloneFSATauDM" file="SVFitStandAloneFSATauDM.cc">
 </bin>
-<bin   name="ltau_fitter" file="ltau_fitter.cc">
+<bin   name="FastMTT" file="FastMTT.cc">
 </bin>
+<!-- <bin   name="ltau_fitter" file="ltau_fitter.cc">
+</bin> -->
 <!--
 <bin   name="SVFitStandAloneFSAZH" file="SVFitStandAloneFSAZH.cc">
 </bin>
