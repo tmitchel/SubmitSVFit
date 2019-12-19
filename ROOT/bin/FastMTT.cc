@@ -35,16 +35,14 @@
 FastMTT svfitAlgorithm;
 
 int copyFiles(optutl::CommandLineParser parser, TFile *fOld, TFile *fNew);
-void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets, int metType, double tesSize);
+void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets, int metType);
 int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source, optutl::CommandLineParser parser);
 double tesUncertainties(unsigned int year, float decaymode);
 double pt_shifted(float pt, double tesUnc, bool isDM, int updown);
 double metcorr_shifted(double metcorr, float pt1, float phi1, bool isDM1, double tesUnc1, float pt2, float phi2, bool isDM2, double tesUnc2, int xory,
                        int updown);
-void runSVFit(std::vector<classic_svFit::MeasuredTauLepton> &measuredTauLeptons, double measuredMETx, double measuredMETy, TMatrixD &covMET,
-              float num, float &svFitMass, float &svFitPt, float &svFitEta, float &svFitPhi, float &svFitMET, float &svFitTransverseMass,
-              TLorentzVector &tau1, TLorentzVector &tau2);
+void runFastMTT(std::vector<classic_svFit::MeasuredTauLepton> &, double, double, const TMatrixD &, float &, float &);
 
 int main(int argc, char *argv[]) {
     optutl::CommandLineParser parser("Sets Event Weights in the ntuple");
@@ -53,21 +51,16 @@ int main(int argc, char *argv[]) {
     parser.addOption("inputFile", optutl::CommandLineParser::kString, "input File");
     parser.addOption("doES", optutl::CommandLineParser::kDouble, "doES", 0.0);
     parser.addOption("isWJets", optutl::CommandLineParser::kDouble, "isWJets", 0.0);
-    parser.addOption("metType", optutl::CommandLineParser::kDouble, "metType", -1.0);   // 1 = mvamet, -1 = pf met
-    parser.addOption("tesSize", optutl::CommandLineParser::kDouble, "tesSize", 0.012);  // Default TES = 1.2%
+    parser.addOption("metType", optutl::CommandLineParser::kDouble, "metType", -1.0);  // 1 = mvamet, -1 = pf met
     parser.addOption("numEvents", optutl::CommandLineParser::kInteger, "numEvents", -1);
     parser.parseArguments(argc, argv);
 
     std::cout << "EXTRA COMMANDS:"
               << "\n --- numEvents: " << parser.integerValue("numEvents") << "\n --- doES: " << parser.doubleValue("doES")
-              << "\n --- isWJets: " << parser.doubleValue("isWJets") << "\n --- metType: " << parser.doubleValue("metType")
-              << "\n --- tesSize: " << parser.doubleValue("tesSize") << std::endl;
+              << "\n --- isWJets: " << parser.doubleValue("isWJets") << "\n --- metType: " << parser.doubleValue("metType") << std::endl;
 
     // Make sure a proper Met Type is chosen
     assert(parser.doubleValue("metType") == 1.0 || parser.doubleValue("metType") == -1.0);
-
-    // No DiTauMass constraint
-    svfitAlgorithm.setDiTauMassConstraint(-1.0);
 
     char TreeToUse[80] = "first";
 
@@ -82,14 +75,13 @@ int main(int argc, char *argv[]) {
 
     fProduce = new TFile(newFileName.c_str(), "UPDATE");
     fProduce->ls();
-    readdir(fProduce, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("metType"),
-            parser.doubleValue("tesSize"));
+    readdir(fProduce, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("metType"));
 
     fProduce->Close();
     f->Close();
 }
 
-void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets, int metType, double tesSize) {
+void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets, int metType) {
     TLorentzVector tau1, tau2;
 
     classic_svFit::MeasuredTauLepton::kDecayType decayType1 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType;
@@ -119,8 +111,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             dir->cd(key->GetName());
             TDirectory *subdir = gDirectory;
             sprintf(TreeToUse, "%s", key->GetName());
-            readdir(subdir, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("metType"),
-                    parser.doubleValue("tesSize"));
+            readdir(subdir, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("metType"));
 
             dirsav->cd();
         } else if (obj->IsA()->InheritsFrom(TTree::Class())) {
@@ -150,7 +141,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 mass2 = 0.105658;
                 channel = "em";
                 std::cout << "Identified channel em and using kappa = 3" << std::endl;
-                svfitAlgorithm.addLogM_fixed(true, 3);
             } else if (std::string(key->GetName()).find("et") != std::string::npos) {
                 std::cout << "eleTauTree" << std::endl;
                 decayType1 = classic_svFit::MeasuredTauLepton::kTauToElecDecay;
@@ -159,7 +149,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 mass2 = 0;
                 channel = "et";
                 std::cout << "Identified channel et and using kappa = 4" << std::endl;
-                svfitAlgorithm.addLogM_fixed(true, 4);
             } else if (std::string(key->GetName()).find("mt") != std::string::npos ||
                        std::string(key->GetName()).find("mutau") != std::string::npos) {
                 std::cout << "muTauEvent" << std::endl;
@@ -169,13 +158,12 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 mass2 = 0;
                 channel = "mt";
                 std::cout << "Identified channel mt and using kappa = 4" << std::endl;
-                svfitAlgorithm.addLogM_fixed(true, 4);
             } else {
                 std::cout << "Tree " << key->GetName() << " does not match ... Skipping!!" << std::endl;
                 return;
             }
 
-            TTree *t = (TTree *)obj;
+            TTree *t = reinterpret_cast<TTree*>(obj);
             float svFitMass = -10;
             float svFitPt = -10;
             float svFitEta = -10;
@@ -254,9 +242,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             float metcorrResUp_ey = -10;
             float metcorrUESDown_ey = -10;
             float metcorrUESUp_ey = -10;
-
-            TBranch *newBranch1 = t->Branch("m_sv", &svFitMass, "m_sv/F");
-            TBranch *newBranch2 = t->Branch("pt_sv", &svFitPt, "pt_sv/F");
 
             // If doing ES shifts, we need extra ouput branches
 
@@ -391,140 +376,140 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             float tau2_phi = -10;
             float tau2_m = -10;
 
-            TBranch *tauBranch1 = t->Branch("tau1_pt", &tau1_pt, "tau1_pt/F");
-            TBranch *tauBranch2 = t->Branch("tau1_eta", &tau1_eta, "tau1_eta/F");
-            TBranch *tauBranch3 = t->Branch("tau1_phi", &tau1_phi, "tau1_phi/F");
-            TBranch *tauBranch4 = t->Branch("tau1_m", &tau1_m, "tau1_m/F");
-            TBranch *tauBranch5 = t->Branch("tau2_pt", &tau2_pt, "tau2_pt/F");
-            TBranch *tauBranch6 = t->Branch("tau2_eta", &tau2_eta, "tau2_eta/F");
-            TBranch *tauBranch7 = t->Branch("tau2_phi", &tau2_phi, "tau2_phi/F");
-            TBranch *tauBranch8 = t->Branch("tau2_m", &tau2_m, "tau2_m/F");
+            std::vector<TBranch*> new_branches = {
+                t->Branch("tau1_pt", &tau1_pt, "tau1_pt/F"),
+                t->Branch("tau1_eta", &tau1_eta, "tau1_eta/F"),
+                t->Branch("tau1_phi", &tau1_phi, "tau1_phi/F"),
+                t->Branch("tau1_m", &tau1_m, "tau1_m/F"),
+                t->Branch("tau2_pt", &tau2_pt, "tau2_pt/F"),
+                t->Branch("tau2_eta", &tau2_eta, "tau2_eta/F"),
+                t->Branch("tau2_phi", &tau2_phi, "tau2_phi/F"),
+                t->Branch("tau2_m", &tau2_m, "tau2_m/F"),
 
-            TBranch *newDM0Branch1 = t->Branch("m_sv_DM0_Up", &svFitMass_DM0_Up, "m_sv_DM0_Up/F");
-            TBranch *newDM0Branch2 = t->Branch("pt_sv_DM0_Up", &svFitPt_DM0_Up, "pt_sv_DM0_Up/F");
-            TBranch *newDM0Branch3 = t->Branch("m_sv_DM0_Down", &svFitMass_DM0_Down, "m_sv_DM0_Down/F");
-            TBranch *newDM0Branch4 = t->Branch("pt_sv_DM0_Down", &svFitPt_DM0_Down, "pt_sv_DM0_Down/F");
+                t->Branch("m_sv", &svFitMass, "m_sv/F"),
+                t->Branch("pt_sv", &svFitPt, "pt_sv/F"),
 
-            TBranch *newEEScaleBranch1 = t->Branch("m_sv_EEScale_Up", &svFitMass_EEScale_Up, "m_sv_EEScale_Up/F");
-            TBranch *newEEScaleBranch2 = t->Branch("pt_sv_EEScale_Up", &svFitPt_EEScale_Up, "pt_sv_EEScale_Up/F");
-            TBranch *newEEScaleBranch3 = t->Branch("m_sv_EEScale_Down", &svFitMass_EEScale_Down, "m_sv_EEScale_Down/F");
-            TBranch *newEEScaleBranch4 = t->Branch("pt_sv_EEScale_Down", &svFitPt_EEScale_Down, "pt_sv_EEScale_Down/F");
+                t->Branch("m_sv_DM0_Up", &svFitMass_DM0_Up, "m_sv_DM0_Up/F"),
+                t->Branch("pt_sv_DM0_Up", &svFitPt_DM0_Up, "pt_sv_DM0_Up/F"),
+                t->Branch("m_sv_DM0_Down", &svFitMass_DM0_Down, "m_sv_DM0_Down/F"),
+                t->Branch("pt_sv_DM0_Down", &svFitPt_DM0_Down, "pt_sv_DM0_Down/F"),
 
-            TBranch *newEESigmaBranch1 = t->Branch("m_sv_EESigma_Up", &svFitMass_EESigma_Up, "m_sv_EESigma_Up/F");
-            TBranch *newEESigmaBranch2 = t->Branch("pt_sv_EESigma_Up", &svFitPt_EESigma_Up, "pt_sv_EESigma_Up/F");
-            TBranch *newEESigmaBranch3 = t->Branch("m_sv_EESigma_Down", &svFitMass_EESigma_Down, "m_sv_EESigma_Down/F");
-            TBranch *newEESigmaBranch4 = t->Branch("pt_sv_EESigma_Down", &svFitPt_EESigma_Down, "pt_sv_EESigma_Down/F");
+                t->Branch("m_sv_EEScale_Up", &svFitMass_EEScale_Up, "m_sv_EEScale_Up/F"),
+                t->Branch("pt_sv_EEScale_Up", &svFitPt_EEScale_Up, "pt_sv_EEScale_Up/F"),
+                t->Branch("m_sv_EEScale_Down", &svFitMass_EEScale_Down, "m_sv_EEScale_Down/F"),
+                t->Branch("pt_sv_EEScale_Down", &svFitPt_EEScale_Down, "pt_sv_EEScale_Down/F"),
 
-            TBranch *newMESBranch1 = t->Branch("m_sv_MES_Up", &svFitMass_MES_Up, "m_sv_MES_Up/F");
-            TBranch *newMESBranch2 = t->Branch("pt_sv_MES_Up", &svFitPt_MES_Up, "pt_sv_MES_Up/F");
-            TBranch *newMESBranch3 = t->Branch("m_sv_MES_Down", &svFitMass_MES_Down, "m_sv_MES_Down/F");
-            TBranch *newMESBranch4 = t->Branch("pt_sv_MES_Down", &svFitPt_MES_Down, "pt_sv_MES_Down/F");
+                t->Branch("m_sv_EESigma_Up", &svFitMass_EESigma_Up, "m_sv_EESigma_Up/F"),
+                t->Branch("pt_sv_EESigma_Up", &svFitPt_EESigma_Up, "pt_sv_EESigma_Up/F"),
+                t->Branch("m_sv_EESigma_Down", &svFitMass_EESigma_Down, "m_sv_EESigma_Down/F"),
+                t->Branch("pt_sv_EESigma_Down", &svFitPt_EESigma_Down, "pt_sv_EESigma_Down/F"),
 
-            TBranch *newDM1Branch1 = t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F");
-            TBranch *newDM1Branch2 = t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F");
-            TBranch *newDM1Branch3 = t->Branch("m_sv_DM1_Down", &svFitMass_DM1_Down, "m_sv_DM1_Down/F");
-            TBranch *newDM1Branch4 = t->Branch("pt_sv_DM1_Down", &svFitPt_DM1_Down, "pt_sv_DM1_Down/F");
+                t->Branch("m_sv_MES_Up", &svFitMass_MES_Up, "m_sv_MES_Up/F"),
+                t->Branch("pt_sv_MES_Up", &svFitPt_MES_Up, "pt_sv_MES_Up/F"),
+                t->Branch("m_sv_MES_Down", &svFitMass_MES_Down, "m_sv_MES_Down/F"),
+                t->Branch("pt_sv_MES_Down", &svFitPt_MES_Down, "pt_sv_MES_Down/F"),
 
-            TBranch *newDM10Branch1 = t->Branch("m_sv_DM10_Up", &svFitMass_DM10_Up, "m_sv_DM10_Up/F");
-            TBranch *newDM10Branch2 = t->Branch("pt_sv_DM10_Up", &svFitPt_DM10_Up, "pt_sv_DM10_Up/F");
-            TBranch *newDM10Branch3 = t->Branch("m_sv_DM10_Down", &svFitMass_DM10_Down, "m_sv_DM10_Down/F");
-            TBranch *newDM10Branch4 = t->Branch("pt_sv_DM10_Down", &svFitPt_DM10_Down, "pt_sv_DM10_Down/F");
+                t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F"),
+                t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F"),
+                t->Branch("m_sv_DM1_Down", &svFitMass_DM1_Down, "m_sv_DM1_Down/F"),
+                t->Branch("pt_sv_DM1_Down", &svFitPt_DM1_Down, "pt_sv_DM1_Down/F"),
 
-            TBranch *newLESDM0Branch1 = t->Branch("m_sv_LES_DM0_Up", &svFitMass_LES_DM0_Up, "m_sv_LES_DM0_Up/F");
-            TBranch *newLESDM0Branch2 = t->Branch("pt_sv_LES_DM0_Up", &svFitPt_LES_DM0_Up, "pt_sv_LES_DM0_Up/F");
-            TBranch *newLESDM0Branch3 = t->Branch("m_sv_LES_DM0_Down", &svFitMass_LES_DM0_Down, "m_sv_LES_DM0_Down/F");
-            TBranch *newLESDM0Branch4 = t->Branch("pt_sv_LES_DM0_Down", &svFitPt_LES_DM0_Down, "pt_sv_LES_DM0_Down/F");
+                t->Branch("m_sv_DM10_Up", &svFitMass_DM10_Up, "m_sv_DM10_Up/F"),
+                t->Branch("pt_sv_DM10_Up", &svFitPt_DM10_Up, "pt_sv_DM10_Up/F"),
+                t->Branch("m_sv_DM10_Down", &svFitMass_DM10_Down, "m_sv_DM10_Down/F"),
+                t->Branch("pt_sv_DM10_Down", &svFitPt_DM10_Down, "pt_sv_DM10_Down/F"),
 
-            TBranch *newLESDM1Branch1 = t->Branch("m_sv_LES_DM1_Up", &svFitMass_LES_DM1_Up, "m_sv_LES_DM1_Up/F");
-            TBranch *newLESDM1Branch2 = t->Branch("pt_sv_LES_DM1_Up", &svFitPt_LES_DM1_Up, "pt_sv_LES_DM1_Up/F");
-            TBranch *newLESDM1Branch3 = t->Branch("m_sv_LES_DM1_Down", &svFitMass_LES_DM1_Down, "m_sv_LES_DM1_Down/F");
-            TBranch *newLESDM1Branch4 = t->Branch("pt_sv_LES_DM1_Down", &svFitPt_LES_DM1_Down, "pt_sv_LES_DM1_Down/F");
+                t->Branch("m_sv_LES_DM0_Up", &svFitMass_LES_DM0_Up, "m_sv_LES_DM0_Up/F"),
+                t->Branch("pt_sv_LES_DM0_Up", &svFitPt_LES_DM0_Up, "pt_sv_LES_DM0_Up/F"),
+                t->Branch("m_sv_LES_DM0_Down", &svFitMass_LES_DM0_Down, "m_sv_LES_DM0_Down/F"),
+                t->Branch("pt_sv_LES_DM0_Down", &svFitPt_LES_DM0_Down, "pt_sv_LES_DM0_Down/F"),
 
-            TBranch *newBranchsvFitMass_JER_Down = t->Branch("m_sv_JetJER_Down", &svFitMass_JER_Down, "m_sv_JetJER_Down/F");
-            TBranch *newBranchsvFitPt_JER_Down = t->Branch("pt_sv_JetJER_Down", &svFitPt_JER_Down, "pt_sv_JetJER_Down/F");
-            TBranch *newBranchsvFitMass_JER_Up = t->Branch("m_sv_JetJER_Up", &svFitMass_JER_Up, "m_sv_JetJER_Up/F");
-            TBranch *newBranchsvFitPt_JER_Up = t->Branch("pt_sv_JetJER_Up", &svFitPt_JER_Up, "pt_sv_JetJER_Up/F");
+                t->Branch("m_sv_LES_DM1_Up", &svFitMass_LES_DM1_Up, "m_sv_LES_DM1_Up/F"),
+                t->Branch("pt_sv_LES_DM1_Up", &svFitPt_LES_DM1_Up, "pt_sv_LES_DM1_Up/F"),
+                t->Branch("m_sv_LES_DM1_Down", &svFitMass_LES_DM1_Down, "m_sv_LES_DM1_Down/F"),
+                t->Branch("pt_sv_LES_DM1_Down", &svFitPt_LES_DM1_Down, "pt_sv_LES_DM1_Down/F"),
 
-            TBranch *newBranchsvFitMass_Absolute_Down = t->Branch("m_sv_JetAbsolute_Down", &svFitMass_Absolute_Down, "m_sv_JetAbsolute_Down/F");
-            TBranch *newBranchsvFitPt_Absolute_Down = t->Branch("pt_sv_JetAbsolute_Down", &svFitPt_Absolute_Down, "pt_sv_JetAbsolute_Down/F");
-            TBranch *newBranchsvFitMass_Absolute_Up = t->Branch("m_sv_JetAbsolute_Up", &svFitMass_Absolute_Up, "m_sv_JetAbsolute_Up/F");
-            TBranch *newBranchsvFitPt_Absolute_Up = t->Branch("pt_sv_JetAbsolute_Up", &svFitPt_Absolute_Up, "pt_sv_JetAbsolute_Up/F");
+                t->Branch("m_sv_JetJER_Down", &svFitMass_JER_Down, "m_sv_JetJER_Down/F"),
+                t->Branch("pt_sv_JetJER_Down", &svFitPt_JER_Down, "pt_sv_JetJER_Down/F"),
+                t->Branch("m_sv_JetJER_Up", &svFitMass_JER_Up, "m_sv_JetJER_Up/F"),
+                t->Branch("pt_sv_JetJER_Up", &svFitPt_JER_Up, "pt_sv_JetJER_Up/F"),
 
-            TBranch *newBranchsvFitMass_Absoluteyear_Down =
-                t->Branch("m_sv_JetAbsoluteyear_Down", &svFitMass_Absoluteyear_Down, "m_sv_JetAbsoluteyear_Down/F");
-            TBranch *newBranchsvFitPt_Absoluteyear_Down =
-                t->Branch("pt_sv_JetAbsoluteyear_Down", &svFitPt_Absoluteyear_Down, "pt_sv_JetAbsoluteyear_Down/F");
-            TBranch *newBranchsvFitMass_Absoluteyear_Up =
-                t->Branch("m_sv_JetAbsoluteyear_Up", &svFitMass_Absoluteyear_Up, "m_sv_JetAbsoluteyear_Up/F");
-            TBranch *newBranchsvFitPt_Absoluteyear_Up = t->Branch("pt_sv_JetAbsoluteyear_Up", &svFitPt_Absoluteyear_Up, "pt_sv_JetAbsoluteyear_Up/F");
+                t->Branch("m_sv_JetAbsolute_Down", &svFitMass_Absolute_Down, "m_sv_JetAbsolute_Down/F"),
+                t->Branch("pt_sv_JetAbsolute_Down", &svFitPt_Absolute_Down, "pt_sv_JetAbsolute_Down/F"),
+                t->Branch("m_sv_JetAbsolute_Up", &svFitMass_Absolute_Up, "m_sv_JetAbsolute_Up/F"),
+                t->Branch("pt_sv_JetAbsolute_Up", &svFitPt_Absolute_Up, "pt_sv_JetAbsolute_Up/F"),
 
-            TBranch *newBranchsvFitMass_BBEC1_Down = t->Branch("m_sv_JetBBEC1_Down", &svFitMass_BBEC1_Down, "m_sv_JetBBEC1_Down/F");
-            TBranch *newBranchsvFitPt_BBEC1_Down = t->Branch("pt_sv_JetBBEC1_Down", &svFitPt_BBEC1_Down, "pt_sv_JetBBEC1_Down/F");
-            TBranch *newBranchsvFitMass_BBEC1_Up = t->Branch("m_sv_JetBBEC1_Up", &svFitMass_BBEC1_Up, "m_sv_JetBBEC1_Up/F");
-            TBranch *newBranchsvFitPt_BBEC1_Up = t->Branch("pt_sv_JetBBEC1_Up", &svFitPt_BBEC1_Up, "pt_sv_JetBBEC1_Up/F");
+                t->Branch("m_sv_JetAbsoluteyear_Down", &svFitMass_Absoluteyear_Down, "m_sv_JetAbsoluteyear_Down/F"),
+                t->Branch("pt_sv_JetAbsoluteyear_Down", &svFitPt_Absoluteyear_Down, "pt_sv_JetAbsoluteyear_Down/F"),
+                t->Branch("m_sv_JetAbsoluteyear_Up", &svFitMass_Absoluteyear_Up, "m_sv_JetAbsoluteyear_Up/F"),
+                t->Branch("pt_sv_JetAbsoluteyear_Up", &svFitPt_Absoluteyear_Up, "pt_sv_JetAbsoluteyear_Up/F"),
 
-            TBranch *newBranchsvFitMass_BBEC1year_Down = t->Branch("m_sv_JetBBEC1year_Down", &svFitMass_BBEC1year_Down, "m_sv_JetBBEC1year_Down/F");
-            TBranch *newBranchsvFitPt_BBEC1year_Down = t->Branch("pt_sv_JetBBEC1year_Down", &svFitPt_BBEC1year_Down, "pt_sv_JetBBEC1year_Down/F");
-            TBranch *newBranchsvFitMass_BBEC1year_Up = t->Branch("m_sv_JetBBEC1year_Up", &svFitMass_BBEC1year_Up, "m_sv_JetBBEC1year_Up/F");
-            TBranch *newBranchsvFitPt_BBEC1year_Up = t->Branch("pt_sv_JetBBEC1year_Up", &svFitPt_BBEC1year_Up, "pt_sv_JetBBEC1year_Up/F");
+                t->Branch("m_sv_JetBBEC1_Down", &svFitMass_BBEC1_Down, "m_sv_JetBBEC1_Down/F"),
+                t->Branch("pt_sv_JetBBEC1_Down", &svFitPt_BBEC1_Down, "pt_sv_JetBBEC1_Down/F"),
+                t->Branch("m_sv_JetBBEC1_Up", &svFitMass_BBEC1_Up, "m_sv_JetBBEC1_Up/F"),
+                t->Branch("pt_sv_JetBBEC1_Up", &svFitPt_BBEC1_Up, "pt_sv_JetBBEC1_Up/F"),
 
-            TBranch *newBranchsvFitMass_EC2_Down = t->Branch("m_sv_JetEC2_Down", &svFitMass_EC2_Down, "m_sv_JetEC2_Down/F");
-            TBranch *newBranchsvFitPt_EC2_Down = t->Branch("pt_sv_JetEC2_Down", &svFitPt_EC2_Down, "pt_sv_JetEC2_Down/F");
-            TBranch *newBranchsvFitMass_EC2_Up = t->Branch("m_sv_JetEC2_Up", &svFitMass_EC2_Up, "m_sv_JetEC2_Up/F");
-            TBranch *newBranchsvFitPt_EC2_Up = t->Branch("pt_sv_JetEC2_Up", &svFitPt_EC2_Up, "pt_sv_JetEC2_Up/F");
+                t->Branch("m_sv_JetBBEC1year_Down", &svFitMass_BBEC1year_Down, "m_sv_JetBBEC1year_Down/F"),
+                t->Branch("pt_sv_JetBBEC1year_Down", &svFitPt_BBEC1year_Down, "pt_sv_JetBBEC1year_Down/F"),
+                t->Branch("m_sv_JetBBEC1year_Up", &svFitMass_BBEC1year_Up, "m_sv_JetBBEC1year_Up/F"),
+                t->Branch("pt_sv_JetBBEC1year_Up", &svFitPt_BBEC1year_Up, "pt_sv_JetBBEC1year_Up/F"),
 
-            TBranch *newBranchsvFitMass_EC2year_Down = t->Branch("m_sv_JetEC2year_Down", &svFitMass_EC2year_Down, "m_sv_JetEC2year_Down/F");
-            TBranch *newBranchsvFitPt_EC2year_Down = t->Branch("pt_sv_JetEC2year_Down", &svFitPt_EC2year_Down, "pt_sv_JetEC2year_Down/F");
-            TBranch *newBranchsvFitMass_EC2year_Up = t->Branch("m_sv_JetEC2year_Up", &svFitMass_EC2year_Up, "m_sv_JetEC2year_Up/F");
-            TBranch *newBranchsvFitPt_EC2year_Up = t->Branch("pt_sv_JetEC2year_Up", &svFitPt_EC2year_Up, "pt_sv_JetEC2year_Up/F");
+                t->Branch("m_sv_JetEC2_Down", &svFitMass_EC2_Down, "m_sv_JetEC2_Down/F"),
+                t->Branch("pt_sv_JetEC2_Down", &svFitPt_EC2_Down, "pt_sv_JetEC2_Down/F"),
+                t->Branch("m_sv_JetEC2_Up", &svFitMass_EC2_Up, "m_sv_JetEC2_Up/F"),
+                t->Branch("pt_sv_JetEC2_Up", &svFitPt_EC2_Up, "pt_sv_JetEC2_Up/F"),
 
-            TBranch *newBranchsvFitMass_FlavorQCD_Down = t->Branch("m_sv_JetFlavorQCD_Down", &svFitMass_FlavorQCD_Down, "m_sv_JetFlavorQCD_Down/F");
-            TBranch *newBranchsvFitPt_FlavorQCD_Down = t->Branch("pt_sv_JetFlavorQCD_Down", &svFitPt_FlavorQCD_Down, "pt_sv_JetFlavorQCD_Down/F");
-            TBranch *newBranchsvFitMass_FlavorQCD_Up = t->Branch("m_sv_JetFlavorQCD_Up", &svFitMass_FlavorQCD_Up, "m_sv_JetFlavorQCD_Up/F");
-            TBranch *newBranchsvFitPt_FlavorQCD_Up = t->Branch("pt_sv_JetFlavorQCD_Up", &svFitPt_FlavorQCD_Up, "pt_sv_JetFlavorQCD_Up/F");
+                t->Branch("m_sv_JetEC2year_Down", &svFitMass_EC2year_Down, "m_sv_JetEC2year_Down/F"),
+                t->Branch("pt_sv_JetEC2year_Down", &svFitPt_EC2year_Down, "pt_sv_JetEC2year_Down/F"),
+                t->Branch("m_sv_JetEC2year_Up", &svFitMass_EC2year_Up, "m_sv_JetEC2year_Up/F"),
+                t->Branch("pt_sv_JetEC2year_Up", &svFitPt_EC2year_Up, "pt_sv_JetEC2year_Up/F"),
 
-            TBranch *newBranchsvFitMass_HF_Down = t->Branch("m_sv_JetHF_Down", &svFitMass_HF_Down, "m_sv_JetHF_Down/F");
-            TBranch *newBranchsvFitPt_HF_Down = t->Branch("pt_sv_JetHF_Down", &svFitPt_HF_Down, "pt_sv_JetHF_Down/F");
-            TBranch *newBranchsvFitMass_HF_Up = t->Branch("m_sv_JetHF_Up", &svFitMass_HF_Up, "m_sv_JetHF_Up/F");
-            TBranch *newBranchsvFitPt_HF_Up = t->Branch("pt_sv_JetHF_Up", &svFitPt_HF_Up, "pt_sv_JetHF_Up/F");
+                t->Branch("m_sv_JetFlavorQCD_Down", &svFitMass_FlavorQCD_Down, "m_sv_JetFlavorQCD_Down/F"),
+                t->Branch("pt_sv_JetFlavorQCD_Down", &svFitPt_FlavorQCD_Down, "pt_sv_JetFlavorQCD_Down/F"),
+                t->Branch("m_sv_JetFlavorQCD_Up", &svFitMass_FlavorQCD_Up, "m_sv_JetFlavorQCD_Up/F"),
+                t->Branch("pt_sv_JetFlavorQCD_Up", &svFitPt_FlavorQCD_Up, "pt_sv_JetFlavorQCD_Up/F"),
 
-            TBranch *newBranchsvFitMass_HFyear_Down = t->Branch("m_sv_JetHFyear_Down", &svFitMass_HFyear_Down, "m_sv_JetHFyear_Down/F");
-            TBranch *newBranchsvFitPt_HFyear_Down = t->Branch("pt_sv_JetHFyear_Down", &svFitPt_HFyear_Down, "pt_sv_JetHFyear_Down/F");
-            TBranch *newBranchsvFitMass_HFyear_Up = t->Branch("m_sv_JetHFyear_Up", &svFitMass_HFyear_Up, "m_sv_JetHFyear_Up/F");
-            TBranch *newBranchsvFitPt_HFyear_Up = t->Branch("pt_sv_JetHFyear_Up", &svFitPt_HFyear_Up, "pt_sv_JetHFyear_Up/F");
+                t->Branch("m_sv_JetHF_Down", &svFitMass_HF_Down, "m_sv_JetHF_Down/F"),
+                t->Branch("pt_sv_JetHF_Down", &svFitPt_HF_Down, "pt_sv_JetHF_Down/F"),
+                t->Branch("m_sv_JetHF_Up", &svFitMass_HF_Up, "m_sv_JetHF_Up/F"),
+                t->Branch("pt_sv_JetHF_Up", &svFitPt_HF_Up, "pt_sv_JetHF_Up/F"),
 
-            TBranch *newBranchsvFitMass_RelBal_Down = t->Branch("m_sv_JetRelBal_Down", &svFitMass_RelBal_Down, "m_sv_JetRelBal_Down/F");
-            TBranch *newBranchsvFitPt_RelBal_Down = t->Branch("pt_sv_JetRelBal_Down", &svFitPt_RelBal_Down, "pt_sv_JetRelBal_Down/F");
-            TBranch *newBranchsvFitMass_RelBal_Up = t->Branch("m_sv_JetRelBal_Up", &svFitMass_RelBal_Up, "m_sv_JetRelBal_Up/F");
-            TBranch *newBranchsvFitPt_RelBal_Up = t->Branch("pt_sv_JetRelBal_Up", &svFitPt_RelBal_Up, "pt_sv_JetRelBal_Up/F");
+                t->Branch("m_sv_JetHFyear_Down", &svFitMass_HFyear_Down, "m_sv_JetHFyear_Down/F"),
+                t->Branch("pt_sv_JetHFyear_Down", &svFitPt_HFyear_Down, "pt_sv_JetHFyear_Down/F"),
+                t->Branch("m_sv_JetHFyear_Up", &svFitMass_HFyear_Up, "m_sv_JetHFyear_Up/F"),
+                t->Branch("pt_sv_JetHFyear_Up", &svFitPt_HFyear_Up, "pt_sv_JetHFyear_Up/F"),
 
-            TBranch *newBranchsvFitMass_RelSam_Down = t->Branch("m_sv_JetRelSam_Down", &svFitMass_RelSam_Down, "m_sv_JetRelSam_Down/F");
-            TBranch *newBranchsvFitPt_RelSam_Down = t->Branch("pt_sv_JetRelSam_Down", &svFitPt_RelSam_Down, "pt_sv_JetRelSam_Down/F");
-            TBranch *newBranchsvFitMass_RelSam_Up = t->Branch("m_sv_JetRelSam_Up", &svFitMass_RelSam_Up, "m_sv_JetRelSam_Up/F");
-            TBranch *newBranchsvFitPt_RelSam_Up = t->Branch("pt_sv_JetRelSam_Up", &svFitPt_RelSam_Up, "pt_sv_JetRelSam_Up/F");
+                t->Branch("m_sv_JetRelBal_Down", &svFitMass_RelBal_Down, "m_sv_JetRelBal_Down/F"),
+                t->Branch("pt_sv_JetRelBal_Down", &svFitPt_RelBal_Down, "pt_sv_JetRelBal_Down/F"),
+                t->Branch("m_sv_JetRelBal_Up", &svFitMass_RelBal_Up, "m_sv_JetRelBal_Up/F"),
+                t->Branch("pt_sv_JetRelBal_Up", &svFitPt_RelBal_Up, "pt_sv_JetRelBal_Up/F"),
 
-            TBranch *newBranchsvFitMass_Res_Down = t->Branch("m_sv_JetRes_Down", &svFitMass_Res_Down, "m_sv_JetRes_Down/F");
-            TBranch *newBranchsvFitPt_Res_Down = t->Branch("pt_sv_JetRes_Down", &svFitPt_Res_Down, "pt_sv_JetRes_Down/F");
-            TBranch *newBranchsvFitMass_Res_Up = t->Branch("m_sv_JetRes_Up", &svFitMass_Res_Up, "m_sv_JetRes_Up/F");
-            TBranch *newBranchsvFitPt_Res_Up = t->Branch("pt_sv_JetRes_Up", &svFitPt_Res_Up, "pt_sv_JetRes_Up/F");
+                t->Branch("m_sv_JetRelSam_Down", &svFitMass_RelSam_Down, "m_sv_JetRelSam_Down/F"),
+                t->Branch("pt_sv_JetRelSam_Down", &svFitPt_RelSam_Down, "pt_sv_JetRelSam_Down/F"),
+                t->Branch("m_sv_JetRelSam_Up", &svFitMass_RelSam_Up, "m_sv_JetRelSam_Up/F"),
+                t->Branch("pt_sv_JetRelSam_Up", &svFitPt_RelSam_Up, "pt_sv_JetRelSam_Up/F"),
 
-            TBranch *newBranchsvFitMass_UES_Down = t->Branch("m_sv_JetUES_Down", &svFitMass_UES_Down, "m_sv_JetUES_Down/F");
-            TBranch *newBranchsvFitPt_UES_Down = t->Branch("pt_sv_JetUES_Down", &svFitPt_UES_Down, "pt_sv_JetUES_Down/F");
-            TBranch *newBranchsvFitMass_UES_Up = t->Branch("m_sv_JetUES_Up", &svFitMass_UES_Up, "m_sv_JetUES_Up/F");
-            TBranch *newBranchsvFitPt_UES_Up = t->Branch("pt_sv_JetUES_Up", &svFitPt_UES_Up, "pt_sv_JetUES_Up/F");
+                t->Branch("m_sv_JetRes_Down", &svFitMass_Res_Down, "m_sv_JetRes_Down/F"),
+                t->Branch("pt_sv_JetRes_Down", &svFitPt_Res_Down, "pt_sv_JetRes_Down/F"),
+                t->Branch("m_sv_JetRes_Up", &svFitMass_Res_Up, "m_sv_JetRes_Up/F"),
+                t->Branch("pt_sv_JetRes_Up", &svFitPt_Res_Up, "pt_sv_JetRes_Up/F"),
 
-            TBranch *newRecoilResoBranch1 = t->Branch("m_sv_RecoilReso_Up", &svFitMass_RecoilReso_Up, "m_sv_RecoilReso_Up/F");
-            TBranch *newRecoilResoBranch2 = t->Branch("pt_sv_RecoilReso_Up", &svFitPt_RecoilReso_Up, "pt_sv_RecoilReso_Up/F");
-            TBranch *newRecoilResoBranch3 = t->Branch("m_sv_RecoilReso_Down", &svFitMass_RecoilReso_Down, "m_sv_RecoilReso_Down/F");
-            TBranch *newRecoilResoBranch4 = t->Branch("pt_sv_RecoilReso_Down", &svFitPt_RecoilReso_Down, "pt_sv_RecoilReso_Down/F");
+                t->Branch("m_sv_JetUES_Down", &svFitMass_UES_Down, "m_sv_JetUES_Down/F"),
+                t->Branch("pt_sv_JetUES_Down", &svFitPt_UES_Down, "pt_sv_JetUES_Down/F"),
+                t->Branch("m_sv_JetUES_Up", &svFitMass_UES_Up, "m_sv_JetUES_Up/F"),
+                t->Branch("pt_sv_JetUES_Up", &svFitPt_UES_Up, "pt_sv_JetUES_Up/F"),
 
-            TBranch *newRecoilRespBranch1 = t->Branch("m_sv_RecoilResp_Up", &svFitMass_RecoilResp_Up, "m_sv_RecoilResp_Up/F");
-            TBranch *newRecoilRespBranch2 = t->Branch("pt_sv_RecoilResp_Up", &svFitPt_RecoilResp_Up, "pt_sv_RecoilResp_Up/F");
-            TBranch *newRecoilRespBranch3 = t->Branch("m_sv_RecoilResp_Down", &svFitMass_RecoilResp_Down, "m_sv_RecoilResp_Down/F");
-            TBranch *newRecoilRespBranch4 = t->Branch("pt_sv_RecoilResp_Down", &svFitPt_RecoilResp_Down, "pt_sv_RecoilResp_Down/F");
+                t->Branch("m_sv_RecoilReso_Up", &svFitMass_RecoilReso_Up, "m_sv_RecoilReso_Up/F"),
+                t->Branch("pt_sv_RecoilReso_Up", &svFitPt_RecoilReso_Up, "pt_sv_RecoilReso_Up/F"),
+                t->Branch("m_sv_RecoilReso_Down", &svFitMass_RecoilReso_Down, "m_sv_RecoilReso_Down/F"),
+                t->Branch("pt_sv_RecoilReso_Down", &svFitPt_RecoilReso_Down, "pt_sv_RecoilReso_Down/F"),
 
-            // adding tau-related branches
-            std::vector<TBranch *> tau4VectorBranches;
+                t->Branch("m_sv_RecoilResp_Up", &svFitMass_RecoilResp_Up, "m_sv_RecoilResp_Up/F"),
+                t->Branch("pt_sv_RecoilResp_Up", &svFitPt_RecoilResp_Up, "pt_sv_RecoilResp_Up/F"),
+                t->Branch("m_sv_RecoilResp_Down", &svFitMass_RecoilResp_Down, "m_sv_RecoilResp_Down/F"),
+                t->Branch("pt_sv_RecoilResp_Down", &svFitPt_RecoilResp_Down, "pt_sv_RecoilResp_Down/F")
+            };
+
 
             Int_t era;
             unsigned long long evt;
@@ -688,9 +673,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
             printf("Found tree -> weighting\n");
 
-            // double tesUp = 1.0 + tesSize;
-            // double tesDown = 1.0 - tesSize;
-
             int nevents = t->GetEntries();
             if (parser.integerValue("numEvents") != -1) nevents = parser.integerValue("numEvents");
             for (Int_t i = 0; i < nevents; ++i) {
@@ -791,105 +773,63 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                         classic_svFit::MeasuredTauLepton(decayType1, pt1, eta1, phi1, mass1),
                         classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)};
 
-                    runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0, svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET,
-                             svFitTransverseMass, tau1, tau2);
+                    runFastMTT(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, svFitMass, svFitPt);
+
+                    // save nominal tau p4 for MELA
+                    tau1_pt = svfitAlgorithm.getTau1P4().Pt();
+                    tau1_eta = svfitAlgorithm.getTau1P4().Eta();
+                    tau1_phi = svfitAlgorithm.getTau1P4().Phi();
+                    tau1_m = svfitAlgorithm.getTau1P4().M();
+                    tau2_pt = svfitAlgorithm.getTau2P4().Pt();
+                    tau2_eta = svfitAlgorithm.getTau2P4().Eta();
+                    tau2_phi = svfitAlgorithm.getTau2P4().Phi();
+                    tau2_m = svfitAlgorithm.getTau2P4().M();
 
                     // MET systematics
-                    runSVFit(measuredTauLeptons, metcorrUESUp_ex, metcorrUESUp_ey, covMET, 0, svFitMass_UES_Up, svFitPt_UES_Up, svFitEta, svFitPhi,
-                             svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrUESDown_ex, metcorrUESDown_ey, covMET, 0, svFitMass_UES_Down, svFitPt_UES_Down, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrJERUp_ex, metcorrJERUp_ey, covMET, 0, svFitMass_JER_Up, svFitPt_JER_Up, svFitEta, svFitPhi,
-                             svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrJERDown_ex, metcorrJERDown_ey, covMET, 0, svFitMass_JER_Down, svFitPt_JER_Down, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrAbsoluteUp_ex, metcorrAbsoluteUp_ey, covMET, 0, svFitMass_Absolute_Up, svFitPt_Absolute_Up,
-                             svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrAbsoluteDown_ex, metcorrAbsoluteDown_ey, covMET, 0, svFitMass_Absolute_Down,
-                             svFitPt_Absolute_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrAbsoluteyearUp_ex, metcorrAbsoluteyearUp_ey, covMET, 0, svFitMass_Absoluteyear_Up,
-                             svFitPt_Absoluteyear_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrAbsoluteyearDown_ex, metcorrAbsoluteyearDown_ey, covMET, 0, svFitMass_Absoluteyear_Down,
-                             svFitPt_Absoluteyear_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrBBEC1Up_ex, metcorrBBEC1Up_ey, covMET, 0, svFitMass_BBEC1_Up, svFitPt_BBEC1_Up, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrBBEC1Down_ex, metcorrBBEC1Down_ey, covMET, 0, svFitMass_BBEC1_Down, svFitPt_BBEC1_Down,
-                             svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrBBEC1yearUp_ex, metcorrBBEC1yearUp_ey, covMET, 0, svFitMass_BBEC1year_Up,
-                             svFitPt_BBEC1year_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrBBEC1yearDown_ex, metcorrBBEC1yearDown_ey, covMET, 0, svFitMass_BBEC1year_Down,
-                             svFitPt_BBEC1year_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrEC2Up_ex, metcorrEC2Up_ey, covMET, 0, svFitMass_EC2_Up, svFitPt_EC2_Up, svFitEta, svFitPhi,
-                             svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrEC2Down_ex, metcorrEC2Down_ey, covMET, 0, svFitMass_EC2_Down, svFitPt_EC2_Down, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrEC2yearUp_ex, metcorrEC2yearUp_ey, covMET, 0, svFitMass_EC2year_Up, svFitPt_EC2year_Up,
-                             svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrEC2yearDown_ex, metcorrEC2yearDown_ey, covMET, 0, svFitMass_EC2year_Down,
-                             svFitPt_EC2year_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrFlavorQCDUp_ex, metcorrFlavorQCDUp_ey, covMET, 0, svFitMass_FlavorQCD_Up,
-                             svFitPt_FlavorQCD_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrFlavorQCDDown_ex, metcorrFlavorQCDDown_ey, covMET, 0, svFitMass_FlavorQCD_Down,
-                             svFitPt_FlavorQCD_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrHFUp_ex, metcorrHFUp_ey, covMET, 0, svFitMass_HF_Up, svFitPt_HF_Up, svFitEta, svFitPhi,
-                             svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrHFDown_ex, metcorrHFDown_ey, covMET, 0, svFitMass_HF_Down, svFitPt_HF_Down, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrHFyearUp_ex, metcorrHFyearUp_ey, covMET, 0, svFitMass_HFyear_Up, svFitPt_HFyear_Up, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrHFyearDown_ex, metcorrHFyearDown_ey, covMET, 0, svFitMass_HFyear_Down, svFitPt_HFyear_Down,
-                             svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRelBalUp_ex, metcorrRelBalUp_ey, covMET, 0, svFitMass_RelBal_Up, svFitPt_RelBal_Up, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRelBalDown_ex, metcorrRelBalDown_ey, covMET, 0, svFitMass_RelBal_Down, svFitPt_RelBal_Down,
-                             svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRelSamUp_ex, metcorrRelSamUp_ey, covMET, 0, svFitMass_RelSam_Up, svFitPt_RelSam_Up, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRelSamDown_ex, metcorrRelSamDown_ey, covMET, 0, svFitMass_RelSam_Down, svFitPt_RelSam_Down,
-                             svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrResUp_ex, metcorrResUp_ey, covMET, 0, svFitMass_Res_Up, svFitPt_Res_Up, svFitEta, svFitPhi,
-                             svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrResDown_ex, metcorrResDown_ey, covMET, 0, svFitMass_Res_Down, svFitPt_Res_Down, svFitEta,
-                             svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRecoilResoUp_ex, metcorrRecoilResoUp_ey, covMET, 0, svFitMass_RecoilReso_Up,
-                             svFitPt_RecoilReso_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRecoilResoDown_ex, metcorrRecoilResoDown_ey, covMET, 0, svFitMass_RecoilReso_Down,
-                             svFitPt_RecoilReso_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRecoilRespUp_ex, metcorrRecoilRespUp_ey, covMET, 0, svFitMass_RecoilResp_Up,
-                             svFitPt_RecoilResp_Up, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
-                    runSVFit(measuredTauLeptons, metcorrRecoilRespDown_ex, metcorrRecoilRespDown_ey, covMET, 0, svFitMass_RecoilResp_Down,
-                             svFitPt_RecoilResp_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                    runFastMTT(measuredTauLeptons, metcorrUESUp_ex, metcorrUESUp_ey, covMET, svFitMass_UES_Up, svFitPt_UES_Up);
+                    runFastMTT(measuredTauLeptons, metcorrUESDown_ex, metcorrUESDown_ey, covMET, svFitMass_UES_Down, svFitPt_UES_Down);
+                    runFastMTT(measuredTauLeptons, metcorrJERUp_ex, metcorrJERUp_ey, covMET, svFitMass_JER_Up, svFitPt_JER_Up);
+                    runFastMTT(measuredTauLeptons, metcorrJERDown_ex, metcorrJERDown_ey, covMET, svFitMass_JER_Down, svFitPt_JER_Down);
+                    runFastMTT(measuredTauLeptons, metcorrAbsoluteUp_ex, metcorrAbsoluteUp_ey, covMET, svFitMass_Absolute_Up, svFitPt_Absolute_Up);
+                    runFastMTT(measuredTauLeptons, metcorrAbsoluteDown_ex, metcorrAbsoluteDown_ey, covMET, svFitMass_Absolute_Down,
+                               svFitPt_Absolute_Down);
+                    runFastMTT(measuredTauLeptons, metcorrAbsoluteyearUp_ex, metcorrAbsoluteyearUp_ey, covMET, svFitMass_Absoluteyear_Up,
+                               svFitPt_Absoluteyear_Up);
+                    runFastMTT(measuredTauLeptons, metcorrAbsoluteyearDown_ex, metcorrAbsoluteyearDown_ey, covMET, svFitMass_Absoluteyear_Down,
+                               svFitPt_Absoluteyear_Down);
+                    runFastMTT(measuredTauLeptons, metcorrBBEC1Up_ex, metcorrBBEC1Up_ey, covMET, svFitMass_BBEC1_Up, svFitPt_BBEC1_Up);
+                    runFastMTT(measuredTauLeptons, metcorrBBEC1Down_ex, metcorrBBEC1Down_ey, covMET, svFitMass_BBEC1_Down, svFitPt_BBEC1_Down);
+                    runFastMTT(measuredTauLeptons, metcorrBBEC1yearUp_ex, metcorrBBEC1yearUp_ey, covMET, svFitMass_BBEC1year_Up,
+                               svFitPt_BBEC1year_Up);
+                    runFastMTT(measuredTauLeptons, metcorrBBEC1yearDown_ex, metcorrBBEC1yearDown_ey, covMET, svFitMass_BBEC1year_Down,
+                               svFitPt_BBEC1year_Down);
+                    runFastMTT(measuredTauLeptons, metcorrEC2Up_ex, metcorrEC2Up_ey, covMET, svFitMass_EC2_Up, svFitPt_EC2_Up);
+                    runFastMTT(measuredTauLeptons, metcorrEC2Down_ex, metcorrEC2Down_ey, covMET, svFitMass_EC2_Down, svFitPt_EC2_Down);
+                    runFastMTT(measuredTauLeptons, metcorrEC2yearUp_ex, metcorrEC2yearUp_ey, covMET, svFitMass_EC2year_Up, svFitPt_EC2year_Up);
+                    runFastMTT(measuredTauLeptons, metcorrEC2yearDown_ex, metcorrEC2yearDown_ey, covMET, svFitMass_EC2year_Down,
+                               svFitPt_EC2year_Down);
+                    runFastMTT(measuredTauLeptons, metcorrFlavorQCDUp_ex, metcorrFlavorQCDUp_ey, covMET, svFitMass_FlavorQCD_Up,
+                               svFitPt_FlavorQCD_Up);
+                    runFastMTT(measuredTauLeptons, metcorrFlavorQCDDown_ex, metcorrFlavorQCDDown_ey, covMET, svFitMass_FlavorQCD_Down,
+                               svFitPt_FlavorQCD_Down);
+                    runFastMTT(measuredTauLeptons, metcorrHFUp_ex, metcorrHFUp_ey, covMET, svFitMass_HF_Up, svFitPt_HF_Up);
+                    runFastMTT(measuredTauLeptons, metcorrHFDown_ex, metcorrHFDown_ey, covMET, svFitMass_HF_Down, svFitPt_HF_Down);
+                    runFastMTT(measuredTauLeptons, metcorrHFyearUp_ex, metcorrHFyearUp_ey, covMET, svFitMass_HFyear_Up, svFitPt_HFyear_Up);
+                    runFastMTT(measuredTauLeptons, metcorrHFyearDown_ex, metcorrHFyearDown_ey, covMET, svFitMass_HFyear_Down, svFitPt_HFyear_Down);
+                    runFastMTT(measuredTauLeptons, metcorrRelBalUp_ex, metcorrRelBalUp_ey, covMET, svFitMass_RelBal_Up, svFitPt_RelBal_Up);
+                    runFastMTT(measuredTauLeptons, metcorrRelBalDown_ex, metcorrRelBalDown_ey, covMET, svFitMass_RelBal_Down, svFitPt_RelBal_Down);
+                    runFastMTT(measuredTauLeptons, metcorrRelSamUp_ex, metcorrRelSamUp_ey, covMET, svFitMass_RelSam_Up, svFitPt_RelSam_Up);
+                    runFastMTT(measuredTauLeptons, metcorrRelSamDown_ex, metcorrRelSamDown_ey, covMET, svFitMass_RelSam_Down, svFitPt_RelSam_Down);
+                    runFastMTT(measuredTauLeptons, metcorrResUp_ex, metcorrResUp_ey, covMET, svFitMass_Res_Up, svFitPt_Res_Up);
+                    runFastMTT(measuredTauLeptons, metcorrResDown_ex, metcorrResDown_ey, covMET, svFitMass_Res_Down, svFitPt_Res_Down);
+                    runFastMTT(measuredTauLeptons, metcorrRecoilResoUp_ex, metcorrRecoilResoUp_ey, covMET, svFitMass_RecoilReso_Up,
+                               svFitPt_RecoilReso_Up);
+                    runFastMTT(measuredTauLeptons, metcorrRecoilResoDown_ex, metcorrRecoilResoDown_ey, covMET, svFitMass_RecoilReso_Down,
+                               svFitPt_RecoilReso_Down);
+                    runFastMTT(measuredTauLeptons, metcorrRecoilRespUp_ex, metcorrRecoilRespUp_ey, covMET, svFitMass_RecoilResp_Up,
+                               svFitPt_RecoilResp_Up);
+                    runFastMTT(measuredTauLeptons, metcorrRecoilRespDown_ex, metcorrRecoilRespDown_ey, covMET, svFitMass_RecoilResp_Down,
+                               svFitPt_RecoilResp_Down);
 
                     if (doES) {
                         // corrections only need to be done once
@@ -912,26 +852,22 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                             std::vector<classic_svFit::MeasuredTauLepton> measuredTauScaleUp{
                                 classic_svFit::MeasuredTauLepton(decayType1, scale_up.Pt(), scale_up.Eta(), scale_up.Phi(), scale_up.M()),
                                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)};
-                            runSVFit(measuredTauScaleUp, metcorr_ex, metcorr_ey, covMET, 0, svFitMass_EEScale_Up, svFitPt_EEScale_Up, svFitEta,
-                                     svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauScaleUp, metcorr_ex, metcorr_ey, covMET, svFitMass_EEScale_Up, svFitPt_EEScale_Up);
 
                             std::vector<classic_svFit::MeasuredTauLepton> measuredTauScaleDn{
                                 classic_svFit::MeasuredTauLepton(decayType1, scale_dn.Pt(), scale_dn.Eta(), scale_dn.Phi(), scale_dn.M()),
                                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)};
-                            runSVFit(measuredTauScaleDn, metcorr_ex, metcorr_ey, covMET, 0, svFitMass_EEScale_Down, svFitPt_EEScale_Down, svFitEta,
-                                     svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauScaleDn, metcorr_ex, metcorr_ey, covMET, svFitMass_EEScale_Down, svFitPt_EEScale_Down);
 
                             std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaUp{
                                 classic_svFit::MeasuredTauLepton(decayType1, sigma_up.Pt(), sigma_up.Eta(), sigma_up.Phi(), sigma_up.M()),
                                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)};
-                            runSVFit(measuredTauSigmaUp, metcorr_ex, metcorr_ey, covMET, 0, svFitMass_EESigma_Up, svFitPt_EESigma_Up, svFitEta,
-                                     svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauSigmaUp, metcorr_ex, metcorr_ey, covMET, svFitMass_EESigma_Up, svFitPt_EESigma_Up);
 
                             std::vector<classic_svFit::MeasuredTauLepton> measuredTauSigmaDn{
                                 classic_svFit::MeasuredTauLepton(decayType1, sigma_dn.Pt(), sigma_dn.Eta(), sigma_dn.Phi(), sigma_dn.M()),
                                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)};
-                            runSVFit(measuredTauSigmaDn, metcorr_ex, metcorr_ey, covMET, 0, svFitMass_EESigma_Down, svFitPt_EESigma_Down, svFitEta,
-                                     svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauSigmaDn, metcorr_ex, metcorr_ey, covMET, svFitMass_EESigma_Down, svFitPt_EESigma_Down);
                         } else if (channel == "mt") {
                             TLorentzVector orig_mu;
                             orig_mu.SetPtEtaPhiM(pt1, eta1, phi1, mass1);
@@ -963,10 +899,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                                                                  scaled_mu_dn.M()),
                                 classic_svFit::MeasuredTauLepton(decayType2, pt2, eta2, phi2, mass2, decayMode2)};
 
-                            runSVFit(measuredTauUp, metcorr_ex, metcorr_ey, covMET, 0, svFitMass_MES_Up, svFitPt_MES_Up, svFitEta, svFitPhi, svFitMET,
-                                     svFitTransverseMass, tau1, tau2);
-                            runSVFit(measuredTauDn, metcorr_ex, metcorr_ey, covMET, 0, svFitMass_MES_Down, svFitPt_MES_Down, svFitEta, svFitPhi,
-                                     svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauUp, metcorr_ex, metcorr_ey, covMET, svFitMass_MES_Up, svFitPt_MES_Up);
+                            runFastMTT(measuredTauDn, metcorr_ex, metcorr_ey, covMET, svFitMass_MES_Down, svFitPt_MES_Down);
                         }
 
                         double pt_Up(pt2 * ES_Up), pt_Down(pt2 * ES_Down);  // shift tau pT by energy scale
@@ -991,59 +925,44 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
                         // tau DM0 shifted up
                         if (gen_match_2 == 5 && decayMode2 == 0) {
-                            runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM0_Up, svFitPt_DM0_Up, svFitEta,
-                                     svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, svFitMass_DM0_Up, svFitPt_DM0_Up);
 
                         } else {
                             svFitMass_DM0_Up = svFitMass;
                             svFitPt_DM0_Up = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // tau DM1 shifted up
                         if (gen_match_2 == 5 && decayMode2 == 1) {
-                            runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM1_Up, svFitPt_DM1_Up, svFitEta,
-                                     svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, svFitMass_DM1_Up, svFitPt_DM1_Up);
                         } else {
                             svFitMass_DM1_Up = svFitMass;
                             svFitPt_DM1_Up = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // tau DM10 shifted up
                         if (gen_match_2 == 5 && decayMode2 == 10) {
-                            runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_DM10_Up, svFitPt_DM10_Up, svFitEta,
-                                     svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, svFitMass_DM10_Up, svFitPt_DM10_Up);
                         } else {
                             svFitMass_DM10_Up = svFitMass;
                             svFitPt_DM10_Up = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // lep->tau DM0 shifted up
                         if (gen_match_2 < 5 && decayMode2 == 0) {
-                            runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_LES_DM0_Up, svFitPt_LES_DM0_Up,
-                                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, svFitMass_LES_DM0_Up, svFitPt_LES_DM0_Up);
 
                         } else {
                             svFitMass_LES_DM0_Up = svFitMass;
                             svFitPt_LES_DM0_Up = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // lep->tau DM1 shifted up
                         if (gen_match_2 < 5 && decayMode2 == 1) {
-                            runSVFit(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, 0, svFitMass_LES_DM1_Up, svFitPt_LES_DM1_Up,
-                                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, svFitMass_LES_DM1_Up, svFitPt_LES_DM1_Up);
                         } else {
                             svFitMass_LES_DM1_Up = svFitMass;
                             svFitPt_LES_DM1_Up = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         ///////////////////////////////
@@ -1052,180 +971,55 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
                         // tau DM0 shifted down
                         if (gen_match_2 == 5 && decayMode2 == 0) {
-                            runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM0_Down, svFitPt_DM0_Down,
-                                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, svFitMass_DM0_Down, svFitPt_DM0_Down);
                         } else {
                             svFitMass_DM0_Down = svFitMass;
                             svFitPt_DM0_Down = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // tau DM1 shifted down
                         if (gen_match_2 == 5 && decayMode2 == 1) {
-                            runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM1_Down, svFitPt_DM1_Down,
-                                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, svFitMass_DM1_Down, svFitPt_DM1_Down);
                         } else {
                             svFitMass_DM1_Down = svFitMass;
                             svFitPt_DM1_Down = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // tau DM10 shifted down
                         if (gen_match_2 == 5 && decayMode2 == 10) {
-                            runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_DM10_Down, svFitPt_DM10_Down,
-                                     svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, svFitMass_DM10_Down, svFitPt_DM10_Down);
                         } else {
                             svFitMass_DM10_Down = svFitMass;
                             svFitPt_DM10_Down = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // lep->tau DM0 shifted down
                         if (gen_match_2 < 5 && decayMode2 == 0) {
-                            runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_LES_DM0_Down,
-                                     svFitPt_LES_DM0_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, svFitMass_LES_DM0_Down,
+                                       svFitPt_LES_DM0_Down);
                         } else {
                             svFitMass_LES_DM0_Down = svFitMass;
                             svFitPt_LES_DM0_Down = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
 
                         // lep->tau DM1 shifted down
                         if (gen_match_2 < 5 && decayMode2 == 1) {
-                            runSVFit(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, 0, svFitMass_LES_DM1_Down,
-                                     svFitPt_LES_DM1_Down, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
+                            runFastMTT(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, svFitMass_LES_DM1_Down,
+                                       svFitPt_LES_DM1_Down);
                         } else {
                             svFitMass_LES_DM1_Down = svFitMass;
                             svFitPt_LES_DM1_Down = svFitPt;
-                            tau1 = tau1;
-                            tau2 = tau2;
                         }
                     }  // end doES
-                }      // eTau / muTau
-                else {
+                } else {
                     svFitMass = -100;
                     svFitPt = -100;
                 }
 
-                tau1_pt = tau1.Pt();
-                tau1_eta = tau1.Eta();
-                tau1_phi = tau1.Phi();
-                tau1_m = tau1.M();
-                tau2_pt = tau2.Pt();
-                tau2_eta = tau2.Eta();
-                tau2_phi = tau2.Phi();
-                tau2_m = tau2.M();
-
-                tauBranch1->Fill();
-                tauBranch2->Fill();
-                tauBranch3->Fill();
-                tauBranch4->Fill();
-                tauBranch5->Fill();
-                tauBranch6->Fill();
-                tauBranch7->Fill();
-                tauBranch8->Fill();
-                newBranch1->Fill();
-                newBranch2->Fill();
-                newDM0Branch1->Fill();
-                newDM0Branch2->Fill();
-                newDM0Branch3->Fill();
-                newDM0Branch4->Fill();
-                newEEScaleBranch1->Fill();
-                newEEScaleBranch2->Fill();
-                newEEScaleBranch3->Fill();
-                newEEScaleBranch4->Fill();
-                newEESigmaBranch1->Fill();
-                newEESigmaBranch2->Fill();
-                newEESigmaBranch3->Fill();
-                newEESigmaBranch4->Fill();
-                newMESBranch1->Fill();
-                newMESBranch2->Fill();
-                newMESBranch3->Fill();
-                newMESBranch4->Fill();
-                newDM1Branch1->Fill();
-                newDM1Branch2->Fill();
-                newDM1Branch3->Fill();
-                newDM1Branch4->Fill();
-                newDM10Branch1->Fill();
-                newDM10Branch2->Fill();
-                newDM10Branch3->Fill();
-                newDM10Branch4->Fill();
-                newLESDM0Branch1->Fill();
-                newLESDM0Branch2->Fill();
-                newLESDM0Branch3->Fill();
-                newLESDM0Branch4->Fill();
-                newLESDM1Branch1->Fill();
-                newLESDM1Branch2->Fill();
-                newLESDM1Branch3->Fill();
-                newLESDM1Branch4->Fill();
-                newBranchsvFitMass_JER_Down->Fill();
-                newBranchsvFitPt_JER_Down->Fill();
-                newBranchsvFitMass_JER_Up->Fill();
-                newBranchsvFitPt_JER_Up->Fill();
-                newBranchsvFitMass_Absolute_Down->Fill();
-                newBranchsvFitPt_Absolute_Down->Fill();
-                newBranchsvFitMass_Absolute_Up->Fill();
-                newBranchsvFitPt_Absolute_Up->Fill();
-                newBranchsvFitMass_Absoluteyear_Down->Fill();
-                newBranchsvFitPt_Absoluteyear_Down->Fill();
-                newBranchsvFitMass_Absoluteyear_Up->Fill();
-                newBranchsvFitPt_Absoluteyear_Up->Fill();
-                newBranchsvFitMass_BBEC1_Down->Fill();
-                newBranchsvFitPt_BBEC1_Down->Fill();
-                newBranchsvFitMass_BBEC1_Up->Fill();
-                newBranchsvFitPt_BBEC1_Up->Fill();
-                newBranchsvFitMass_BBEC1year_Down->Fill();
-                newBranchsvFitPt_BBEC1year_Down->Fill();
-                newBranchsvFitMass_BBEC1year_Up->Fill();
-                newBranchsvFitPt_BBEC1year_Up->Fill();
-                newBranchsvFitMass_EC2_Down->Fill();
-                newBranchsvFitPt_EC2_Down->Fill();
-                newBranchsvFitMass_EC2_Up->Fill();
-                newBranchsvFitPt_EC2_Up->Fill();
-                newBranchsvFitMass_EC2year_Down->Fill();
-                newBranchsvFitPt_EC2year_Down->Fill();
-                newBranchsvFitMass_EC2year_Up->Fill();
-                newBranchsvFitPt_EC2year_Up->Fill();
-                newBranchsvFitMass_FlavorQCD_Down->Fill();
-                newBranchsvFitPt_FlavorQCD_Down->Fill();
-                newBranchsvFitMass_FlavorQCD_Up->Fill();
-                newBranchsvFitPt_FlavorQCD_Up->Fill();
-                newBranchsvFitMass_HF_Down->Fill();
-                newBranchsvFitPt_HF_Down->Fill();
-                newBranchsvFitMass_HF_Up->Fill();
-                newBranchsvFitPt_HF_Up->Fill();
-                newBranchsvFitMass_HFyear_Down->Fill();
-                newBranchsvFitPt_HFyear_Down->Fill();
-                newBranchsvFitMass_HFyear_Up->Fill();
-                newBranchsvFitPt_HFyear_Up->Fill();
-                newBranchsvFitMass_RelBal_Down->Fill();
-                newBranchsvFitPt_RelBal_Down->Fill();
-                newBranchsvFitMass_RelBal_Up->Fill();
-                newBranchsvFitPt_RelBal_Up->Fill();
-                newBranchsvFitMass_RelSam_Down->Fill();
-                newBranchsvFitPt_RelSam_Down->Fill();
-                newBranchsvFitMass_RelSam_Up->Fill();
-                newBranchsvFitPt_RelSam_Up->Fill();
-                newBranchsvFitMass_Res_Down->Fill();
-                newBranchsvFitPt_Res_Down->Fill();
-                newBranchsvFitMass_Res_Up->Fill();
-                newBranchsvFitPt_Res_Up->Fill();
-                newBranchsvFitMass_UES_Down->Fill();
-                newBranchsvFitPt_UES_Down->Fill();
-                newBranchsvFitMass_UES_Up->Fill();
-                newBranchsvFitPt_UES_Up->Fill();
-                newRecoilResoBranch1->Fill();
-                newRecoilResoBranch2->Fill();
-                newRecoilResoBranch3->Fill();
-                newRecoilResoBranch4->Fill();
-                newRecoilRespBranch1->Fill();
-                newRecoilRespBranch2->Fill();
-                newRecoilRespBranch3->Fill();
-                newRecoilRespBranch4->Fill();
+                // fill all output branches
+                for (auto& branch : new_branches) {
+                    branch->Fill();
+                }
             }
             dir->cd();
             t->Write("", TObject::kOverwrite);
@@ -1234,37 +1028,11 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
     }
 }
 
-void runSVFit(std::vector<classic_svFit::MeasuredTauLepton> &measuredTauLeptons, double measuredMETx, double measuredMETy, TMatrixD &covMET,
-              float num, float &svFitMass, float &svFitPt, float &svFitEta, float &svFitPhi, float &svFitMET, float &svFitTransverseMass,
-              TLorentzVector &tau1, TLorentzVector &tau2) {
-    svfitAlgorithm.integrate(measuredTauLeptons, measuredMETx, measuredMETy, covMET);
-    if (svfitAlgorithm.isValidSolution()) {
-        svFitMass = static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->getMass();
-        svFitPt = static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->getPt();
-        svFitEta = static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->getEta();
-        svFitPhi = static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->getPhi();
-        svFitTransverseMass = static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->getTransverseMass();
-
-        classic_svFit::HistogramAdapterTau *h_tau1 =
-            static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->tau1();
-        classic_svFit::HistogramAdapterTau *h_tau2 =
-            static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->tau2();
-        const classic_svFit::LorentzVector tau1_p4 = h_tau1->getP4();
-        const classic_svFit::LorentzVector tau2_p4 = h_tau2->getP4();
-        tau1.SetPtEtaPhiM(tau1_p4.Pt(), tau1_p4.Eta(), tau1_p4.Phi(), tau1_p4.M());
-        tau2.SetPtEtaPhiM(tau2_p4.Pt(), tau2_p4.Eta(), tau2_p4.Phi(), tau2_p4.M());
-
-        const classic_svFit::LorentzVector ditau = static_cast<classic_svFit::HistogramAdapterDiTau *>(svfitAlgorithm.getHistogramAdapter())->getP4();
-        svFitMET = (ditau - (measuredTauLeptons[0].p4() + measuredTauLeptons[1].p4())).Pt();
-
-        // TLorentzVector testTau1, testTau2;
-        // testTau1.SetPtEtaPhiM(measuredTauLeptons[0].p4().Pt(), measuredTauLeptons[0].p4().Eta(), measuredTauLeptons[0].p4().Phi(),
-        // measuredTauLeptons[0].p4().M()); testTau2.SetPtEtaPhiM(measuredTauLeptons[1].p4().Pt(), measuredTauLeptons[1].p4().Eta(),
-        // measuredTauLeptons[1].p4().Phi(), measuredTauLeptons[1].p4().M());
-
-        // TLorentzVector ditau;
-        // ditau.SetPtEtaPhiM(svFitPt, svFitEta, svFitPhi, svFitMass);
-    }
+void runFastMTT(const std::vector<classic_svFit::MeasuredTauLepton> &measuredTauLeptons, double measuredMETx, double measuredMETy,
+                const TMatrixD &covMET, float &svFitMass_result, float &svFitPt_result) {
+    svfitAlgorithm.run(measuredTauLeptons, measuredMETx, measuredMETy, covMET);
+    svFitMass_result = svfitAlgorithm.getBestP4().M();
+    svFitPt_result = svfitAlgorithm.getBestP4().Pt();
 }
 
 // Thank you Renee Brun :)
@@ -1284,7 +1052,7 @@ void CopyDir(TDirectory *source, optutl::CommandLineParser parser) {
     // loop on all entries of this directory
     TKey *key;
     TIter nextkey(source->GetListOfKeys());
-    while ((key = (TKey *)nextkey())) {
+    while ((key = reinterpret_cast<TKey*>(nextkey()))) {
         const char *classname = key->GetClassName();
         TClass *cl = gROOT->GetClass(classname);
         if (!cl) continue;
@@ -1295,7 +1063,7 @@ void CopyDir(TDirectory *source, optutl::CommandLineParser parser) {
             CopyDir(subdir, parser);
             adir->cd();
         } else if (cl->InheritsFrom(TTree::Class())) {
-            TTree *T = (TTree *)source->Get(key->GetName());
+            TTree *T = reinterpret_cast<TTree*>(source->Get(key->GetName()));
             adir->cd();
             TTree *newT = T->CloneTree(-1, "fast");
             newT->Write();
@@ -1310,6 +1078,7 @@ void CopyDir(TDirectory *source, optutl::CommandLineParser parser) {
     adir->SaveSelf(kTRUE);
     savdir->cd();
 }
+
 int CopyFile(const char *fname, optutl::CommandLineParser parser) {
     // Copy all objects and subdirs of file fname as a subdir of the current directory
     TDirectory *target = gDirectory;
@@ -1325,6 +1094,7 @@ int CopyFile(const char *fname, optutl::CommandLineParser parser) {
     target->cd();
     return 1;
 }
+
 int copyFiles(optutl::CommandLineParser parser, TFile *fOld, TFile *fNew) {
     // prepare files to be copied
     if (gSystem->AccessPathName(parser.stringValue("inputFile").c_str())) {
