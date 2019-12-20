@@ -12,8 +12,8 @@
 <!--<use   name="roottmva"/>0-->
 
 
-<bin   name="SVFitStandAloneFSATauDM" file="SVFitStandAloneFSATauDM.cc">
-</bin>
+<!--<bin   name="SVFitStandAloneFSATauDM" file="SVFitStandAloneFSATauDM.cc">
+</bin>-->
 <bin   name="FastMTT" file="FastMTT.cc">
 </bin>
 <!-- <bin   name="ltau_fitter" file="ltau_fitter.cc">

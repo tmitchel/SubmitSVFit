@@ -42,7 +42,7 @@ double tesUncertainties(unsigned int year, float decaymode);
 double pt_shifted(float pt, double tesUnc, bool isDM, int updown);
 double metcorr_shifted(double metcorr, float pt1, float phi1, bool isDM1, double tesUnc1, float pt2, float phi2, bool isDM2, double tesUnc2, int xory,
                        int updown);
-void runFastMTT(std::vector<classic_svFit::MeasuredTauLepton> &, double, double, const TMatrixD &, float &, float &);
+void runFastMTT(const std::vector<classic_svFit::MeasuredTauLepton> &, double, double, const TMatrixD &, float &, float &);
 
 int main(int argc, char *argv[]) {
     optutl::CommandLineParser parser("Sets Event Weights in the ntuple");
@@ -132,7 +132,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 mass2 = 0.13957;
                 channel = "tt";
                 std::cout << "Identified channel tt and using kappa = 5" << std::endl;
-                svfitAlgorithm.addLogM_fixed(true, 5);
             } else if (std::string(key->GetName()).find("em") != std::string::npos) {
                 std::cout << "EMu sample" << std::endl;
                 decayType1 = classic_svFit::MeasuredTauLepton::kTauToElecDecay;
