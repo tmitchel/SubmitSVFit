@@ -54,15 +54,15 @@ def main(args):
  
     config_name = '{}/{}.jdl'.format(config_dir, sample_name)
     condorConfig = '''universe = vanilla
-Executable = {}/executables/svfit_overseer.sh
+Executable = {0}/executables/svfit_overseer.sh
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
-Output = logs/sleep_$(Cluster)_$(Process).stdout
-Error = logs/sleep_$(Cluster)_$(Process).stderr
+Output = logs/{2}_$(Cluster)_$(Process).stdout
+Error = logs/{2}_$(Cluster)_$(Process).stderr
 x509userproxy = $ENV(X509_USER_PROXY)
 Arguments=$(process)
-Queue {}
-    '''.format(sample_dir, len(fileList))
+Queue {1}
+    '''.format(sample_dir, len(fileList), sample_name)
     with open(config_name, 'w') as file:
         file.write(condorConfig)
 
