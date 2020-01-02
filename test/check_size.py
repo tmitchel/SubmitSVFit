@@ -27,8 +27,8 @@ def main(args):
     for iname, oname in zip(innies, outies):
       ipath = inp.replace('/cmseos-gridftp.fnal.gov/', '')
       opath = out.replace('/cmseos-gridftp.fnal.gov/', '')
-      ifile = ROOT.TFile('root://cmsxrootd.fnal.gov/{}/{}'.format(ipath, iname))
-      ofile = ROOT.TFile('root://cmsxrootd.fnal.gov/{}/{}/{}'.format(opath, stripped, oname))
+      ifile = ROOT.TFile.Open('root://cmsxrootd.fnal.gov/{}/{}'.format(ipath, iname))
+      ofile = ROOT.TFile.Open('root://cmsxrootd.fnal.gov/{}/{}/{}'.format(opath, stripped, oname))
 
       isize += ifile.Get('nevents').GetBinContent(2)
       osize += ofile.Get('nevents').GetBinContent(2)
