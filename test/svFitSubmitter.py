@@ -34,10 +34,9 @@ def parse_command_line(argv):
     parser.add_argument('-d','--customDir',nargs='?',type=str,const='',help='Custom input directory')
     parser.add_argument('-sd','--sampledir',nargs='?',type=str,const='',help='The Sample Input directory')
     parser.add_argument('-ms','--metShift',nargs='?',type=str,const='',help='Shift the met')
-    parser.add_argument('-es','--doES',nargs='?',type=str,const='',help='Doing TES / EES shifts?')
-    parser.add_argument('-r','--recoilType',nargs='?',type=str,const='',help='Input files are which recoil type?')
-    parser.add_argument('-iswj','--isWJets',nargs='?',type=str,const='',help='Are input files WJets samples?')
-    parser.add_argument('-mt','--metType',nargs='?',type=str,const='',help='MvaMet = 1, Pf Met = -1')
+    parser.add_argument('-es','--doES',nargs='?',type=str,const='',help='Doing TES / JES shifts?')
+    parser.add_argument('-re','--doRecoil',nargs='?',type=str,const='',help='Doing Recoil shifts?')
+    parser.add_argument('-met','--doMET',nargs='?',type=str,const='',help='Doing unclustered MET shifts?')
     args = parser.parse_args(argv)
 
     return args
@@ -97,16 +96,14 @@ def main(argv=None):
     bash_name = '%s/%s_%i_%s.sh' % (dag_dir+'inputs', channel, period, sample_name)
 #SVFitStandAlone outputFile="WZ.root" newOutputFile=1.0 newFile="none"
     bashScript = "#!/bin/bash\n value=$(<$INPUT)\n echo \"$value\"\n"
-    bashScript += '$CMSSW_BASE/bin/$SCRAM_ARCH/SVFitStandAloneFSATauDM inputfile=$value newFile=\'$OUTPUT\'' #% (channel, sample_name, period)
-    if args.recoilType : recoilType = "recoilType="+args.recoilType
-    else : recoilType = ''
+    bashScript += '$CMSSW_BASE/bin/$SCRAM_ARCH/SVFitStandAloneFSATauDM_Flex inputfile=$value newFile=\'$OUTPUT\'' #% (channel, sample_name, period)
     if args.doES : doES = "doES="+args.doES
     else : doES = ''
-    if args.isWJets : isWJets = "isWJets="+args.isWJets
-    else : isWJets = ''
-    if args.metType : metType = "metType="+args.metType
-    else : metType = ''
-    bashScript += ' %s %s %s %s' % (recoilType, doES, isWJets, metType)
+    if args.doMET : doMET = "doMET="+args.doMET
+    else : doMET = ''
+    if args.doRecoil : doRecoil = "doRecoil="+args.doRecoil
+    else : doRecoil = ''
+    bashScript += ' %s %s %s' % (doRecoil, doES, doMET)
     bashScript += '\n'
     with open(bash_name,'w') as file:
         file.write(bashScript)
