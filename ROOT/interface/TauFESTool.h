@@ -80,10 +80,10 @@ Float_t TauFESTool::getTES(Float_t dm, Float_t gen_match, Bool_t syst = false) {
     auto index = dm_map.at(dm);
     std::string key = "nominal";
     if (syst) {
-        syst = "syst";
+        key = "syst";
     }
 
-    return tes_sfs.at(syst).at(index);
+    return tes_sfs.at(key).at(index);
 }
 
 Float_t TauFESTool::getFES(Float_t dm, Float_t eta, Float_t gen_match, std::string syst = "") {
