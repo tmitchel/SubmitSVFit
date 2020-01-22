@@ -18,6 +18,7 @@
 #include "TauAnalysis/ClassicSVfit/interface/ClassicSVfit.h"
 #include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 #include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
+#include "SubmitSVFit/ROOT/interface/TauFESTool.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -61,6 +62,7 @@ int main (int argc, char* argv[])
   parser.addOption("metType",optutl::CommandLineParser::kDouble,"metType",-1.0); // 1 = mvamet, -1 = pf met
   parser.addOption("tesSize",optutl::CommandLineParser::kDouble,"tesSize",0.012); // Default TES = 1.2%
   parser.addOption("numEvents",optutl::CommandLineParser::kInteger,"numEvents",-1);
+  parser.addOption("idyear", optutl::CommandLineParser::kString, "year", "2018");
   parser.parseArguments (argc, argv);
   
   std::cout << "EXTRA COMMANDS:"
@@ -188,6 +190,9 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         std::cout<<"Tree "<< key->GetName() <<" does not match ... Skipping!!"<<std::endl;
         return;
       }
+
+      // get TES/FES weighter
+      TauFESTool* tfes = new TauFESTool(parser.stringValue("year"), "DeepTau2017v2p1VSe", "SubmitSVFit/ROOT/data");
       
       TTree *t = (TTree*)obj;
       float svFitMass = -10;
@@ -908,13 +913,9 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           if (doES) {
             // corrections only need to be done once
             float ES_Up(1.), ES_Down(1.);  // shift TES
-            if (gen_match_2 == 5) {  // 0.6% uncertainty on hadronic tau
-              ES_Up = 1 + tesUncertainties(era, decayMode2);
-              ES_Down = 1 - tesUncertainties(era, decayMode2);
-            } else if (gen_match_2 < 5) {  // flat 2% on el/mu -> tau energy scale systematics
-              ES_Up = 1.02;
-              ES_Down = 0.98;
-            }
+            float ES_Up = 1 + tfes->getFES(decayMode2, eta2, gen_match_2, "up") + tfes->getTES(decayMode2, gen_match_2, "up");
+            float ES_Down = 1 + tfes->getFES(decayMode2, eta2, gen_match_2, "down") + tfes->getTES(decayMode2, gen_match_2, "down");
+
 
             if (channel == "et") {
               TLorentzVector orig_el;
