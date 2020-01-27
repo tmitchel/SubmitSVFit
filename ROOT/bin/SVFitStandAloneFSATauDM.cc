@@ -18,7 +18,6 @@
 #include "TauAnalysis/ClassicSVfit/interface/ClassicSVfit.h"
 #include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 #include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
-#include "SubmitSVFit/ROOT/interface/TauFESTool.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -39,7 +38,7 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
 void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int doES, int isWJets, int metType, double tesSize) ;
 int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source,optutl::CommandLineParser parser);
-double tesUncertainties(unsigned int year, float decaymode); 
+double tesUncertainties(unsigned int year, float decaymode, bool isEmbed); 
 double pt_shifted(float pt, double tesUnc, bool isDM, int updown);
 double metcorr_shifted(double metcorr, 
 		       float pt1, float phi1, bool isDM1, double tesUnc1, 
@@ -63,6 +62,8 @@ int main (int argc, char* argv[])
   parser.addOption("tesSize",optutl::CommandLineParser::kDouble,"tesSize",0.012); // Default TES = 1.2%
   parser.addOption("numEvents",optutl::CommandLineParser::kInteger,"numEvents",-1);
   parser.addOption("idyear", optutl::CommandLineParser::kString, "year", "2018");
+  parser.addOption("isEmbed", optutl::CommandLineParser::kDouble, "isEmbed", 0.0);
+
   parser.parseArguments (argc, argv);
   
   std::cout << "EXTRA COMMANDS:"
@@ -191,9 +192,6 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
         return;
       }
 
-      // get TES/FES weighter
-      TauFESTool* tfes = new TauFESTool(parser.stringValue("year"), "DeepTau2017v2p1VSe", "SubmitSVFit/ROOT/data");
-      
       TTree *t = (TTree*)obj;
       float svFitMass = -10;
       float svFitPt = -10;
@@ -812,7 +810,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
           runSVFit(measuredTauLeptons, metcorr_ex, metcorr_ey, covMET, 0,
                svFitMass, svFitPt, svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
-
+if (false) {
           // MET systematics
           runSVFit(measuredTauLeptons, metcorrUESUp_ex, metcorrUESUp_ey, covMET, 0, svFitMass_UES_Up, svFitPt_UES_Up,
               svFitEta, svFitPhi, svFitMET, svFitTransverseMass, tau1, tau2);
@@ -913,8 +911,13 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
           if (doES) {
             // corrections only need to be done once
             float ES_Up(1.), ES_Down(1.);  // shift TES
-            float ES_Up = 1 + tfes->getFES(decayMode2, eta2, gen_match_2, "up") + tfes->getTES(decayMode2, gen_match_2, "up");
-            float ES_Down = 1 + tfes->getFES(decayMode2, eta2, gen_match_2, "down") + tfes->getTES(decayMode2, gen_match_2, "down");
+            if (gen_match_2 == 5) {  // 0.6% uncertainty on hadronic tau
+              ES_Up = 1 + tesUncertainties(era, decayMode2, parser.doubleValue("isEmbed"));
+              ES_Down = 1 - tesUncertainties(era, decayMode2, parser.doubleValue("isEmbed"));
+            } else if (gen_match_2 < 5) {  // flat 2% on el/mu -> tau energy scale systematics
+              ES_Up = 1.02;
+              ES_Down = 0.98;
+            }
 
 
             if (channel == "et") {
@@ -1131,6 +1134,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             }
           }  // end doES
         }  // eTau / muTau     
+        }
     else {
       svFitMass = -100;
       svFitPt = -100;
@@ -1368,23 +1372,31 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew)
 
 }
 
-double tesUncertainties(unsigned int year, float decaymode) {
+double tesUncertainties(unsigned int year, float decaymode, bool isEmbed) {
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorkingLegacyRun2#Tau_energy_scale_uncertainty
   double tesSize = -1000;
-  if (year == 2016) {
-    if (decaymode == 0) tesSize = 0.010; 
-    else if (decaymode == 1) tesSize =0.009; 
-    else if (decaymode == 10) tesSize =0.011;
-  }
-  if (year == 2017) {
-    if (decaymode == 0) tesSize = 0.008; 
-    else if (decaymode == 1) tesSize = 0.008; 
-    else if (decaymode == 10) tesSize = 0.009;
-  }
-  if (year == 2018) {
-    if (decaymode == 0) tesSize = 0.011; 
-    else if (decaymode == 1) tesSize = 0.008; 
-    else if (decaymode == 10) tesSize = 0.009;
+  if (isEmbed) {
+      if (decaymode == 0) tesSize = 0.008; 
+      else if (decaymode == 1) tesSize =0.016; 
+      else if (decaymode == 10) tesSize =0.024;
+      else if (decaymode == 11) tesSize = 0.0;
+  } else {
+    if (year == 2016) {
+      if (decaymode == 0) tesSize = 0.010; 
+      else if (decaymode == 1) tesSize =0.009; 
+      else if (decaymode == 10) tesSize =0.011;
+      else if (decaymode == 11) tesSize = 0.010;
+    } else if (year == 2017) {
+      if (decaymode == 0) tesSize = 0.008; 
+      else if (decaymode == 1) tesSize = 0.008; 
+      else if (decaymode == 10) tesSize = 0.009;
+      else if (decaymode == 11) tesSize = 0.010;
+    } else if (year == 2018) {
+      if (decaymode == 0) tesSize = 0.011; 
+      else if (decaymode == 1) tesSize = 0.009; 
+      else if (decaymode == 10) tesSize = 0.008;
+      else if (decaymode == 11) tesSize = 0.010;
+    }
   }
   
   return tesSize;
