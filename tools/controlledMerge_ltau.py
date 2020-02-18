@@ -45,7 +45,7 @@ def mergeSample( sample, channel, ttreePath, originalDir, targetDir ) :
         runningNumFiles += 1
         print "running size: ",runningSize
         toMerge.append( file_ )
-        if runningSize > 5000 or runningNumFiles == 500 :
+        if runningSize > 3000 or runningNumFiles == 500 :
         #if runningSize > 300 or runningNumFiles == 500 :
             runningSize = 0
             runningNumFiles = 0
@@ -66,7 +66,7 @@ def mergeSample( sample, channel, ttreePath, originalDir, targetDir ) :
 
 if __name__ == '__main__' :
     ''' Start multiprocessing tests '''
-    pool = multiprocessing.Pool(processes = 6 )
+    pool = multiprocessing.Pool(processes = 12 )
     multiprocessingOutputs = []
     debug = False
     doAZH = False
@@ -76,16 +76,16 @@ if __name__ == '__main__' :
     if doHTT :
     
         #originalDir = '/hdfs/store/user/tmitchel/legacy-v3/skim/et2018_v1'
-        originalDir = '/hdfs/store/user/tmitchel/legacy-v3/skim/et2017_v1'
-        channel = 'etau'
-        ttreePath = 'etau_tree'
+        originalDir = '/hdfs/store/user/tmitchel/mt2018_legacy-v5p3_skim'
+        channel = 'mutau'
+        ttreePath = 'mutau_tree'
         dirs = os.popen('ls ' + originalDir)
         toProcess = dirs.readlines()
         samples = []
         for item in toProcess:
             samples += [item[:-1],]
         #samples = ['vbf125_JHU_a2int-prod_nom-decay_v1', 'vbf125_JHU_a2int-prod_nom-decay_v2', 'vbf125_JHU_a3-prod_nom-decay', 'vbf125_JHU_a3int-prod_nom-decay']
-        targetDir = '/nfs_scratch/tmitchel/merge-et2017'
+        targetDir = '/nfs_scratch/tmitchel/merge-mt2018_legacy-v5p3/'
         for sample in samples :
             os.system("mkdir " + targetDir + "/" + sample)
             multiprocessingOutputs.append(pool.apply_async(mergeSample, args=(sample, channel, ttreePath, originalDir + "/" + sample, targetDir)))

@@ -38,7 +38,7 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
 void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int doES, int isWJets, int metType, double tesSize) ;
 int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source,optutl::CommandLineParser parser);
-double tesUncertainties(unsigned int year, float decaymode, bool isEmbed); 
+double tesUncertainties(unsigned int year, float decaymode); 
 double pt_shifted(float pt, double tesUnc, bool isDM, int updown);
 double metcorr_shifted(double metcorr, 
 		       float pt1, float phi1, bool isDM1, double tesUnc1, 
@@ -1379,31 +1379,24 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew)
 
 }
 
-double tesUncertainties(unsigned int year, float decaymode, bool isEmbed) {
+double tesUncertainties(unsigned int year, float decaymode) {
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorkingLegacyRun2#Tau_energy_scale_uncertainty
   double tesSize = -1000;
-  if (isEmbed) {
-      if (decaymode == 0) tesSize = 0.008; 
-      else if (decaymode == 1) tesSize =0.016; 
-      else if (decaymode == 10) tesSize =0.024;
-      else if (decaymode == 11) tesSize = 0.0;
-  } else {
-    if (year == 2016) {
-      if (decaymode == 0) tesSize = 0.010; 
-      else if (decaymode == 1) tesSize =0.009; 
-      else if (decaymode == 10) tesSize =0.011;
-      else if (decaymode == 11) tesSize = 0.010;
-    } else if (year == 2017) {
-      if (decaymode == 0) tesSize = 0.008; 
-      else if (decaymode == 1) tesSize = 0.008; 
-      else if (decaymode == 10) tesSize = 0.009;
-      else if (decaymode == 11) tesSize = 0.010;
-    } else if (year == 2018) {
-      if (decaymode == 0) tesSize = 0.011; 
-      else if (decaymode == 1) tesSize = 0.009; 
-      else if (decaymode == 10) tesSize = 0.008;
-      else if (decaymode == 11) tesSize = 0.010;
-    }
+  if (year == 2016) {
+    if (decaymode == 0) tesSize = 0.010; 
+    else if (decaymode == 1) tesSize =0.009; 
+    else if (decaymode == 10) tesSize =0.011;
+    else if (decaymode == 11) tesSize = 0.010;
+  } else if (year == 2017) {
+    if (decaymode == 0) tesSize = 0.008; 
+    else if (decaymode == 1) tesSize = 0.008; 
+    else if (decaymode == 10) tesSize = 0.009;
+    else if (decaymode == 11) tesSize = 0.010;
+  } else if (year == 2018) {
+    if (decaymode == 0) tesSize = 0.011; 
+    else if (decaymode == 1) tesSize = 0.009; 
+    else if (decaymode == 10) tesSize = 0.008;
+    else if (decaymode == 11) tesSize = 0.010;
   }
   
   return tesSize;
