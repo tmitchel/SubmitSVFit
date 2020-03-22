@@ -35,7 +35,9 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew) ;
 void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[], int doES, std::string unc = "") ;
 int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source,optutl::CommandLineParser parser);
-double tesUncertainties(unsigned int year, float decaymode); 
+double tesUncertainties(unsigned int year, float decaymode, float pT); 
+double tesUncertainties_MC(unsigned int year, float decaymode);
+double tesUncertainties_MChighpT(unsigned int year, float decaymode);
 double pt_shifted(float pt, double tesUnc, bool isDM, int updown);
 double metcorr_shifted(double metcorr, 
 		       float pt1, float phi1, bool isDM1, double tesUnc1, 
@@ -105,8 +107,9 @@ int main (int argc, char* argv[])
     "DM10_Up","DM10_Down",
     "DM11_Up","DM11_Down"
   };
-  std::string uncRecoil[2] = { // qqH, ggH, DY
-    "resolutionUp","resolutionDown"
+  std::string uncRecoil[4] = { // qqH, ggH, DY
+    "resolutionUp","resolutionDown",
+    "responseUp","responseDown"
   };
   std::string uncMET[2]={ // All MC but for qqH, ggH, DY
     "UESUp","UESDown"
@@ -349,16 +352,16 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	  */
 	  int updown = (unc.find("Up")!= std::string::npos)?+1:-1;
 	  if (unc.find("DM0_")!= std::string::npos) {
-	      pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM0_1, updown);
-	      pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM0_2, updown);
-	      s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
-			      pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-			      +1, updown);
-	      s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
-			      pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2),
-			      -1, updown);
+	    pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode, pt1), isDM0_1, updown);
+	    pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2, pt2), isDM0_2, updown);
+	    s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
+					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   +1, updown);
+	    s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
+					   pt1, phi1, isDM0_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM0_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   -1, updown);
 	  }
 	  /*
 	  std::cout << std::endl << "After : "<< std::endl <<
@@ -367,40 +370,40 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	    s.metcorr_ex << "\t" << s.metcorr_ey << std::endl;
 	  */
 	  if (unc.find("DM1_")!= std::string::npos) {
-	      pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM1_1, updown);
-	      pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM1_2, updown);
-	      s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
-			      pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
-			      +1, updown);
-	      s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
-			      pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2),
-			      -1, updown);
+	    pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode, pt1), isDM1_1, updown);
+	    pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2, pt2), isDM1_2, updown);
+	    s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
+					   pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   +1, updown);
+	    s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
+					   pt1, phi1, isDM1_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM1_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   -1, updown);
 	  }	  
-	if (unc.find("DM10_")!= std::string::npos) {
-	      pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM10_1, updown);
-	      pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM10_2, updown);
-	      s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
-			      pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
-			      +1, updown);
-	      s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
-			      pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2),
-			      -1, updown);
+	  if (unc.find("DM10_")!= std::string::npos) {
+	    pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode, pt1), isDM10_1, updown);
+	    pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2, pt2), isDM10_2, updown);
+	    s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
+					   pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   +1, updown);
+	    s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
+					   pt1, phi1, isDM10_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM10_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   -1, updown);
 	  }	  
-      if (unc.find("DM11_")!= std::string::npos) {
-	      pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode), isDM11_1, updown);
-	      pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2), isDM11_2, updown);
-	      s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
-			      pt1, phi1, isDM11_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM11_2, tesUncertainties(NtupleVer, decayMode2),
-			      +1, updown);
-	      s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
-			      pt1, phi1, isDM11_1, tesUncertainties(NtupleVer, decayMode),
-			      pt2, phi2, isDM11_2, tesUncertainties(NtupleVer, decayMode2),
-			      -1, updown);
+	  if (unc.find("DM11_")!= std::string::npos) {
+	    pt1 = pt_shifted(pt1, tesUncertainties(NtupleVer, decayMode, pt1), isDM11_1, updown);
+	    pt2 = pt_shifted(pt2, tesUncertainties(NtupleVer, decayMode2, pt2), isDM11_2, updown);
+	    s.metcorr_ex = metcorr_shifted(s.metcorr_ex, 
+					   pt1, phi1, isDM11_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM11_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   +1, updown);
+	    s.metcorr_ey = metcorr_shifted(s.metcorr_ey, 
+					   pt1, phi1, isDM11_1, tesUncertainties(NtupleVer, decayMode, pt1),
+					   pt2, phi2, isDM11_2, tesUncertainties(NtupleVer, decayMode2, pt2),
+					   -1, updown);
 	  }	  
 	}
 
@@ -561,8 +564,77 @@ int copyFiles( optutl::CommandLineParser parser, TFile* fOld, TFile* fNew)
   return 1;
 
 }
+/*
+double tesUncertainties_MC(unsigned int year, float decaymode) {
+  // https://gitlab.cern.ch/doyeong/myelog/blob/master/HiggsToTauTau/TES_deeptau_Feb28.txt
+  // https://github.com/cms-tau-pog/TauIDSFs/blob/master/python/TauIDSFTool.py#L162-L187
+  double tesSize = -1000;
+  if (year==2016) {
+    if (decaymode == 0) tesSize = 0.008;
+    else if (decaymode == 1) tesSize = 0.006;
+    else if (decaymode == 10) tesSize = 0.008;
+    else if (decaymode == 11) tesSize = 0.011;
+  }
+  if (year == 2017) {
+    if (decaymode == 0) tesSize = 0.01; 
+    else if (decaymode == 1) tesSize = 0.006;
+    else if (decaymode == 10) tesSize = 0.007;
+    else if (decaymode == 11) tesSize = 0.014;
+  }
+  if (year == 2018) {
+    if (decaymode == 0) tesSize = 0.009; 
+    else if (decaymode == 1) tesSize = 0.006; 
+    else if (decaymode == 10) tesSize = 0.007;
+    else if (decaymode == 11) tesSize = 0.012;
+  }
+  
+  return tesSize;
+}
 
-double tesUncertainties(unsigned int year, float decaymode) {
+double tesUncertainties_MChighpT(unsigned int year, float decaymode) {
+  // https://gitlab.cern.ch/doyeong/myelog/blob/master/HiggsToTauTau/TES_deeptau_Feb28.txt
+  // https://github.com/cms-tau-pog/TauIDSFs/blob/master/python/TauIDSFTool.py#L162-L187
+  double tesSize = -1000;
+  if (year==2016) {
+    if (decaymode == 0) tesSize = 0.030;
+    else if (decaymode == 1) tesSize = 0.020;
+    else if (decaymode == 10) tesSize = 0.012;
+    else if (decaymode == 11) tesSize = 0.027;
+  }
+  if (year == 2017) {
+    if (decaymode == 0) tesSize = 0.030; 
+    else if (decaymode == 1) tesSize = 0.027;
+    else if (decaymode == 10) tesSize = 0.017;
+    else if (decaymode == 11) tesSize = 0.040;
+  }
+  if (year == 2018) {
+    if (decaymode == 0) tesSize = 0.030; 
+    else if (decaymode == 1) tesSize = 0.020; 
+    else if (decaymode == 10) tesSize = 0.011;
+    else if (decaymode == 11) tesSize = 0.039;
+  }
+  
+  return tesSize;
+}
+
+double tesUncertainties(unsigned int year, float decaymode, float pT) {
+  float lowBound=34.0, highBound=170.0;
+  double tesSize = -1000;
+  float err_high = tesUncertainties_MChighpT(year, decaymode);
+  float err_low = tesUncertainties_MC(year, decaymode);
+
+  if (pT>=highBound) 
+    tesSize=err_high;
+  else if (pT>lowBound) 
+    tesSize = err_low + (err_high-err_low)/(highBound-lowBound)*(lowBound);
+  else
+    tesSize=err_low;
+  
+  return tesSize;
+}
+*/
+
+double tesUncertainties(unsigned int year, float decaymode, float pT) {
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorkingLegacyRun2#Tau_energy_scale_uncertainty
   double tesSize = -1000;
   if (year == 2016) {
@@ -586,6 +658,7 @@ double tesUncertainties(unsigned int year, float decaymode) {
   
   return tesSize;
 }
+
 
 double pt_shifted(float pt, double tesUnc, bool isDM, int updown) {
   double shifted_pT = pt;
