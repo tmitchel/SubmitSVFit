@@ -576,7 +576,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float pfCovMatrix10;
       float pfCovMatrix01;
       float pfCovMatrix11;
-      float tes_syst;
+      float tes_syst_up;
+      float tes_syst_down;
       float ftes_syst_up;
       float ftes_syst_down;
       //float mvamet_ex, // uncorrected mva met px (float)
@@ -718,8 +719,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
       t->SetBranchAddress("ftes_syst_up", &ftes_syst_up);
       t->SetBranchAddress("ftes_syst_down", &ftes_syst_down);
-      t->SetBranchAddress("tes_syst", &tes_syst);
-
+      t->SetBranchAddress("tes_syst_up", &tes_syst_up);
+      t->SetBranchAddress("tes_syst_down", &tes_syst_down);
 
       printf("Found tree -> weighting\n");
     
@@ -934,11 +935,11 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             // corrections only need to be done once
             float ES_Up(1.), ES_Down(1.);  // shift TES
             if (gen_match_2 == 5) {  // 0.6% uncertainty on hadronic tau
-              ES_Up = 1 + tes_syst;
-              ES_Down = 1 - tes_syst;
+              ES_Up = 1 + tes_syst_up;
+              ES_Down = 1 + tes_syst_down;
             } else if (gen_match_2 < 5) {  // flat 2% on el/mu -> tau energy scale systematics
               ES_Up = 1 + ftes_syst_up;
-              ES_Down = 1 - ftes_syst_down;
+              ES_Down = 1 + ftes_syst_down;
             }
 
             if (channel == "et") {
