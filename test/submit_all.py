@@ -12,7 +12,7 @@ prefix = args.prefix
 
 dirlist = ['%s/%s' % (sampledir, sample) for sample in os.listdir(sampledir)]
 for idir in dirlist:
-  command =  '$CMSSW_BASE/bin/$SCRAM_ARCH/FastMTT doES=1 metType=-1 inputfile=$value newFile=\'$OUTPUT\''
+  command =  '$CMSSW_BASE/bin/$SCRAM_ARCH/FastMTT doES=1 inputfile=$value newFile=\'$OUTPUT\''
   if 'WJets' in idir:
     command += ' isWJets=1 '
   jobName = '{}/svfit_dir_{}'.format(args.prefix, idir.split('/')[-1])
