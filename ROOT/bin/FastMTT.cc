@@ -428,10 +428,20 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 t->Branch("m_sv_EESigma_Down", &svFitMass_EESigma_Down, "m_sv_EESigma_Down/F"),
                 t->Branch("pt_sv_EESigma_Down", &svFitPt_EESigma_Down, "pt_sv_EESigma_Down/F"),
 
-                t->Branch("m_sv_MES_Up", &svFitMass_MES_Up, "m_sv_MES_Up/F"),
-                t->Branch("pt_sv_MES_Up", &svFitPt_MES_Up, "pt_sv_MES_Up/F"),
-                t->Branch("m_sv_MES_Down", &svFitMass_MES_Down, "m_sv_MES_Down/F"),
-                t->Branch("pt_sv_MES_Down", &svFitPt_MES_Down, "pt_sv_MES_Down/F"),
+                t->Branch("m_sv_MES_lt1p2_lt1p2_Up", &svFitMass_MES_lt1p2_Up, "m_sv_MES_lt1p2_Up/F"),
+                t->Branch("pt_sv_MES_lt1p2_lt1p2_Up", &svFitPt_MES_lt1p2_Up, "pt_sv_MES_lt1p2_Up/F"),
+                t->Branch("m_sv_MES_lt1p2_lt1p2_Down", &svFitMass_MES_lt1p2_Down, "m_sv_MES_lt1p2_Down/F"),
+                t->Branch("pt_sv_MES_lt1p2_lt1p2_Down", &svFitPt_MES_lt1p2_Down, "pt_sv_MES_lt1p2_Down/F"),
+
+                t->Branch("m_sv_MES_1p2to2p1_1p2to2p1_Up", &svFitMass_MES_1p2to2p1_Up, "m_sv_MES_1p2to2p1_Up/F"),
+                t->Branch("pt_sv_MES_1p2to2p1_1p2to2p1_Up", &svFitPt_MES_1p2to2p1_Up, "pt_sv_MES_1p2to2p1_Up/F"),
+                t->Branch("m_sv_MES_1p2to2p1_1p2to2p1_Down", &svFitMass_MES_1p2to2p1_Down, "m_sv_MES_1p2to2p1_Down/F"),
+                t->Branch("pt_sv_MES_1p2to2p1_1p2to2p1_Down", &svFitPt_MES_1p2to2p1_Down, "pt_sv_MES_1p2to2p1_Down/F"),
+
+                t->Branch("m_sv_MES_gt2p1_gt2p1_Up", &svFitMass_MES_gt2p1_Up, "m_sv_MES_gt2p1_Up/F"),
+                t->Branch("pt_sv_MES_gt2p1_gt2p1_Up", &svFitPt_MES_gt2p1_Up, "pt_sv_MES_gt2p1_Up/F"),
+                t->Branch("m_sv_MES_gt2p1_gt2p1_Down", &svFitMass_MES_gt2p1_Down, "m_sv_MES_gt2p1_Down/F"),
+                t->Branch("pt_sv_MES_gt2p1_gt2p1_Down", &svFitPt_MES_gt2p1_Down, "pt_sv_MES_gt2p1_Down/F"),
 
                 t->Branch("m_sv_DM1_Up", &svFitMass_DM1_Up, "m_sv_DM1_Up/F"),
                 t->Branch("pt_sv_DM1_Up", &svFitPt_DM1_Up, "pt_sv_DM1_Up/F"),
@@ -1119,11 +1129,11 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 
                     // split into barrel/endcap
                     if (gen_match_2 < 5 && decayMode2 == 0 && fabs(eta1) < 1.479) {
-                        runFastMTT(measuredTauLeptonsDown, metcorr_ex_Down, metcorr_ey_Down, covMET, svFitMass_LES_DM0_barrel_Down,
-                                   svFitPt_LES_DM0_barrel_Down);
+                        runFastMTT(measuredTauLeptonsUp, metcorr_ex_Up, metcorr_ey_Up, covMET, svFitMass_LES_DM0_barrel_Up,
+                                   svFitPt_LES_DM0_barrel_Up);
                     } else {
-                        svFitMass_LES_DM0_barrel_Down = svFitMass;
-                        svFitPt_LES_DM0_barrel_Down = svFitPt;
+                        svFitMass_LES_DM0_barrel_Up = svFitMass;
+                        svFitPt_LES_DM0_barrel_Up = svFitPt;
                     }
 
                     // lep->tau DM1 shifted up
