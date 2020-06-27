@@ -30,7 +30,7 @@
 FastMTT svfitAlgorithm;
 
 int copyFiles(optutl::CommandLineParser parser, TFile *fOld, TFile *fNew);
-void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets);
+void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets, double, double);
 int CopyFile(const char *fname, optutl::CommandLineParser parser);
 void CopyDir(TDirectory *source, optutl::CommandLineParser parser);
 void runFastMTT(const std::vector<classic_svFit::MeasuredTauLepton> &, double, double, const TMatrixD &, float &, float &);
@@ -43,10 +43,13 @@ int main(int argc, char *argv[]) {
     parser.addOption("doES", optutl::CommandLineParser::kDouble, "doES", 0.0);
     parser.addOption("isWJets", optutl::CommandLineParser::kDouble, "isWJets", 0.0);
     parser.addOption("numEvents", optutl::CommandLineParser::kInteger, "numEvents", -1);
+    parser.addOption("isEmbed", optutl::CommandLineParser::kDouble, "isEmbed", 0.0);
+    parser.addOption("isData", optutl::CommandLineParser::kDouble, "isData", 0.0);
     parser.parseArguments(argc, argv);
 
     std::cout << "EXTRA COMMANDS:"
               << "\n --- numEvents: " << parser.integerValue("numEvents") << "\n --- doES: " << parser.doubleValue("doES")
+              << "\n --- isEmbed: " << parser.integerValue("isEmbed") << "\n --- isData: " << parser.doubleValue("isData")
               << "\n --- isWJets: " << parser.doubleValue("isWJets") << std::endl;
 
     char TreeToUse[80] = "first";
@@ -62,13 +65,13 @@ int main(int argc, char *argv[]) {
 
     fProduce = new TFile(newFileName.c_str(), "UPDATE");
     fProduce->ls();
-    readdir(fProduce, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"));
+    readdir(fProduce, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("isEmbed"), parser.doubleValue("isData"));
 
     fProduce->Close();
     f->Close();
 }
 
-void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets) {
+void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[], int doES, int isWJets, double isEmbed, double isData) {
     TLorentzVector tau1, tau2;
 
     classic_svFit::MeasuredTauLepton::kDecayType decayType1 = classic_svFit::MeasuredTauLepton::kUndefinedDecayType;
@@ -98,7 +101,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
             dir->cd(key->GetName());
             TDirectory *subdir = gDirectory;
             sprintf(TreeToUse, "%s", key->GetName());
-            readdir(subdir, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"));
+            readdir(subdir, parser, TreeToUse, parser.doubleValue("doES"), parser.doubleValue("isWJets"), parser.doubleValue("isEmbed"), parser.doubleValue("isData"));
 
             dirsav->cd();
         } else if (obj->IsA()->InheritsFrom(TTree::Class())) {
