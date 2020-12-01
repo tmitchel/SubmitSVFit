@@ -15,5 +15,9 @@ for idir in dirlist:
   command =  '$CMSSW_BASE/bin/$SCRAM_ARCH/FastMTT doES=1 inputfile=$value newFile=\'$OUTPUT\''
   if 'WJets' in idir:
     command += ' isWJets=1 '
+  if 'embed' in idir:
+    command += ' isEmbed=1 '
+  if 'data' in idir:
+    command += ' isData=1 '
   jobName = '{}/svfit_dir_{}'.format(args.prefix, idir.split('/')[-1])
   ch.submit_command(command, jobName=jobName, input_sample_dir=idir)

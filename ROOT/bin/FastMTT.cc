@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "EXTRA COMMANDS:"
               << "\n --- numEvents: " << parser.integerValue("numEvents") << "\n --- doES: " << parser.doubleValue("doES")
-              << "\n --- isEmbed: " << parser.integerValue("isEmbed") << "\n --- isData: " << parser.doubleValue("isData")
+              << "\n --- isEmbed: " << parser.doubleValue("isEmbed") << "\n --- isData: " << parser.doubleValue("isData")
               << "\n --- isWJets: " << parser.doubleValue("isWJets") << std::endl;
 
     char TreeToUse[80] = "first";
@@ -569,7 +569,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 t->Branch("m_sv_RecoilResp_njets0_Up", &svFitMass_RecoilResp_njets0_Up, "m_sv_RecoilResp_njets0_Up/F"),
                 t->Branch("pt_sv_RecoilResp_njets0_Up", &svFitPt_RecoilResp_njets0_Up, "pt_sv_RecoilResp_njets0_Up/F"),
                 t->Branch("m_sv_RecoilResp_njets0_Down", &svFitMass_RecoilResp_njets0_Down, "m_sv_RecoilResp_njets0_Down/F"),
-                t->Branch("pt_sv_RecoilResp_njets0_Down", &svFitPt_RecoilResp_njets0_Down, "pt_sv_RecoilResp_njets0_Down/F")
+                t->Branch("pt_sv_RecoilResp_njets0_Down", &svFitPt_RecoilResp_njets0_Down, "pt_sv_RecoilResp_njets0_Down/F"),
 
                     t->Branch("m_sv_RecoilReso_njets1_Up", &svFitMass_RecoilReso_njets1_Up, "m_sv_RecoilReso_njets1_Up/F"),
                 t->Branch("pt_sv_RecoilReso_njets1_Up", &svFitPt_RecoilReso_njets1_Up, "pt_sv_RecoilReso_njets1_Up/F"),
@@ -579,7 +579,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                 t->Branch("m_sv_RecoilResp_njets1_Up", &svFitMass_RecoilResp_njets1_Up, "m_sv_RecoilResp_njets1_Up/F"),
                 t->Branch("pt_sv_RecoilResp_njets1_Up", &svFitPt_RecoilResp_njets1_Up, "pt_sv_RecoilResp_njets1_Up/F"),
                 t->Branch("m_sv_RecoilResp_njets1_Down", &svFitMass_RecoilResp_njets1_Down, "m_sv_RecoilResp_njets1_Down/F"),
-                t->Branch("pt_sv_RecoilResp_njets1_Down", &svFitPt_RecoilResp_njets1_Down, "pt_sv_RecoilResp_njets1_Down/F")
+                t->Branch("pt_sv_RecoilResp_njets1_Down", &svFitPt_RecoilResp_njets1_Down, "pt_sv_RecoilResp_njets1_Down/F"),
 
                     t->Branch("m_sv_RecoilReso_njets2_Up", &svFitMass_RecoilReso_njets2_Up, "m_sv_RecoilReso_njets2_Up/F"),
                 t->Branch("pt_sv_RecoilReso_njets2_Up", &svFitPt_RecoilReso_njets2_Up, "pt_sv_RecoilReso_njets2_Up/F"),
@@ -854,13 +854,13 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
                     metcorrUESUp_ey = met_UESUp * TMath::Sin(metphi_UESUp);
 
                     metcorrRecoilResoUp_ex = met_reso_Up * TMath::Cos(metphi_reso_Up);
-                    metcorrRecoilResoUp_ey = met_reso_Down * TMath::Cos(metphi_reso_Down);
-                    metcorrRecoilResoDown_ex = met_reso_Up * TMath::Cos(metphi_reso_Up);
-                    metcorrRecoilResoDown_ey = met_reso_Down * TMath::Cos(metphi_reso_Down);
+                    metcorrRecoilResoUp_ey = met_reso_Up * TMath::Sin(metphi_reso_Up);
+                    metcorrRecoilResoDown_ex = met_reso_Down * TMath::Cos(metphi_reso_Down);
+                    metcorrRecoilResoDown_ey = met_reso_Down * TMath::Sin(metphi_reso_Down);
                     metcorrRecoilRespUp_ex = met_resp_Up * TMath::Cos(metphi_resp_Up);
-                    metcorrRecoilRespUp_ey = met_resp_Down * TMath::Cos(metphi_resp_Down);
-                    metcorrRecoilRespDown_ex = met_resp_Up * TMath::Cos(metphi_resp_Up);
-                    metcorrRecoilRespDown_ey = met_resp_Down * TMath::Cos(metphi_resp_Down);
+                    metcorrRecoilRespUp_ey = met_resp_Up * TMath::Sin(metphi_resp_Up);
+                    metcorrRecoilRespDown_ex = met_resp_Down * TMath::Cos(metphi_resp_Down);
+                    metcorrRecoilRespDown_ey = met_resp_Down * TMath::Sin(metphi_resp_Down);
 
                     // MET systematics
                     runFastMTT(measuredTauLeptons, metcorrUESUp_ex, metcorrUESUp_ey, covMET, svFitMass_UES_Up, svFitPt_UES_Up);
